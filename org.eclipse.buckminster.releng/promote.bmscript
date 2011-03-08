@@ -1,5 +1,5 @@
-setpref -P ${build.props} targetPlatformPath=${build.root}/tp
-import -P ${build.props} ${build.root}/svn/org.eclipse.buckminster.releng/build.cquery
-build -P ${build.props} --thorough
-junit -P ${build.props} -l org.eclipse.buckminster.tests/AllTests.launch -o ${buckminster.output.root}/testReport.xml --terseXML --flatXML
-perform -P ${build.props} org.eclipse.buckminster.releng#promote
+setpref -P ${checkout.root}/org.eclipse.buckminster.releng/build.properties targetPlatformPath=${build.root}/tp
+import ${checkout.root}/org.eclipse.buckminster.releng/build.cquery
+build --thorough
+junit -l org.eclipse.buckminster.tests/AllTests.launch -o ${buckminster.output.root}/testReport.xml --terseXML --flatXML
+perform org.eclipse.buckminster.releng#promote

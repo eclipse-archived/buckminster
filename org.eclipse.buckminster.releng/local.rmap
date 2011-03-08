@@ -6,8 +6,8 @@
   <rm:redirect href="build.rmap"/>
   <rm:searchPath name="buckminster">
     <rm:provider componentTypes="osgi.bundle,eclipse.feature,buckminster" readerType="local">
-      <rm:uri format="{0}/ws/{1}">
-        <bc:propertyRef key="build.root"/>
+      <rm:uri format="{0}/svn/{1}">
+        <bc:propertyRef key="checkout.root"/>
         <bc:propertyRef key="buckminster.component"/>
       </rm:uri>
     </rm:provider>
