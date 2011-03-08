@@ -71,8 +71,9 @@ public class RemoveUnpackedSiblingsAction implements IPublisherAction {
 			artifacts.executeBatch(new IRunnableWithProgress() {
 				@Override
 				public void run(IProgressMonitor p) throws InvocationTargetException, OperationCanceledException {
+					SubMonitor sp = SubMonitor.convert(p, descsToRemove.size());
 					for (IArtifactDescriptor descToRemove : descsToRemove)
-						artifacts.removeDescriptor(descToRemove);
+						artifacts.removeDescriptor(descToRemove, sp.newChild(1));
 				}
 			}, mon.newChild(1));
 		}
