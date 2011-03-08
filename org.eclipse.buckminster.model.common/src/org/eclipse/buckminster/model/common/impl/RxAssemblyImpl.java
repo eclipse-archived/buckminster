@@ -106,6 +106,7 @@ public class RxAssemblyImpl extends RxGroupImpl implements RxAssembly {
 	 * @generated NOT
 	 */
 
+	@Override
 	public Map<String, String> getMatchMap(CharSequence input) {
 		if (input == null)
 			return null;
@@ -145,6 +146,7 @@ public class RxAssemblyImpl extends RxGroupImpl implements RxAssembly {
 		return matchMap;
 	}
 
+	@Override
 	public Pattern getPattern() {
 		// TODO: Reset pattern if RxParts change
 		if (pattern == null) {

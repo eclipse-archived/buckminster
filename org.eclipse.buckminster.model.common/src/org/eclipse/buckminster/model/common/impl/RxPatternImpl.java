@@ -338,6 +338,7 @@ public class RxPatternImpl extends RxPartImpl implements RxPattern {
 	 * @generated
 	 */
 
+	@Override
 	public String getPattern() {
 		return pattern;
 	}
@@ -348,6 +349,7 @@ public class RxPatternImpl extends RxPartImpl implements RxPattern {
 	 * @generated
 	 */
 
+	@Override
 	public String getPrefix() {
 		return prefix;
 	}
@@ -358,6 +360,7 @@ public class RxPatternImpl extends RxPartImpl implements RxPattern {
 	 * @generated
 	 */
 
+	@Override
 	public String getSuffix() {
 		return suffix;
 	}
@@ -368,6 +371,7 @@ public class RxPatternImpl extends RxPartImpl implements RxPattern {
 	 * @generated
 	 */
 
+	@Override
 	public void setPattern(String newPattern) {
 		String oldPattern = pattern;
 		pattern = newPattern;
@@ -381,6 +385,7 @@ public class RxPatternImpl extends RxPartImpl implements RxPattern {
 	 * @generated
 	 */
 
+	@Override
 	public void setPrefix(String newPrefix) {
 		String oldPrefix = prefix;
 		prefix = newPrefix;
@@ -394,6 +399,7 @@ public class RxPatternImpl extends RxPartImpl implements RxPattern {
 	 * @generated
 	 */
 
+	@Override
 	public void setSuffix(String newSuffix) {
 		String oldSuffix = suffix;
 		suffix = newSuffix;

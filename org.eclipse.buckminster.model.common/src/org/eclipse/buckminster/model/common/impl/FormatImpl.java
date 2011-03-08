@@ -135,6 +135,7 @@ public class FormatImpl extends ValueFilterImpl implements Format {
 	 * @generated
 	 */
 
+	@Override
 	public String getFormat() {
 		return format;
 	}
@@ -145,6 +146,7 @@ public class FormatImpl extends ValueFilterImpl implements Format {
 	 * @generated
 	 */
 
+	@Override
 	public void setFormat(String newFormat) {
 		String oldFormat = format;
 		format = newFormat;

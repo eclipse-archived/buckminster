@@ -126,6 +126,7 @@ public class RedirectImpl extends MatcherImpl implements Redirect {
 	 * @generated
 	 */
 
+	@Override
 	public String getRedirectTo() {
 		return redirectTo;
 	}
@@ -136,6 +137,7 @@ public class RedirectImpl extends MatcherImpl implements Redirect {
 	 * @generated
 	 */
 
+	@Override
 	public void setRedirectTo(String newRedirectTo) {
 		String oldRedirectTo = redirectTo;
 		redirectTo = newRedirectTo;

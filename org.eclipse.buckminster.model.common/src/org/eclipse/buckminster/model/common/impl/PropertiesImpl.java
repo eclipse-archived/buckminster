@@ -202,6 +202,7 @@ public abstract class PropertiesImpl extends EObjectImpl implements Properties {
 	 * 
 	 * @generated NOT
 	 */
+	@Override
 	public Map<String, String> getProperties() {
 		return new ExpandingProperties(getPropertyElements().map(), getPropertyConstants().map());
 	}
@@ -211,6 +212,7 @@ public abstract class PropertiesImpl extends EObjectImpl implements Properties {
 	 * 
 	 * @generated NOT
 	 */
+	@Override
 	public EMap<String, Value> getPropertyConstants() {
 		if (propertyConstants == null) {
 			propertyConstants = new UniquePreservingEcoreEMap<String, Value>(CommonPackage.Literals.PROPERTY_CONSTANT, PropertyConstantImpl.class,
@@ -224,6 +226,7 @@ public abstract class PropertiesImpl extends EObjectImpl implements Properties {
 	 * 
 	 * @generated NOT
 	 */
+	@Override
 	public EMap<String, Value> getPropertyElements() {
 		if (propertyElements == null) {
 			propertyElements = new UniquePreservingEcoreEMap<String, Value>(CommonPackage.Literals.PROPERTY_ELEMENT, PropertyElementImpl.class, this,

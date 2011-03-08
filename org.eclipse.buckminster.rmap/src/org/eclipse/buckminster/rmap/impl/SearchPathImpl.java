@@ -175,6 +175,7 @@ public class SearchPathImpl extends EObjectImpl implements SearchPath {
 	 * @generated
 	 */
 
+	@Override
 	public String getName() {
 		return name;
 	}
@@ -185,6 +186,7 @@ public class SearchPathImpl extends EObjectImpl implements SearchPath {
 	 * @generated
 	 */
 
+	@Override
 	public EList<Provider> getProviders() {
 		if (providers == null) {
 			providers = new EObjectContainmentEList<Provider>(Provider.class, this, RmapPackage.SEARCH_PATH__PROVIDERS);
@@ -198,6 +200,7 @@ public class SearchPathImpl extends EObjectImpl implements SearchPath {
 	 * @generated
 	 */
 
+	@Override
 	public void setName(String newName) {
 		String oldName = name;
 		name = newName;

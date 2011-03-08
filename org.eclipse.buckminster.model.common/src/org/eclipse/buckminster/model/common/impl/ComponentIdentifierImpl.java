@@ -155,6 +155,7 @@ public class ComponentIdentifierImpl extends ComponentNameImpl implements Compon
 	 * @generated
 	 */
 
+	@Override
 	public Version getVersion() {
 		return version;
 	}
@@ -173,6 +174,7 @@ public class ComponentIdentifierImpl extends ComponentNameImpl implements Compon
 	 * 
 	 * @generated NOT
 	 */
+	@Override
 	public boolean matches(ComponentIdentifier ci) {
 		return super.matches(ci) && (getVersion() == null || ci.getVersion() == null || getVersion().equals(ci.getVersion()));
 	}
@@ -182,6 +184,7 @@ public class ComponentIdentifierImpl extends ComponentNameImpl implements Compon
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setVersion(Version newVersion) {
 		Version oldVersion = version;
 		version = newVersion;

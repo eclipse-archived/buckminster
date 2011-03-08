@@ -89,6 +89,7 @@ public class ComponentNameImpl extends EObjectImpl implements ComponentName {
 	 * 
 	 * @generated NOT
 	 */
+	@Override
 	public int compareTo(ComponentName o) {
 		if (this == o)
 			return 0;
@@ -185,6 +186,7 @@ public class ComponentNameImpl extends EObjectImpl implements ComponentName {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getId() {
 		return id;
 	}
@@ -194,6 +196,7 @@ public class ComponentNameImpl extends EObjectImpl implements ComponentName {
 	 * 
 	 * @generated NOT
 	 */
+	@Override
 	public Map<String, String> getProperties() {
 		HashMap<String, String> p = new HashMap<String, String>();
 		if (getId() != null)
@@ -208,6 +211,7 @@ public class ComponentNameImpl extends EObjectImpl implements ComponentName {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getType() {
 		return type;
 	}
@@ -227,6 +231,7 @@ public class ComponentNameImpl extends EObjectImpl implements ComponentName {
 	 * 
 	 * @generated NOT
 	 */
+	@Override
 	public boolean matches(ComponentName cn) {
 		return Trivial.equalsAllowNull(getId(), cn.getId()) && (getType() == null || cn.getType() == null || getType().equals(cn.getType()));
 	}
@@ -236,6 +241,7 @@ public class ComponentNameImpl extends EObjectImpl implements ComponentName {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setId(String newId) {
 		String oldId = id;
 		id = newId;
@@ -248,6 +254,7 @@ public class ComponentNameImpl extends EObjectImpl implements ComponentName {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setType(String newType) {
 		String oldType = type;
 		type = newType;
@@ -260,6 +267,7 @@ public class ComponentNameImpl extends EObjectImpl implements ComponentName {
 	 * 
 	 * @generated NOT
 	 */
+	@Override
 	public ComponentName toPureComponentName() {
 		return this;
 	}
@@ -282,6 +290,7 @@ public class ComponentNameImpl extends EObjectImpl implements ComponentName {
 	 * 
 	 * @generated NOT
 	 */
+	@Override
 	public void toString(StringBuilder bld) {
 		if (getId() != null)
 			bld.append(getId());

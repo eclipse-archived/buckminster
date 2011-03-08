@@ -201,6 +201,7 @@ public class MavenPackageImpl extends EPackageImpl implements MavenPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EClass getGroupAndArtifact() {
 		return groupAndArtifactEClass;
 	}
@@ -211,6 +212,7 @@ public class MavenPackageImpl extends EPackageImpl implements MavenPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EAttribute getGroupAndArtifact_ArtifactId() {
 		return (EAttribute) groupAndArtifactEClass.getEStructuralFeatures().get(0);
 	}
@@ -221,6 +223,7 @@ public class MavenPackageImpl extends EPackageImpl implements MavenPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EAttribute getGroupAndArtifact_GroupId() {
 		return (EAttribute) groupAndArtifactEClass.getEStructuralFeatures().get(1);
 	}
@@ -231,6 +234,7 @@ public class MavenPackageImpl extends EPackageImpl implements MavenPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EClass getMapEntry() {
 		return mapEntryEClass;
 	}
@@ -241,6 +245,7 @@ public class MavenPackageImpl extends EPackageImpl implements MavenPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EReference getMapEntry_Aliases() {
 		return (EReference) mapEntryEClass.getEStructuralFeatures().get(1);
 	}
@@ -251,6 +256,7 @@ public class MavenPackageImpl extends EPackageImpl implements MavenPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EAttribute getMapEntry_Name() {
 		return (EAttribute) mapEntryEClass.getEStructuralFeatures().get(0);
 	}
@@ -261,6 +267,7 @@ public class MavenPackageImpl extends EPackageImpl implements MavenPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EClass getMappings() {
 		return mappingsEClass;
 	}
@@ -271,6 +278,7 @@ public class MavenPackageImpl extends EPackageImpl implements MavenPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EReference getMappings_Entries() {
 		return (EReference) mappingsEClass.getEStructuralFeatures().get(0);
 	}
@@ -281,6 +289,7 @@ public class MavenPackageImpl extends EPackageImpl implements MavenPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EReference getMappings_Rules() {
 		return (EReference) mappingsEClass.getEStructuralFeatures().get(1);
 	}
@@ -291,6 +300,7 @@ public class MavenPackageImpl extends EPackageImpl implements MavenPackage {
 	 * @generated
 	 */
 
+	@Override
 	public MavenFactory getMavenFactory() {
 		return (MavenFactory) getEFactoryInstance();
 	}
@@ -301,6 +311,7 @@ public class MavenPackageImpl extends EPackageImpl implements MavenPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EClass getMavenProvider() {
 		return mavenProviderEClass;
 	}
@@ -311,6 +322,7 @@ public class MavenPackageImpl extends EPackageImpl implements MavenPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EReference getMavenProvider_Mappings() {
 		return (EReference) mavenProviderEClass.getEStructuralFeatures().get(0);
 	}
@@ -320,6 +332,7 @@ public class MavenPackageImpl extends EPackageImpl implements MavenPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getMavenProvider_Scopes() {
 		return (EReference) mavenProviderEClass.getEStructuralFeatures().get(1);
 	}
@@ -329,6 +342,7 @@ public class MavenPackageImpl extends EPackageImpl implements MavenPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getMavenProvider_Transitive() {
 		return (EAttribute) mavenProviderEClass.getEStructuralFeatures().get(2);
 	}
@@ -338,6 +352,7 @@ public class MavenPackageImpl extends EPackageImpl implements MavenPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getScope() {
 		return scopeEClass;
 	}
@@ -347,6 +362,7 @@ public class MavenPackageImpl extends EPackageImpl implements MavenPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getScope_Exclude() {
 		return (EAttribute) scopeEClass.getEStructuralFeatures().get(1);
 	}
@@ -356,6 +372,7 @@ public class MavenPackageImpl extends EPackageImpl implements MavenPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getScope_Name() {
 		return (EAttribute) scopeEClass.getEStructuralFeatures().get(0);
 	}
@@ -365,6 +382,7 @@ public class MavenPackageImpl extends EPackageImpl implements MavenPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getScopes() {
 		return scopesEClass;
 	}
@@ -374,6 +392,7 @@ public class MavenPackageImpl extends EPackageImpl implements MavenPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getScopes_Scope() {
 		return (EReference) scopesEClass.getEStructuralFeatures().get(0);
 	}
@@ -453,7 +472,7 @@ public class MavenPackageImpl extends EPackageImpl implements MavenPackage {
 		initEClass(scopeEClass, Scope.class, "Scope", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getScope_Name(), ecorePackage.getEString(), "name", null, 1, 1, Scope.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
 				!IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getScope_Exclude(), ecorePackage.getEBoolean(), "exclude", "true", 1, 1, Scope.class, !IS_TRANSIENT, !IS_VOLATILE,
+		initEAttribute(getScope_Exclude(), ecorePackage.getEBoolean(), "exclude", "false", 1, 1, Scope.class, !IS_TRANSIENT, !IS_VOLATILE,
 				IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		// Create resource

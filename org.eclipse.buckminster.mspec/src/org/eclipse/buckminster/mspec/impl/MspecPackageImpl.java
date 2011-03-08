@@ -199,6 +199,7 @@ public class MspecPackageImpl extends EPackageImpl implements MspecPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EClass getDocumentRoot() {
 		return documentRootEClass;
 	}
@@ -209,6 +210,7 @@ public class MspecPackageImpl extends EPackageImpl implements MspecPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EReference getDocumentRoot_Mspec() {
 		return (EReference) documentRootEClass.getEStructuralFeatures().get(2);
 	}
@@ -219,6 +221,7 @@ public class MspecPackageImpl extends EPackageImpl implements MspecPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EReference getDocumentRoot_XMLNSPrefixMap() {
 		return (EReference) documentRootEClass.getEStructuralFeatures().get(0);
 	}
@@ -229,6 +232,7 @@ public class MspecPackageImpl extends EPackageImpl implements MspecPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EReference getDocumentRoot_XSISchemaLocation() {
 		return (EReference) documentRootEClass.getEStructuralFeatures().get(1);
 	}
@@ -239,6 +243,7 @@ public class MspecPackageImpl extends EPackageImpl implements MspecPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EClass getMaterializationDirective() {
 		return materializationDirectiveEClass;
 	}
@@ -249,6 +254,7 @@ public class MspecPackageImpl extends EPackageImpl implements MspecPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EAttribute getMaterializationDirective_ConflictResolution() {
 		return (EAttribute) materializationDirectiveEClass.getEStructuralFeatures().get(0);
 	}
@@ -259,6 +265,7 @@ public class MspecPackageImpl extends EPackageImpl implements MspecPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EReference getMaterializationDirective_Documentation() {
 		return (EReference) materializationDirectiveEClass.getEStructuralFeatures().get(4);
 	}
@@ -269,6 +276,7 @@ public class MspecPackageImpl extends EPackageImpl implements MspecPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EAttribute getMaterializationDirective_InstallLocation() {
 		return (EAttribute) materializationDirectiveEClass.getEStructuralFeatures().get(1);
 	}
@@ -279,6 +287,7 @@ public class MspecPackageImpl extends EPackageImpl implements MspecPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EAttribute getMaterializationDirective_Materializer() {
 		return (EAttribute) materializationDirectiveEClass.getEStructuralFeatures().get(2);
 	}
@@ -289,6 +298,7 @@ public class MspecPackageImpl extends EPackageImpl implements MspecPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EAttribute getMaterializationDirective_WorkspaceLocation() {
 		return (EAttribute) materializationDirectiveEClass.getEStructuralFeatures().get(3);
 	}
@@ -299,6 +309,7 @@ public class MspecPackageImpl extends EPackageImpl implements MspecPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EClass getMaterializationNode() {
 		return materializationNodeEClass;
 	}
@@ -309,6 +320,7 @@ public class MspecPackageImpl extends EPackageImpl implements MspecPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EAttribute getMaterializationNode_BindingNamePattern() {
 		return (EAttribute) materializationNodeEClass.getEStructuralFeatures().get(5);
 	}
@@ -319,6 +331,7 @@ public class MspecPackageImpl extends EPackageImpl implements MspecPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EAttribute getMaterializationNode_BindingNameReplacement() {
 		return (EAttribute) materializationNodeEClass.getEStructuralFeatures().get(6);
 	}
@@ -329,6 +342,7 @@ public class MspecPackageImpl extends EPackageImpl implements MspecPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EAttribute getMaterializationNode_ComponentType() {
 		return (EAttribute) materializationNodeEClass.getEStructuralFeatures().get(2);
 	}
@@ -339,6 +353,7 @@ public class MspecPackageImpl extends EPackageImpl implements MspecPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EAttribute getMaterializationNode_Exclude() {
 		return (EAttribute) materializationNodeEClass.getEStructuralFeatures().get(4);
 	}
@@ -349,6 +364,7 @@ public class MspecPackageImpl extends EPackageImpl implements MspecPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EAttribute getMaterializationNode_Filter() {
 		return (EAttribute) materializationNodeEClass.getEStructuralFeatures().get(8);
 	}
@@ -359,6 +375,7 @@ public class MspecPackageImpl extends EPackageImpl implements MspecPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EAttribute getMaterializationNode_LeafArtifact() {
 		return (EAttribute) materializationNodeEClass.getEStructuralFeatures().get(1);
 	}
@@ -369,6 +386,7 @@ public class MspecPackageImpl extends EPackageImpl implements MspecPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EAttribute getMaterializationNode_NamePattern() {
 		return (EAttribute) materializationNodeEClass.getEStructuralFeatures().get(0);
 	}
@@ -379,6 +397,7 @@ public class MspecPackageImpl extends EPackageImpl implements MspecPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EAttribute getMaterializationNode_ResourcePath() {
 		return (EAttribute) materializationNodeEClass.getEStructuralFeatures().get(3);
 	}
@@ -389,6 +408,7 @@ public class MspecPackageImpl extends EPackageImpl implements MspecPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EReference getMaterializationNode_Unpack() {
 		return (EReference) materializationNodeEClass.getEStructuralFeatures().get(7);
 	}
@@ -399,6 +419,7 @@ public class MspecPackageImpl extends EPackageImpl implements MspecPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EClass getMaterializationSpec() {
 		return materializationSpecEClass;
 	}
@@ -409,6 +430,7 @@ public class MspecPackageImpl extends EPackageImpl implements MspecPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EAttribute getMaterializationSpec_MaxParallelJobs() {
 		return (EAttribute) materializationSpecEClass.getEStructuralFeatures().get(4);
 	}
@@ -419,6 +441,7 @@ public class MspecPackageImpl extends EPackageImpl implements MspecPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EReference getMaterializationSpec_MspecNodes() {
 		return (EReference) materializationSpecEClass.getEStructuralFeatures().get(0);
 	}
@@ -429,6 +452,7 @@ public class MspecPackageImpl extends EPackageImpl implements MspecPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EAttribute getMaterializationSpec_Name() {
 		return (EAttribute) materializationSpecEClass.getEStructuralFeatures().get(1);
 	}
@@ -439,6 +463,7 @@ public class MspecPackageImpl extends EPackageImpl implements MspecPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EAttribute getMaterializationSpec_ShortDesc() {
 		return (EAttribute) materializationSpecEClass.getEStructuralFeatures().get(2);
 	}
@@ -449,6 +474,7 @@ public class MspecPackageImpl extends EPackageImpl implements MspecPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EAttribute getMaterializationSpec_Url() {
 		return (EAttribute) materializationSpecEClass.getEStructuralFeatures().get(3);
 	}
@@ -459,6 +485,7 @@ public class MspecPackageImpl extends EPackageImpl implements MspecPackage {
 	 * @generated
 	 */
 
+	@Override
 	public MspecFactory getMspecFactory() {
 		return (MspecFactory) getEFactoryInstance();
 	}
@@ -469,6 +496,7 @@ public class MspecPackageImpl extends EPackageImpl implements MspecPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EClass getUnpack() {
 		return unpackEClass;
 	}
@@ -479,6 +507,7 @@ public class MspecPackageImpl extends EPackageImpl implements MspecPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EAttribute getUnpack_Expand() {
 		return (EAttribute) unpackEClass.getEStructuralFeatures().get(0);
 	}
@@ -489,6 +518,7 @@ public class MspecPackageImpl extends EPackageImpl implements MspecPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EAttribute getUnpack_Suffix() {
 		return (EAttribute) unpackEClass.getEStructuralFeatures().get(1);
 	}

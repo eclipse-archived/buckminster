@@ -261,6 +261,7 @@ public class BranchPointImpl extends EObjectImpl implements BranchPoint {
 	 * @generated
 	 */
 
+	@Override
 	public String getName() {
 		return name;
 	}
@@ -271,6 +272,7 @@ public class BranchPointImpl extends EObjectImpl implements BranchPoint {
 	 * @generated
 	 */
 
+	@Override
 	public ConflictPolicy getOnMergeConflict() {
 		return onMergeConflict;
 	}
@@ -281,6 +283,7 @@ public class BranchPointImpl extends EObjectImpl implements BranchPoint {
 	 * @generated
 	 */
 
+	@Override
 	public String getRevision() {
 		return revision;
 	}
@@ -291,6 +294,7 @@ public class BranchPointImpl extends EObjectImpl implements BranchPoint {
 	 * @generated
 	 */
 
+	@Override
 	public String getTag() {
 		return tag;
 	}
@@ -301,6 +305,7 @@ public class BranchPointImpl extends EObjectImpl implements BranchPoint {
 	 * @generated
 	 */
 
+	@Override
 	public Date getTimestamp() {
 		return timestamp;
 	}
@@ -311,6 +316,7 @@ public class BranchPointImpl extends EObjectImpl implements BranchPoint {
 	 * @generated
 	 */
 
+	@Override
 	public void setName(String newName) {
 		String oldName = name;
 		name = newName;
@@ -324,6 +330,7 @@ public class BranchPointImpl extends EObjectImpl implements BranchPoint {
 	 * @generated
 	 */
 
+	@Override
 	public void setOnMergeConflict(ConflictPolicy newOnMergeConflict) {
 		ConflictPolicy oldOnMergeConflict = onMergeConflict;
 		onMergeConflict = newOnMergeConflict == null ? ON_MERGE_CONFLICT_EDEFAULT : newOnMergeConflict;
@@ -337,6 +344,7 @@ public class BranchPointImpl extends EObjectImpl implements BranchPoint {
 	 * @generated
 	 */
 
+	@Override
 	public void setRevision(String newRevision) {
 		String oldRevision = revision;
 		revision = newRevision;
@@ -350,6 +358,7 @@ public class BranchPointImpl extends EObjectImpl implements BranchPoint {
 	 * @generated
 	 */
 
+	@Override
 	public void setTag(String newTag) {
 		String oldTag = tag;
 		tag = newTag;
@@ -363,6 +372,7 @@ public class BranchPointImpl extends EObjectImpl implements BranchPoint {
 	 * @generated
 	 */
 
+	@Override
 	public void setTimestamp(Date newTimestamp) {
 		Date oldTimestamp = timestamp;
 		timestamp = newTimestamp;

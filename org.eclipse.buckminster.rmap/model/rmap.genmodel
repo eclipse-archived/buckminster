@@ -3,7 +3,7 @@
     xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
     xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/org.eclipse.buckminster.rmap/src"
     modelPluginID="org.eclipse.buckminster.rmap" modelName="Rmap" importerID="org.eclipse.emf.importer.ecore"
-    complianceLevel="5.0" copyrightFields="false" language="" usedGenPackages="../../org.eclipse.buckminster.model.common/model/common.genmodel#//common">
+    complianceLevel="6.0" copyrightFields="false" language="" usedGenPackages="../../org.eclipse.buckminster.model.common/model/common.genmodel#//common">
   <genAnnotations source="http://www.eclipse.org/emf/2002/GenModel/exporter/org.eclipse.xsd.ecore.exporter">
     <genAnnotations source="selectedPackages">
       <details key="http://www.eclipse.org/buckminster/RMap-1.0" value="rmap.xsd"/>
@@ -30,6 +30,7 @@
       <genEnumLiterals ecoreEnumLiteral="rmap.ecore#//ConflictPolicy/fail"/>
     </genEnums>
     <genDataTypes ecoreDataType="rmap.ecore#//TransformMismatchException"/>
+    <genDataTypes ecoreDataType="rmap.ecore#//IComponentReader"/>
     <genClasses image="false" ecoreClass="rmap.ecore#//BranchPoint">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rmap.ecore#//BranchPoint/name"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rmap.ecore#//BranchPoint/timestamp"/>
@@ -54,6 +55,7 @@
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference rmap.ecore#//DocumentRoot/locators"/>
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference rmap.ecore#//DocumentRoot/matcher"/>
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference rmap.ecore#//DocumentRoot/redirects"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference rmap.ecore#//DocumentRoot/providers"/>
     </genClasses>
     <genClasses image="false" ecoreClass="rmap.ecore#//Locator">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference rmap.ecore#//Locator/searchPath"/>
@@ -61,26 +63,37 @@
     </genClasses>
     <genClasses image="false" ecoreClass="rmap.ecore#//Matcher">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rmap.ecore#//Matcher/pattern"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rmap.ecore#//Matcher/componentTypesAttr"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rmap.ecore#//Matcher/componentTypes"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rmap.ecore#//Matcher/resolutionFilter"/>
       <genOperations ecoreOperation="rmap.ecore#//Matcher/matches">
         <genParameters ecoreParameter="rmap.ecore#//Matcher/matches/componentName"/>
+        <genParameters ecoreParameter="rmap.ecore#//Matcher/matches/properties"/>
       </genOperations>
+      <genOperations ecoreOperation="rmap.ecore#//Matcher/getResourceMap"/>
     </genClasses>
     <genClasses image="false" ecoreClass="rmap.ecore#//Provider" labelFeature="#//rmap/Provider/readerType">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rmap.ecore#//Provider/componentTypes"/>
-      <genFeatures property="None" notify="false" createChild="false" propertyCategory=""
-          ecoreFeature="ecore:EAttribute rmap.ecore#//Provider/componentTypesAttr"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rmap.ecore#//Provider/readerType"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rmap.ecore#//Provider/source"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rmap.ecore#//Provider/mutable"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rmap.ecore#//Provider/resolutionFilter"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference rmap.ecore#//Provider/repository"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference rmap.ecore#//Provider/versionConverter"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference rmap.ecore#//Provider/URI"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference rmap.ecore#//Provider/matcher"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference rmap.ecore#//Provider/documentation"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference rmap.ecore#//Provider/repository"/>
       <genOperations ecoreOperation="rmap.ecore#//Provider/getURI">
         <genParameters ecoreParameter="rmap.ecore#//Provider/getURI/properties"/>
       </genOperations>
+      <genOperations ecoreOperation="rmap.ecore#//Provider/getDelegationMap">
+        <genParameters ecoreParameter="rmap.ecore#//Provider/getDelegationMap/reader"/>
+        <genParameters ecoreParameter="rmap.ecore#//Provider/getDelegationMap/problemCollector"/>
+        <genParameters ecoreParameter="rmap.ecore#//Provider/getDelegationMap/queryHints"/>
+        <genParameters ecoreParameter="rmap.ecore#//Provider/getDelegationMap/monitor"/>
+      </genOperations>
+      <genOperations ecoreOperation="rmap.ecore#//Provider/getProperties">
+        <genParameters ecoreParameter="rmap.ecore#//Provider/getProperties/properties"/>
+      </genOperations>
+      <genOperations ecoreOperation="rmap.ecore#//Provider/hasDelegationMap"/>
     </genClasses>
     <genClasses image="false" ecoreClass="rmap.ecore#//Redirect">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rmap.ecore#//Redirect/redirectTo"/>
@@ -96,13 +109,13 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference rmap.ecore#//Repository/documentation"/>
     </genClasses>
     <genClasses image="false" ecoreClass="rmap.ecore#//ResourceMap">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference rmap.ecore#//ResourceMap/documentation"/>
       <genFeatures property="None" notify="false" createChild="false" propertyCategory=""
           ecoreFeature="ecore:EAttribute rmap.ecore#//ResourceMap/matcherGroup"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference rmap.ecore#//ResourceMap/repositories"/>
       <genFeatures property="None" children="true" createChild="true" propertyCategory=""
           ecoreFeature="ecore:EReference rmap.ecore#//ResourceMap/matchers"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference rmap.ecore#//ResourceMap/searchPaths"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference rmap.ecore#//ResourceMap/documentation"/>
       <genOperations ecoreOperation="rmap.ecore#//ResourceMap/getContextURL"/>
     </genClasses>
     <genClasses image="false" ecoreClass="rmap.ecore#//SearchPath">

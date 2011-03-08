@@ -149,6 +149,7 @@ public class LocatorImpl extends MatcherImpl implements Locator {
 	 * @generated
 	 */
 
+	@Override
 	public SearchPath getSearchPath() {
 		return searchPath;
 	}
@@ -159,6 +160,7 @@ public class LocatorImpl extends MatcherImpl implements Locator {
 	 * @generated
 	 */
 
+	@Override
 	public boolean isFailOnError() {
 		return failOnError;
 	}
@@ -169,6 +171,7 @@ public class LocatorImpl extends MatcherImpl implements Locator {
 	 * @generated
 	 */
 
+	@Override
 	public void setFailOnError(boolean newFailOnError) {
 		boolean oldFailOnError = failOnError;
 		failOnError = newFailOnError;
@@ -182,6 +185,7 @@ public class LocatorImpl extends MatcherImpl implements Locator {
 	 * @generated
 	 */
 
+	@Override
 	public void setSearchPath(SearchPath newSearchPath) {
 		SearchPath oldSearchPath = searchPath;
 		searchPath = newSearchPath;

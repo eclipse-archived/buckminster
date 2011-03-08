@@ -253,6 +253,7 @@ public class SplitImpl extends ValueFilterImpl implements Split {
 	 * @generated NOT
 	 */
 
+	@Override
 	public synchronized Pattern getCompiledPattern() {
 		if (compiledPattern == null) {
 			String tmp = getPattern();
@@ -272,6 +273,7 @@ public class SplitImpl extends ValueFilterImpl implements Split {
 	 * @generated
 	 */
 
+	@Override
 	public int getLimit() {
 		return limit;
 	}
@@ -282,6 +284,7 @@ public class SplitImpl extends ValueFilterImpl implements Split {
 	 * @generated
 	 */
 
+	@Override
 	public String getPattern() {
 		return pattern;
 	}
@@ -292,6 +295,7 @@ public class SplitImpl extends ValueFilterImpl implements Split {
 	 * @generated
 	 */
 
+	@Override
 	public SplitType getStyle() {
 		return style;
 	}
@@ -307,6 +311,7 @@ public class SplitImpl extends ValueFilterImpl implements Split {
 	 * @generated
 	 */
 
+	@Override
 	public boolean isSetStyle() {
 		return styleESet;
 	}
@@ -317,6 +322,7 @@ public class SplitImpl extends ValueFilterImpl implements Split {
 	 * @generated
 	 */
 
+	@Override
 	public void setLimit(int newLimit) {
 		int oldLimit = limit;
 		limit = newLimit;
@@ -324,6 +330,7 @@ public class SplitImpl extends ValueFilterImpl implements Split {
 			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SPLIT__LIMIT, oldLimit, limit));
 	}
 
+	@Override
 	public synchronized void setPattern(String newPattern) {
 		setPatternGen(newPattern);
 		compiledPattern = null;
@@ -341,6 +348,7 @@ public class SplitImpl extends ValueFilterImpl implements Split {
 			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SPLIT__PATTERN, oldPattern, pattern));
 	}
 
+	@Override
 	public void setStyle(SplitType newStyle) {
 		setStyleGen(newStyle);
 		compiledPattern = null;
@@ -392,6 +400,7 @@ public class SplitImpl extends ValueFilterImpl implements Split {
 	 * @generated
 	 */
 
+	@Override
 	public void unsetStyle() {
 		SplitType oldStyle = style;
 		boolean oldStyleESet = styleESet;

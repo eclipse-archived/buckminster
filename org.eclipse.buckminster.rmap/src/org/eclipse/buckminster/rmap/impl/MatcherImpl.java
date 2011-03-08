@@ -277,6 +277,7 @@ public abstract class MatcherImpl extends EObjectImpl implements Matcher {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<String> getComponentTypes() {
 		if (componentTypes == null) {
 			componentTypes = new EDataTypeUniqueEList<String>(String.class, this, RmapPackage.MATCHER__COMPONENT_TYPES);
@@ -289,6 +290,7 @@ public abstract class MatcherImpl extends EObjectImpl implements Matcher {
 	 * 
 	 * @generated NOT
 	 */
+	@Override
 	public String getComponentTypesAttr() {
 		return getComponentTypesAttr(this);
 	}
@@ -299,6 +301,7 @@ public abstract class MatcherImpl extends EObjectImpl implements Matcher {
 	 * @generated
 	 */
 
+	@Override
 	public Pattern getPattern() {
 		return pattern;
 	}
@@ -308,6 +311,7 @@ public abstract class MatcherImpl extends EObjectImpl implements Matcher {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public Filter getResolutionFilter() {
 		return resolutionFilter;
 	}
@@ -317,6 +321,7 @@ public abstract class MatcherImpl extends EObjectImpl implements Matcher {
 	 * 
 	 * @generated NOT
 	 */
+	@Override
 	public ResourceMap getResourceMap() {
 		return (ResourceMap) eContainer();
 	}
@@ -326,6 +331,7 @@ public abstract class MatcherImpl extends EObjectImpl implements Matcher {
 	 * 
 	 * @generated NOT
 	 */
+	@Override
 	public boolean matches(ComponentName componentName, Map<String, String> properties) {
 		return matches(this, componentName, properties);
 	}
@@ -335,6 +341,7 @@ public abstract class MatcherImpl extends EObjectImpl implements Matcher {
 	 * 
 	 * @generated NOT
 	 */
+	@Override
 	public void setComponentTypesAttr(String newComponentTypesAttr) {
 		setComponentTypesAttr(this, newComponentTypesAttr);
 	}
@@ -345,6 +352,7 @@ public abstract class MatcherImpl extends EObjectImpl implements Matcher {
 	 * @generated
 	 */
 
+	@Override
 	public void setPattern(Pattern newPattern) {
 		Pattern oldPattern = pattern;
 		pattern = newPattern;
@@ -357,6 +365,7 @@ public abstract class MatcherImpl extends EObjectImpl implements Matcher {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setResolutionFilter(Filter newResolutionFilter) {
 		Filter oldResolutionFilter = resolutionFilter;
 		resolutionFilter = newResolutionFilter;

@@ -228,6 +228,7 @@ public enum ConflictResolution implements Enumerator {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getLiteral() {
 		return literal;
 	}
@@ -237,6 +238,7 @@ public enum ConflictResolution implements Enumerator {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getName() {
 		return name;
 	}
@@ -246,6 +248,7 @@ public enum ConflictResolution implements Enumerator {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public int getValue() {
 		return value;
 	}

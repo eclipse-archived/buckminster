@@ -156,6 +156,7 @@ public class MapEntryImpl extends GroupAndArtifactImpl implements MapEntry {
 	 * @generated
 	 */
 
+	@Override
 	public EList<GroupAndArtifact> getAliases() {
 		if (aliases == null) {
 			aliases = new EObjectEList<GroupAndArtifact>(GroupAndArtifact.class, this, MavenPackage.MAP_ENTRY__ALIASES);
@@ -169,6 +170,7 @@ public class MapEntryImpl extends GroupAndArtifactImpl implements MapEntry {
 	 * @generated
 	 */
 
+	@Override
 	public String getName() {
 		return name;
 	}
@@ -179,6 +181,7 @@ public class MapEntryImpl extends GroupAndArtifactImpl implements MapEntry {
 	 * @generated
 	 */
 
+	@Override
 	public void setName(String newName) {
 		String oldName = name;
 		name = newName;

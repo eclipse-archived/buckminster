@@ -60,7 +60,7 @@ public class ScopeImpl extends EObjectImpl implements Scope {
 	 * @generated
 	 * @ordered
 	 */
-	protected static final boolean EXCLUDE_EDEFAULT = true;
+	protected static final boolean EXCLUDE_EDEFAULT = false;
 
 	/**
 	 * The cached value of the '{@link #isExclude() <em>Exclude</em>}'
@@ -154,6 +154,7 @@ public class ScopeImpl extends EObjectImpl implements Scope {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getName() {
 		return name;
 	}
@@ -163,6 +164,7 @@ public class ScopeImpl extends EObjectImpl implements Scope {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public boolean isExclude() {
 		return exclude;
 	}
@@ -172,6 +174,7 @@ public class ScopeImpl extends EObjectImpl implements Scope {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setExclude(boolean newExclude) {
 		boolean oldExclude = exclude;
 		exclude = newExclude;
@@ -184,6 +187,7 @@ public class ScopeImpl extends EObjectImpl implements Scope {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setName(String newName) {
 		String oldName = name;
 		name = newName;

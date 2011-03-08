@@ -234,6 +234,7 @@ public class MatchImpl extends EObjectImpl implements Match {
 	 * @generated NOT
 	 */
 
+	@Override
 	public synchronized Pattern getCompiledPattern() {
 		if (compiledPattern == null) {
 			String tmp = getPattern();
@@ -253,6 +254,7 @@ public class MatchImpl extends EObjectImpl implements Match {
 	 * @generated
 	 */
 
+	@Override
 	public String getPattern() {
 		return pattern;
 	}
@@ -263,6 +265,7 @@ public class MatchImpl extends EObjectImpl implements Match {
 	 * @generated
 	 */
 
+	@Override
 	public String getReplacement() {
 		return replacement;
 	}
@@ -273,6 +276,7 @@ public class MatchImpl extends EObjectImpl implements Match {
 	 * @generated
 	 */
 
+	@Override
 	public boolean isQuotePattern() {
 		return quotePattern;
 	}
@@ -283,6 +287,7 @@ public class MatchImpl extends EObjectImpl implements Match {
 	 * @generated
 	 */
 
+	@Override
 	public boolean isSetQuotePattern() {
 		return quotePatternESet;
 	}
@@ -293,6 +298,7 @@ public class MatchImpl extends EObjectImpl implements Match {
 	 * @generated NOT
 	 */
 
+	@Override
 	public String match(String resolved) {
 		Matcher matcher = getCompiledPattern().matcher(resolved);
 		if (matcher.find()) {
@@ -306,6 +312,7 @@ public class MatchImpl extends EObjectImpl implements Match {
 		return null;
 	}
 
+	@Override
 	public synchronized void setPattern(String newPattern) {
 		setPatternGen(newPattern);
 		compiledPattern = null;
@@ -323,6 +330,7 @@ public class MatchImpl extends EObjectImpl implements Match {
 			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.MATCH__PATTERN, oldPattern, pattern));
 	}
 
+	@Override
 	public synchronized void setQuotePattern(boolean newQuotePattern) {
 		setQuotePatternGen(newQuotePattern);
 		compiledPattern = null;
@@ -349,6 +357,7 @@ public class MatchImpl extends EObjectImpl implements Match {
 	 * @generated
 	 */
 
+	@Override
 	public void setReplacement(String newReplacement) {
 		String oldReplacement = replacement;
 		replacement = newReplacement;
@@ -388,6 +397,7 @@ public class MatchImpl extends EObjectImpl implements Match {
 	 * @generated
 	 */
 
+	@Override
 	public void unsetQuotePattern() {
 		boolean oldQuotePattern = quotePattern;
 		boolean oldQuotePatternESet = quotePatternESet;

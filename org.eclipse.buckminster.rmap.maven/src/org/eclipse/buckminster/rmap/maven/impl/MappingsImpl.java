@@ -168,6 +168,7 @@ public class MappingsImpl extends EObjectImpl implements Mappings {
 	 * @generated
 	 */
 
+	@Override
 	public EList<MapEntry> getEntries() {
 		if (entries == null) {
 			entries = new EObjectContainmentEList<MapEntry>(MapEntry.class, this, MavenPackage.MAPPINGS__ENTRIES);
@@ -181,6 +182,7 @@ public class MappingsImpl extends EObjectImpl implements Mappings {
 	 * @generated
 	 */
 
+	@Override
 	public EList<Transform> getRules() {
 		if (rules == null) {
 			rules = new EObjectContainmentEList<Transform>(Transform.class, this, MavenPackage.MAPPINGS__RULES);

@@ -310,6 +310,7 @@ public class ReplaceImpl extends ValueFilterImpl implements Replace {
 	 * @generated NOT
 	 */
 
+	@Override
 	public synchronized Pattern getCompiledPattern() {
 		if (compiledPattern == null) {
 			String tmp = getPattern();
@@ -329,6 +330,7 @@ public class ReplaceImpl extends ValueFilterImpl implements Replace {
 	 * @generated
 	 */
 
+	@Override
 	public EList<Match> getMatches() {
 		if (matches == null) {
 			matches = new EObjectContainmentEList<Match>(Match.class, this, CommonPackage.REPLACE__MATCHES);
@@ -342,6 +344,7 @@ public class ReplaceImpl extends ValueFilterImpl implements Replace {
 	 * @generated
 	 */
 
+	@Override
 	public String getPattern() {
 		return pattern;
 	}
@@ -352,6 +355,7 @@ public class ReplaceImpl extends ValueFilterImpl implements Replace {
 	 * @generated
 	 */
 
+	@Override
 	public String getReplacement() {
 		return replacement;
 	}
@@ -362,6 +366,7 @@ public class ReplaceImpl extends ValueFilterImpl implements Replace {
 	 * @generated
 	 */
 
+	@Override
 	public boolean isQuotePattern() {
 		return quotePattern;
 	}
@@ -372,10 +377,12 @@ public class ReplaceImpl extends ValueFilterImpl implements Replace {
 	 * @generated
 	 */
 
+	@Override
 	public boolean isSetQuotePattern() {
 		return quotePatternESet;
 	}
 
+	@Override
 	public synchronized void setPattern(String newPattern) {
 		setPatternGen(newPattern);
 		compiledPattern = null;
@@ -393,6 +400,7 @@ public class ReplaceImpl extends ValueFilterImpl implements Replace {
 			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.REPLACE__PATTERN, oldPattern, pattern));
 	}
 
+	@Override
 	public synchronized void setQuotePattern(boolean newQuotePattern) {
 		setQuotePatternGen(newQuotePattern);
 		compiledPattern = null;
@@ -419,6 +427,7 @@ public class ReplaceImpl extends ValueFilterImpl implements Replace {
 	 * @generated
 	 */
 
+	@Override
 	public void setReplacement(String newReplacement) {
 		String oldReplacement = replacement;
 		replacement = newReplacement;
@@ -458,6 +467,7 @@ public class ReplaceImpl extends ValueFilterImpl implements Replace {
 	 * @generated
 	 */
 
+	@Override
 	public void unsetQuotePattern() {
 		boolean oldQuotePattern = quotePattern;
 		boolean oldQuotePatternESet = quotePatternESet;

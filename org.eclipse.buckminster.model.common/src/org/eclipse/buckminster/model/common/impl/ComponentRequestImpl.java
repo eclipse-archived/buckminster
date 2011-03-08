@@ -95,6 +95,7 @@ public class ComponentRequestImpl extends ComponentNameImpl implements Component
 	 * @generated NOT
 	 */
 
+	@Override
 	public void appendViewName(StringBuilder result) {
 		result.append(getId());
 		String componentType = getType();
@@ -169,6 +170,7 @@ public class ComponentRequestImpl extends ComponentNameImpl implements Component
 	 * @generated NOT
 	 */
 
+	@Override
 	public boolean designates(ComponentIdentifier cid) {
 		return Trivial.equalsAllowNull(getId(), cid.getId()) && (getType() == null || getType().equals(cid.getType()))
 				&& (getRange() == null || getRange().isIncluded(cid.getVersion()));
@@ -264,6 +266,7 @@ public class ComponentRequestImpl extends ComponentNameImpl implements Component
 	 * @generated
 	 */
 
+	@Override
 	public Filter getFilter() {
 		return filter;
 	}
@@ -282,6 +285,7 @@ public class ComponentRequestImpl extends ComponentNameImpl implements Component
 	 * @generated
 	 */
 
+	@Override
 	public VersionRange getRange() {
 		return range;
 	}
@@ -291,6 +295,7 @@ public class ComponentRequestImpl extends ComponentNameImpl implements Component
 	 * 
 	 * @generated NOT
 	 */
+	@Override
 	public String getViewName() {
 		StringBuilder bld = new StringBuilder();
 		appendViewName(bld);
@@ -310,6 +315,7 @@ public class ComponentRequestImpl extends ComponentNameImpl implements Component
 	 * @generated NOT
 	 */
 
+	@Override
 	public boolean isEnabled(Map<String, ? extends Object> properties) {
 		return filter == null || filter.matchCase(properties);
 	}
@@ -320,6 +326,7 @@ public class ComponentRequestImpl extends ComponentNameImpl implements Component
 	 * @generated NOT
 	 */
 
+	@Override
 	public boolean isOptional() {
 		return filter != null && filter.toString().contains(CommonConstants.FILTER_ECLIPSE_P2_OPTIONAL);
 	}
@@ -329,6 +336,7 @@ public class ComponentRequestImpl extends ComponentNameImpl implements Component
 	 * 
 	 * @generated NOT
 	 */
+	@Override
 	public ComponentRequest merge(ComponentRequest request) {
 		if (!Trivial.equalsAllowNull(getId(), request.getId()))
 			throw new ComponentRequestConflictException(this, request);
@@ -440,6 +448,7 @@ public class ComponentRequestImpl extends ComponentNameImpl implements Component
 	 * @generated
 	 */
 
+	@Override
 	public void setFilter(Filter newFilter) {
 		Filter oldFilter = filter;
 		filter = newFilter;
@@ -453,6 +462,7 @@ public class ComponentRequestImpl extends ComponentNameImpl implements Component
 	 * @generated
 	 */
 
+	@Override
 	public void setRange(VersionRange newRange) {
 		VersionRange oldRange = range;
 		range = newRange;

@@ -197,6 +197,7 @@ public class URIMatcherImpl extends RxAssemblyImpl implements URIMatcher {
 	 * @generated
 	 */
 
+	@Override
 	public String getBase() {
 		return base;
 	}
@@ -207,6 +208,7 @@ public class URIMatcherImpl extends RxAssemblyImpl implements URIMatcher {
 	 * @generated NOT
 	 */
 
+	@Override
 	public String getComponentType() {
 		Provider provider = (Provider) eContainer();
 		if (provider == null)
@@ -221,6 +223,7 @@ public class URIMatcherImpl extends RxAssemblyImpl implements URIMatcher {
 	 * @generated NOT
 	 */
 
+	@Override
 	public IVersionFormat getVersionFormat() {
 		return versionFormat;
 	}
@@ -231,6 +234,7 @@ public class URIMatcherImpl extends RxAssemblyImpl implements URIMatcher {
 	 * @generated
 	 */
 
+	@Override
 	public String getVersionType() {
 		return versionType;
 	}
@@ -241,6 +245,7 @@ public class URIMatcherImpl extends RxAssemblyImpl implements URIMatcher {
 	 * @generated
 	 */
 
+	@Override
 	public void setBase(String newBase) {
 		String oldBase = base;
 		base = newBase;
@@ -254,6 +259,7 @@ public class URIMatcherImpl extends RxAssemblyImpl implements URIMatcher {
 	 * @generated
 	 */
 
+	@Override
 	public void setVersionFormat(IVersionFormat newVersionFormat) {
 		IVersionFormat oldVersionFormat = versionFormat;
 		versionFormat = newVersionFormat;
@@ -267,6 +273,7 @@ public class URIMatcherImpl extends RxAssemblyImpl implements URIMatcher {
 	 * @generated
 	 */
 
+	@Override
 	public void setVersionType(String newVersionType) {
 		String oldVersionType = versionType;
 		versionType = newVersionType;

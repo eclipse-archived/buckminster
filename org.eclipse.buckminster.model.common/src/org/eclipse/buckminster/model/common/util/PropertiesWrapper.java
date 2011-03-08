@@ -36,14 +36,17 @@ abstract class PropertiesWrapper extends AbstractMap<String, String> implements 
 			this.key = key;
 		}
 
+		@Override
 		public String getKey() {
 			return key;
 		}
 
+		@Override
 		public String getValue() {
 			return getProperties().getProperty(key);
 		}
 
+		@Override
 		public String setValue(String value) {
 			return (String) getProperties().setProperty(key, value);
 		}
@@ -52,6 +55,7 @@ abstract class PropertiesWrapper extends AbstractMap<String, String> implements 
 	abstract class BackedIterator<X> implements Iterator<X> {
 		private final Enumeration<?> names = getProperties().propertyNames();
 
+		@Override
 		public boolean hasNext() {
 			return names.hasMoreElements();
 		}
@@ -60,6 +64,7 @@ abstract class PropertiesWrapper extends AbstractMap<String, String> implements 
 			return (String) names.nextElement();
 		}
 
+		@Override
 		public void remove() {
 			throw new UnsupportedOperationException();
 		}
@@ -78,6 +83,7 @@ abstract class PropertiesWrapper extends AbstractMap<String, String> implements 
 			public Iterator<Entry<String, String>> iterator() {
 				return new BackedIterator<Entry<String, String>>() {
 
+					@Override
 					public Entry<String, String> next() {
 						return new BackedEntry(this.nextKey());
 					}
@@ -96,10 +102,12 @@ abstract class PropertiesWrapper extends AbstractMap<String, String> implements 
 		return (key instanceof String) ? getProperties().getProperty((String) key) : null;
 	}
 
+	@Override
 	public Set<String> immutableKeySet() {
 		return this.keySet();
 	}
 
+	@Override
 	public boolean isMutable(String key) {
 		return true;
 	}
@@ -112,6 +120,7 @@ abstract class PropertiesWrapper extends AbstractMap<String, String> implements 
 			public Iterator<String> iterator() {
 				return new BackedIterator<String>() {
 
+					@Override
 					public String next() {
 						return this.nextKey();
 					}
@@ -125,10 +134,12 @@ abstract class PropertiesWrapper extends AbstractMap<String, String> implements 
 		};
 	}
 
+	@Override
 	public Set<String> mutableKeySet() {
 		return this.keySet();
 	}
 
+	@Override
 	@SuppressWarnings("unchecked")
 	public Set<String> overlayKeySet() {
 		return (Set<String>) (Set<?>) getProperties().keySet();
@@ -139,12 +150,14 @@ abstract class PropertiesWrapper extends AbstractMap<String, String> implements 
 		return (String) getProperties().setProperty(key, value);
 	}
 
+	@Override
 	public String put(String key, String value, boolean mutable) {
 		if (!mutable)
 			throw new UnsupportedOperationException("put immutable"); //$NON-NLS-1$
 		return this.put(key, value);
 	}
 
+	@Override
 	public void setMutable(String key, boolean mutable) throws UnsupportedOperationException {
 		if (!mutable)
 			throw new UnsupportedOperationException("setMutable"); //$NON-NLS-1$
@@ -167,10 +180,12 @@ abstract class PropertiesWrapper extends AbstractMap<String, String> implements 
 		return sz;
 	}
 
+	@Override
 	public void store(OutputStream out, String comments) throws IOException {
 		BMProperties.store(this, out, comments);
 	}
 
+	@Override
 	public boolean supportsMutability() {
 		return false;
 	}
@@ -183,6 +198,7 @@ abstract class PropertiesWrapper extends AbstractMap<String, String> implements 
 			public Iterator<String> iterator() {
 				return new BackedIterator<String>() {
 
+					@Override
 					public String next() {
 						return getProperties().getProperty(this.nextKey());
 					}
