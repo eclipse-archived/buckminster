@@ -28,6 +28,7 @@ import org.eclipse.buckminster.pde.cspecgen.CSpecGenerator;
 import org.eclipse.buckminster.pde.internal.EclipsePlatformReaderType;
 import org.eclipse.buckminster.pde.tasks.VersionConsolidator;
 import org.eclipse.buckminster.runtime.MonitorUtils;
+import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.equinox.internal.p2.publisher.eclipse.IProductDescriptor;
@@ -227,7 +228,7 @@ public abstract class CSpecFromFeature extends CSpecGenerator {
 			}
 		}
 
-		String licenseFeatureID = feature.getLicenseFeatureID();
+		String licenseFeatureID = Trivial.trim(feature.getLicenseFeatureID());
 		if (licenseFeatureID != null) {
 			VersionRange range = VersionHelper.exactRange(Version.create(feature.getLicenseFeatureVersion()));
 			ComponentRequestBuilder dep = new ComponentRequestBuilder();
