@@ -34,8 +34,8 @@ public class ComplianceLevelHandler extends BasicPreferenceHandler {
 		if (options.isEmpty())
 			throw new IllegalArgumentException("Unsupported compliance: " + compliance); //$NON-NLS-1$
 
-		IEclipsePreferences prefs = new InstanceScope().getNode(JavaCore.PLUGIN_ID);
-		IEclipsePreferences defaults = new DefaultScope().getNode(JavaCore.PLUGIN_ID);
+		IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(JavaCore.PLUGIN_ID);
+		IEclipsePreferences defaults = DefaultScope.INSTANCE.getNode(JavaCore.PLUGIN_ID);
 		for (Map.Entry<String, String> entry : options.entrySet()) {
 			String key = entry.getKey();
 			String value = entry.getValue();
