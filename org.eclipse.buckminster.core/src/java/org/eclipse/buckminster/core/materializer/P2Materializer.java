@@ -445,6 +445,6 @@ public class P2Materializer extends AbstractMaterializer {
 		SimpleArtifactDescriptor desc = new SimpleArtifactDescriptor(aKey);
 		if (IComponentType.ECLIPSE_FEATURE.equals(cid.getComponentTypeID()) || res.isUnpack())
 			desc.addRepositoryProperties(Collections.singletonMap(PROP_ARTIFACT_FOLDER, Boolean.toString(true)));
-		destAR.addDescriptor(desc);
+		destAR.addDescriptor(desc, subSubMon.newChild(10));
 	}
 }
