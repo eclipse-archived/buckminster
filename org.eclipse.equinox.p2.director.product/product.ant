@@ -32,7 +32,7 @@
 			<arg value="-application"/>
 			<arg value="org.eclipse.equinox.p2.director"/>
 			<arg value="-r"/>
-			<arg value="file:${repository}"/>
+			<arg value="${repository}"/>
 			<arg value="-d"/>
 			<arg value="${destination}"/>
 			<arg value="-p"/>
