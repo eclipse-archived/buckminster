@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.equinox.p2.director.feature"
       label="%featureName"
-      version="1.2.1.qualifier"
+      version="1.4.0.qualifier"
       provider-name="%providerName">
 
    <description>
@@ -16,7 +16,6 @@
    <license url="%licenseURL">
       %license
    </license>
-
 
    <requires>
       <import plugin="org.apache.ant"/>
@@ -73,4 +72,5 @@
       <import plugin="org.sat4j.core"/>
       <import plugin="org.sat4j.pb"/>
    </requires>
+
 </feature>
