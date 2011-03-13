@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.buckminster.product"
       label="Buckminster Product"
-      version="1.2.1.qualifier"
+      version="1.4.0.qualifier"
       provider-name="Eclipse Buckminster Project">
 
    <description url="http://www.eclipse.org/buckminster">
