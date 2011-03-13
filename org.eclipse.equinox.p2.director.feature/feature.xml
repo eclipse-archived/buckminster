@@ -58,6 +58,7 @@
       <import plugin="org.eclipse.equinox.p2.repository"/>
       <import plugin="org.eclipse.equinox.p2.touchpoint.eclipse"/>
       <import plugin="org.eclipse.equinox.p2.touchpoint.natives"/>
+      <import plugin="org.eclipse.equinox.p2.transport.ecf"/>
       <import plugin="org.eclipse.equinox.preferences"/>
       <import plugin="org.eclipse.equinox.registry"/>
       <import plugin="org.eclipse.equinox.security"/>
