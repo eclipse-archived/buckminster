@@ -145,11 +145,6 @@ public class MapUnion<K, V> extends AbstractMap<K, V> implements IExpandingMap<K
 	private MapUnion(Map<K, V> mutable, Map<K, V> immutable, HashMap<K, K> antiMap) {
 		this.overlay = mutable;
 		this.immutable = immutable;
-
-		int shadowCount = 0;
-		for (K key : overlay.keySet())
-			if (immutable.containsKey(key))
-				++shadowCount;
 		this.antiMap = antiMap;
 	}
 
