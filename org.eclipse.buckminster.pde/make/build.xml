@@ -4,7 +4,7 @@
 		<mkdir dir="../bin/ant_tasks" />
 		<mkdir dir="../ant_tasks" />
 		<buckminster.resourceLocation path="org.eclipse.buckminster.ant" property="buckminster.ant"/>
-		<javac debug="true" srcdir="../src/ant_tasks" target="1.5" destdir="../bin/ant_tasks">
+		<javac debug="true" srcdir="../src/ant_tasks" target="1.5" destdir="../bin/ant_tasks" includeantruntime="true" >
 			<classpath>
 				<pathelement path="${bm.classpath}"/>
 				<pathelement path="${buckminster.ant}/ant_tasks/ant_tasks.jar"/>
