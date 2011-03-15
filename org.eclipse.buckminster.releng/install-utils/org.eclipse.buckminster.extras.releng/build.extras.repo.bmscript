@@ -1,0 +1,3 @@
+setpref targetPlatformPath="${user.dir}/extras.tp"
+resolve "${user.dir}/org.eclipse.buckminster.extras.releng/extras.cquery"
+perform "org.eclipse.buckminster.extras.releng#extras.repo"

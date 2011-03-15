@@ -1,0 +1,11 @@
+<project name="Publisher">
+	<target name="publish.extras.repo">
+		<buckminster.targetPlatformLocation property="target.platform.location" />
+
+		<property name="target.platform.repository.location" location="${sp:output}" />
+		<property name="target.platform.repository.url" value="file:/${target.platform.repository.location}" />
+
+		<p2.publish.featuresAndBundles repository="${target.platform.repository.url}" source="${target.platform.location}" publishArtifacts="true" />
+		<delete dir="${target.platform.location}" />
+	</target>
+</project>

@@ -1,0 +1,16 @@
+<cs:cspec xmlns:cs="http://www.eclipse.org/buckminster/CSpec-1.0" componentType="buckminster" name="org.eclipse.buckminster.extras.releng" version="0.1.0.qualifier" shortDesc="Buckminster component capturing the extras dependencies">
+	<cs:dependencies>
+		<cs:dependency name="org.eclipse.equinox.p2.repository.tools" componentType="osgi.bundle" />
+		<cs:dependency name="org.eclipse.help.base" componentType="osgi.bundle" />
+	</cs:dependencies>
+
+	<cs:actions>
+		<cs:public name="extras.repo" actor="ant">
+			<cs:actorProperties>
+				<cs:property key="buildFile" value="publisher.ant" />
+				<cs:property key="targets" value="publish.extras.repo" />
+			</cs:actorProperties>
+			<cs:products alias="output" base="${extras.repository}" />
+		</cs:public>
+	</cs:actions>
+</cs:cspec>
