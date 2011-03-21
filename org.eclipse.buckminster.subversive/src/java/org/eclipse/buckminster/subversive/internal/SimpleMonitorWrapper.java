@@ -48,7 +48,9 @@ public class SimpleMonitorWrapper implements ISVNProgressMonitor {
 			monitor.unknownProgress(current);
 	}
 
-	@Override
+	// This method is no longer necessary since it's not
+	// declared in the inteface. We keep it to ensure
+	// backward compatibility
 	public void reportError(String msg) {
 		Buckminster.getLogger().info("SVN error: " + msg); //$NON-NLS-1$
 	}
