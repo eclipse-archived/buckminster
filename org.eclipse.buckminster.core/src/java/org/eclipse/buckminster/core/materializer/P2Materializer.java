@@ -38,6 +38,10 @@ import org.eclipse.buckminster.core.reader.P2ReaderType;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.URLUtils;
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -194,7 +198,7 @@ public class P2Materializer extends AbstractMaterializer {
 			// ensure the user-specified artifact repos will be consulted by
 			// loading them
 
-			File destDir = entry.getKey();
+			final File destDir = entry.getKey();
 
 			// do a create here to ensure that we don't default to a #load later
 			// and grab a repo which is the wrong
@@ -315,6 +319,17 @@ public class P2Materializer extends AbstractMaterializer {
 					throw BuckminsterException.wrap(status);
 			} finally {
 				registry.removeProfile(profile.getProfileId());
+			}
+
+			// The resource holding the target archive must be refreshed (if
+			// indeed, it is a resource at all)
+			IContainer[] destConts = ResourcesPlugin.getWorkspace().getRoot().findContainersForLocationURI(destDir.toURI());
+			if (destConts != null && destConts.length > 0) {
+				for (IContainer destCont : destConts) {
+					IProject project = destCont.getProject();
+					if (project.isOpen())
+						project.refreshLocal(IResource.DEPTH_INFINITE, subMon.newChild(1));
+				}
 			}
 		}
 		TargetPlatform.getInstance().locationsChanged(resPerLocation.keySet());
