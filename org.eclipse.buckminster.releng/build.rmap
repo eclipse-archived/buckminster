@@ -9,7 +9,6 @@
   <rm:locator pattern="^com\.mountainminds\.eclemma\.core$" searchPathRef="emma"/>
   <rm:locator pattern="^org\.tmatesoft\.svnkit(\..+)?" searchPathRef="svnkit"/>
   <rm:locator pattern="^org\.tigris\.subversion(\..+)?" searchPathRef="subclipse"/>
-  <rm:locator pattern="^org\.eclipse\.team\.svn(\..+)?$" searchPathRef="subversive"/>
   <rm:locator pattern="^org\.polarion(\..+)?" searchPathRef="polarion"/>
   <rm:locator searchPathRef="platform" failOnError="false"/>
   <rm:locator searchPathRef="orbit" failOnError="false"/>
@@ -56,13 +55,6 @@
   <rm:searchPath name="polarion">
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false">
       <rm:uri format="http://community.polarion.com/projects/subversive/download/eclipse/2.0/update-site"/>
-    </rm:provider>
-  </rm:searchPath>
-  <rm:searchPath name="subversive">
-    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false">
-      <rm:uri format="{0}/technology/subversive/0.7/update-site">
-        <bc:propertyRef key="eclipse.download.prefix"/>
-      </rm:uri>
     </rm:provider>
   </rm:searchPath>
   <rm:searchPath name="emma">
