@@ -54,7 +54,7 @@
   </rm:searchPath>
   <rm:searchPath name="polarion">
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false">
-      <rm:uri format="http://community.polarion.com/projects/subversive/download/eclipse/2.0/update-site"/>
+      <rm:uri format="http://community.polarion.com/projects/subversive/download/eclipse/2.0/helios-site"/>
     </rm:provider>
   </rm:searchPath>
   <rm:searchPath name="emma">
