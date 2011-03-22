@@ -3,11 +3,9 @@ package org.eclipse.buckminster.pde.test;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-public class AllTests
-{
+public class AllTests {
 
-	public static Test suite()
-	{
+	public static Test suite() {
 		TestSuite suite = new TestSuite(AllTests.class.getName());
 		// $JUnit-BEGIN$
 		// suite.addTestSuite(JNLPGenTest.class);
@@ -15,6 +13,7 @@ public class AllTests
 		suite.addTestSuite(MapFileTest.class);
 		suite.addTestSuite(PDEBuilderTest.class);
 		suite.addTestSuite(PublishMultiVersionsTest.class);
+		suite.addTestSuite(MultiSourceFolderTest.class);
 		// $JUnit-END$
 		return suite;
 	}
