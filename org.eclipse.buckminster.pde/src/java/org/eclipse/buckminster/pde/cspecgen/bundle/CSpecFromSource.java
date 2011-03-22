@@ -10,6 +10,7 @@ package org.eclipse.buckminster.pde.cspecgen.bundle;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -150,13 +151,36 @@ public class CSpecFromSource extends CSpecGenerator {
 		fullClean.addLocalPrerequisite(generateRemoveDirAction("build", OUTPUT_DIR, false)); //$NON-NLS-1$
 		fullClean.addLocalPrerequisite(cspec.addInternalAction(ATTRIBUTE_ECLIPSE_CLEAN, false));
 
+		boolean simpleBundle = false;
+		IBuild build = buildModel.getBuild();
+		ArrayList<String> jarsToCompile = null;
+		Map<IPath, IPath> outputMap = new HashMap<IPath, IPath>();
+		for (IBuildEntry entry : build.getBuildEntries()) {
+			String name = entry.getName();
+			if (name.startsWith("source.")) //$NON-NLS-1$
+			{
+				if (name.length() == 8 && name.charAt(7) == '.') {
+					simpleBundle = true;
+				} else if (name.endsWith(".jar") && name.length() > 11) { //$NON-NLS-1$
+					if (jarsToCompile == null)
+						jarsToCompile = new ArrayList<String>();
+					jarsToCompile.add(name.substring(7));
+				}
+			} else if (name.startsWith("output.") && name.length() > 7) { //$NON-NLS-1$
+				String[] tokens = entry.getTokens();
+				if (tokens.length == 1)
+					outputMap.put(Path.fromPortableString(tokens[0]), Path.fromPortableString(name.substring(7)));
+			}
+		}
+
 		// Exported entries in the classpath must be added to the
 		// java.binaries export
 		//
 		ActionBuilder eclipseBuild = getAttributeEclipseBuild();
+		Set<IPath> derivedArtifacts = new HashSet<IPath>();
 
 		IPath[] projectRootReplacement = new IPath[1];
-		HashMap<IPath, ArtifactBuilder> eclipseBuildProducts = new HashMap<IPath, ArtifactBuilder>();
+		HashMap<IPath, AttributeBuilder> eclipseBuildProducts = new HashMap<IPath, AttributeBuilder>();
 		IPath componentHome = Path.fromPortableString(KeyConstants.ACTION_HOME_REF);
 		IPath defaultOutputLocation = null;
 		GroupBuilder ebSrcBld = null;
@@ -185,40 +209,62 @@ public class CSpecFromSource extends CSpecGenerator {
 			} else
 				output = asProjectRelativeFolder(output, projectRootReplacement);
 
-			if (output != null) {
-				// Several source may contribute to the same output directory.
-				// Make
-				// sure we only add it once.
-				//
-				if (eclipseBuildProducts.containsKey(output))
-					continue;
+			if (output == null)
+				continue;
 
-				// Products use ${buckminster.output} as the default base so we
-				// need
-				// to prefix the project relative output here
-				//
-				IPath absPath = output;
-				IPath base = projectRootReplacement[0];
-				if (base == null && !output.isAbsolute()) {
-					base = componentHome.append(output);
-					absPath = null;
-				}
+			// Several source may contribute to the same output directory.
+			// Make sure we only add it once.
+			//
+			if (eclipseBuildProducts.containsKey(output))
+				continue;
 
-				/*
-				 * Convert single absolute path to be represented as base path
-				 * with no additional paths instead of null base path with one
-				 * additional path.
-				 */
-				if (base == null && absPath.isAbsolute()) {
-					base = absPath;
-					absPath = null;
-				}
+			// Products use ${buckminster.output} as the default base so we
+			// need
+			// to prefix the project relative output here
+			//
+			IPath base;
+			IPath relPath = null;
+			if (output.isAbsolute()) {
+				base = output;
+			} else {
+				base = projectRootReplacement[0];
+				if (base == null)
+					base = componentHome;
+				base = base.append(output);
 
-				ArtifactBuilder ab2 = eclipseBuild.addProductArtifact(getArtifactName(output), false, base);
-				if (absPath != null)
-					ab2.addPath(absPath);
-				eclipseBuildProducts.put(output, ab2);
+				// Find the expected location in the
+				// bundle jar. We don't care about
+				// '.' since that is handled elsewhere
+				relPath = outputMap.get(output);
+				if (relPath != null && relPath.segmentCount() == 1 && ".".equals(relPath.segment(0))) //$NON-NLS-1$
+					relPath = null;
+
+				if (relPath != null)
+					derivedArtifacts.add(relPath);
 			}
+
+			GroupBuilder productRebase = null;
+			String artifactName = getArtifactName(output);
+			if (relPath != null && base.segmentCount() > relPath.segmentCount()) {
+				// Rebase if possible. relPath must be a suffix of base
+				IPath cmp = base.removeFirstSegments(base.segmentCount() - relPath.segmentCount());
+				if (cmp.equals(relPath)) {
+					productRebase = cspec.addGroup(artifactName, false);
+					productRebase.setName(artifactName);
+
+					// Change the name of the actual product and use
+					// it as a prerequisite to this group
+					artifactName += ".raw"; //$NON-NLS-1$
+					productRebase.addLocalPrerequisite(artifactName);
+					productRebase.setPrerequisiteRebase(base.removeLastSegments(relPath.segmentCount()));
+				}
+			}
+
+			ArtifactBuilder ab2 = eclipseBuild.addProductArtifact(artifactName, false, base);
+
+			// Add either the rebased group or the product as the
+			// built product for later perusal
+			eclipseBuildProducts.put(output, productRebase == null ? ab2 : productRebase);
 		}
 
 		AttributeBuilder buildSource = null;
@@ -233,26 +279,6 @@ public class CSpecFromSource extends CSpecGenerator {
 		//
 		classpath.addLocalPrerequisite(eclipseBuild);
 
-		boolean simpleBundle = false;
-		IBuild build = buildModel.getBuild();
-		ArrayList<String> jarsToCompile = null;
-		for (IBuildEntry entry : build.getBuildEntries()) {
-			String name = entry.getName();
-			if (name.startsWith("source.")) //$NON-NLS-1$
-			{
-				if (name.length() == 8 && name.charAt(7) == '.') {
-					simpleBundle = true;
-					continue;
-				}
-				if (name.endsWith(".jar") && name.length() > 11) //$NON-NLS-1$
-				{
-					if (jarsToCompile == null)
-						jarsToCompile = new ArrayList<String>();
-					jarsToCompile.add(name.substring(7));
-				}
-			}
-		}
-
 		// The bundle classpath can contain artifacts that can stem from three
 		// different locations:
 		// 1. The bundle itself, i.e. a simpleBundle containing .class files
@@ -263,6 +289,11 @@ public class CSpecFromSource extends CSpecGenerator {
 		// 3. Pre-built extra jar files present in the bundle.
 		//
 		String bundleClassPath = null;
+		IBuildEntry binIncludesEntry = build.getEntry(IBuildEntry.BIN_INCLUDES);
+		Set<String> binIncludesSet = null;
+		if (binIncludesEntry != null)
+			binIncludesSet = new HashSet<String>(Arrays.asList(binIncludesEntry.getTokens()));
+
 		if (plugin instanceof BundlePlugin) {
 			IBundle bundle = ((BundlePlugin) plugin).getBundle();
 			setFilter(bundle.getHeader(ICoreConstants.PLATFORM_FILTER));
@@ -282,14 +313,17 @@ public class CSpecFromSource extends CSpecGenerator {
 						//
 						// Assume that this jar is produced by the eclipse build
 						// and thus covered by inclusion from the project
-						// classpath
-						// above.
+						// classpath above.
 						//
 						continue;
 
+					if (binIncludesSet.contains(token))
+						// This one is covered by bin.includes so don't add it
+						// here
+						continue;
+
 					// We don't know how this entry came about. Chances are it
-					// has been
-					// checked in with the source.
+					// has been checked in with the source.
 					//
 					ArtifactBuilder ab = cspec.addArtifact(ATTRIBUTE_BUNDLE_EXTRAJARS + '_' + cnt++, false, null);
 					IPath eaPath = resolveLink(Path.fromPortableString(token), projectRootReplacement);
@@ -369,7 +403,6 @@ public class CSpecFromSource extends CSpecGenerator {
 
 		// Create an action for building each jar.
 		//
-		Set<IPath> derivedArtifacts = new HashSet<IPath>();
 		if (jarsToCompile != null) {
 			for (String jarName : jarsToCompile)
 				derivedArtifacts.add(createJarAction(jarName, classPath, build, simpleBundle ? eclipseBuildProducts : null));
@@ -391,7 +424,6 @@ public class CSpecFromSource extends CSpecGenerator {
 		boolean includeBuildProps = false;
 		boolean considerAboutMappings = VersionConsolidator.getBooleanProperty(getReader().getNodeQuery().getProperties(),
 				PROP_PDE_CONSIDER_ABOUT_MAPPINGS, true);
-		IBuildEntry binIncludesEntry = build.getEntry(IBuildEntry.BIN_INCLUDES);
 		if (binIncludesEntry != null) {
 			GroupBuilder binIncludesSource = null;
 			cnt = 0;
@@ -465,12 +497,13 @@ public class CSpecFromSource extends CSpecGenerator {
 			srcIncludesSource.addLocalPrerequisite(buildSource);
 		}
 
-		if (simpleBundle) {
+		if (simpleBundle && binIncludesSet != null) {
 			// These products from the eclipse.build will contain the .class
 			// files for the bundle
 			//
-			for (ArtifactBuilder product : eclipseBuildProducts.values())
+			for (AttributeBuilder product : eclipseBuildProducts.values()) {
 				jarContents.addLocalPrerequisite(product);
+			}
 		}
 
 		ActionBuilder buildPlugin;
@@ -618,7 +651,7 @@ public class CSpecFromSource extends CSpecGenerator {
 		return resolveLink(classpathEntryPath.removeFirstSegments(1).addTrailingSeparator(), projectRootReplacement);
 	}
 
-	private IPath createJarAction(String jarName, IClasspathEntry[] classPath, IBuild build, Map<IPath, ArtifactBuilder> eclipseBuildProducts)
+	private IPath createJarAction(String jarName, IClasspathEntry[] classPath, IBuild build, Map<IPath, AttributeBuilder> eclipseBuildProducts)
 			throws CoreException {
 		CSpecBuilder cspec = getCSpec();
 		IPath jarPath = new Path(jarName);
@@ -845,9 +878,10 @@ public class CSpecFromSource extends CSpecGenerator {
 			IPath linkSource = entry.getKey();
 			if (linkSource.isPrefixOf(path)) {
 				URI locationURI = entry.getValue().getLocationURI();
-				
+
 				/*
-				 * Explicitly resolve relative path via workspace linked resources
+				 * Explicitly resolve relative path via workspace linked
+				 * resources
 				 */
 				URI resolvedURI = ResourcesPlugin.getWorkspace().getPathVariableManager().resolveURI(locationURI);
 				IPath linkTarget = FileUtil.toPath(resolvedURI);
