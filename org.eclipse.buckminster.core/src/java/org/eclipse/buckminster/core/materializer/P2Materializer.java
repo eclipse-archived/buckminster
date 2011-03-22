@@ -28,6 +28,7 @@ import org.eclipse.buckminster.core.TargetPlatform;
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.cspec.IComponentIdentifier;
 import org.eclipse.buckminster.core.ctype.IComponentType;
+import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.mspec.IMaterializationNode;
@@ -187,11 +188,12 @@ public class P2Materializer extends AbstractMaterializer {
 		Map<URI, IArtifactRepository> knownARs = new HashMap<URI, IArtifactRepository>();
 
 		try {
-			URI runtimeAR = Platform.getInstallLocation().getURL().toURI();
+			File file = FileUtils.getFile(Platform.getInstallLocation().getURL());
+			URI runtimeAR = file.toURI();
 			knownARs.put(runtimeAR, arManager.loadRepository(runtimeAR, subMon.newChild(100)));
 		} catch (Exception e) {
 			// Ignore
-			CorePlugin.getLogger().warning(e, "Unable to load runtime repository from"); //$NON-NLS-1$
+			CorePlugin.getLogger().warning(e, "Unable to load runtime repository: " + e.getMessage()); //$NON-NLS-1$
 		}
 
 		for (Map.Entry<File, List<Resolution>> entry : resPerLocation.entrySet()) {
