@@ -25,6 +25,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.egit.core.RepositoryUtil;
 import org.eclipse.egit.core.op.ConnectProviderOperation;
+import org.eclipse.jgit.lib.Constants;
 import org.eclipse.team.core.RepositoryProvider;
 import org.eclipse.team.core.history.IFileHistory;
 import org.eclipse.team.core.history.IFileHistoryProvider;
@@ -112,17 +113,12 @@ public class GitReaderType extends CatalogReaderType {
 		//
 		String fmt = cr.getRepository();
 		int comma = fmt.lastIndexOf(',');
-		ConnectProviderOperation connectOp;
-		File repoDir;
-		if (comma >= 0) {
+		if (comma >= 0)
 			fmt = fmt.substring(0, comma);
-			repoDir = Path.fromPortableString(fmt).append(".git").toFile(); //$NON-NLS-1$
-			connectOp = new ConnectProviderOperation(project, repoDir);
-		} else {
-			repoDir = new File(fmt);
-			connectOp = new ConnectProviderOperation(project);
-		}
-		
+
+		File repoDir = Path.fromPortableString(fmt).append(Constants.DOT_GIT).toFile();
+		ConnectProviderOperation connectOp = new ConnectProviderOperation(project, repoDir);
+
 		// Add repository if it's not already addded
 		RepositoryUtil repoUtil = org.eclipse.egit.core.Activator.getDefault().getRepositoryUtil();
 		repoUtil.addConfiguredRepository(repoDir);
