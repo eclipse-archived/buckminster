@@ -28,7 +28,7 @@ public class PDEPlugin extends LogAwarePlugin implements IPDEConstants {
 
 	static {
 		namesOfInterest.add(PLUGIN_FILE.toLowerCase());
-		namesOfInterest.add(FEATURE_FILE.toLowerCase());
+		namesOfInterest.add(FEATURE_MANIFEST.toLowerCase());
 		namesOfInterest.add(SITE_FILE.toLowerCase());
 		namesOfInterest.add(FRAGMENT_FILE.toLowerCase());
 		namesOfInterest.add(BUILD_PROPERTIES_FILE.toLowerCase());

@@ -178,7 +178,7 @@ abstract class GroupConsolidator extends VersionQualifierTask implements IPDECon
 		for (File featureOrBundle : featuresAndBundles) {
 			InputStream input = null;
 			try {
-				input = getInput(featureOrBundle, FEATURE_FILE);
+				input = getInput(featureOrBundle, FEATURE_MANIFEST);
 				IFeatureModel model = FeatureModelReader.readFeatureModel(input);
 				IFeature feature = model.getFeature();
 				String id = feature.getId();
@@ -189,7 +189,7 @@ abstract class GroupConsolidator extends VersionQualifierTask implements IPDECon
 				int ctxQualLen = -1;
 				if (version.indexOf('-') > 0) {
 					IOUtils.close(input);
-					input = getInput(featureOrBundle, FEATURE_FILE);
+					input = getInput(featureOrBundle, FEATURE_MANIFEST);
 					ctxQualLen = EditableFeatureModel.getContextQualifierLength(input);
 				}
 				if (suffixGenerator != null)

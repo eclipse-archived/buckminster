@@ -85,7 +85,7 @@ public class JNLPSiteGenerator {
 			for (File file : files) {
 				IFeature feature;
 				if (file.isDirectory()) {
-					File featureFile = new File(file, IPDEConstants.FEATURE_FILE);
+					File featureFile = new File(file, IPDEConstants.FEATURE_MANIFEST);
 					if (!featureFile.exists())
 						continue;
 
@@ -106,7 +106,7 @@ public class JNLPSiteGenerator {
 					try {
 						jarFile = new JarFile(file);
 
-						JarEntry entry = jarFile.getJarEntry(IPDEConstants.FEATURE_FILE);
+						JarEntry entry = jarFile.getJarEntry(IPDEConstants.FEATURE_MANIFEST);
 						if (entry == null)
 							continue;
 

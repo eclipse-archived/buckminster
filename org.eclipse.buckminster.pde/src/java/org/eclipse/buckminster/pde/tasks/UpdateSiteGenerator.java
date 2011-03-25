@@ -111,7 +111,7 @@ public class UpdateSiteGenerator extends VersionConsolidator {
 				try {
 					jarFile = new JarFile(file);
 
-					JarEntry entry = jarFile.getJarEntry(IPDEConstants.FEATURE_FILE);
+					JarEntry entry = jarFile.getJarEntry(IPDEConstants.FEATURE_MANIFEST);
 					if (entry == null)
 						continue;
 

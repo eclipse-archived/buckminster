@@ -41,6 +41,12 @@ public interface IPDEConstants {
 
 	static final String ATTRIBUTE_BUILD_PROPERTIES = "build.properties"; //$NON-NLS-1$
 
+	static final String ALIAS_LICENSE_FEATURE = "license.feature"; //$NON-NLS-1$
+
+	static final String ALIAS_LICENSE_MANIFEST = "license.manifest"; //$NON-NLS-1$
+
+	static final String ALIAS_LICENSE_FEATURE_CONTENTS = "license.feature.contents"; //$NON-NLS-1$
+
 	/**
 	 * Denotes a fully deployable bundle in jar format plus fragments from the
 	 * target platform
@@ -214,7 +220,9 @@ public interface IPDEConstants {
 
 	static final String BUNDLE_FILE = IPDEBuildConstants.MANIFEST_FOLDER + '/' + IPDEBuildConstants.MANIFEST;
 
-	static final String FEATURE_FILE = "feature.xml"; //$NON-NLS-1$
+	static final String FEATURE_MANIFEST = "feature.xml"; //$NON-NLS-1$
+
+	static final String FEATURE_PROPERTIES = "feature.properties"; //$NON-NLS-1$
 
 	public static final String FEATURE_GROUP = ".feature.group"; //$NON-NLS-1$
 
@@ -223,6 +231,8 @@ public interface IPDEConstants {
 	static final String FEATURE_PROPERTIES_FILE = "feature.properties"; //$NON-NLS-1$
 
 	static final String FEATURES_FOLDER = IPDEBuildConstants.DEFAULT_FEATURE_LOCATION;
+
+	static final String FEATURE_WITH_LICENSE_FOLDER = "feature.with.license"; //$NON-NLS-1$
 
 	static final String FRAGMENT_FILE = "fragment.xml"; //$NON-NLS-1$
 
