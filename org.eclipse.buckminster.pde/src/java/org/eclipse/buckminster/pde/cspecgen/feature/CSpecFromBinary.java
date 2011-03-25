@@ -7,6 +7,7 @@
  *****************************************************************************/
 package org.eclipse.buckminster.pde.cspecgen.feature;
 
+import org.eclipse.buckminster.core.cspec.IComponentRequest;
 import org.eclipse.buckminster.core.cspec.builder.ActionBuilder;
 import org.eclipse.buckminster.core.cspec.builder.ArtifactBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
@@ -44,7 +45,7 @@ public class CSpecFromBinary extends CSpecFromFeature {
 	}
 
 	@Override
-	void createFeatureJarAction(IProgressMonitor monitor) throws CoreException {
+	void createFeatureJarAction(IComponentRequest licenseFeature, IProgressMonitor monitor) throws CoreException {
 		if (location != null && location.toFile().isFile()) {
 			// Feature jar file is available, we just reuse it.
 			//

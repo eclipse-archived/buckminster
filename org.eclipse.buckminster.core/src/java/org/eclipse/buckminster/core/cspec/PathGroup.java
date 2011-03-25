@@ -77,6 +77,44 @@ public class PathGroup {
 		return false;
 	}
 
+	public void copyPathTo(IPath path, IPath destination, IProgressMonitor monitor) throws CoreException {
+		File destDir = destination.toFile().getAbsoluteFile();
+		File basedDestDir = null;
+		if (!path.hasTrailingSeparator()) {
+			// Path denotes a file
+			//
+			String fileName = path.lastSegment();
+			if (path.isAbsolute() || path.segmentCount() == 1) {
+				basedDestDir = destDir;
+				if (!path.isAbsolute())
+					path = base.append(path);
+			} else
+				basedDestDir = destination.append(path.removeLastSegments(1)).toFile();
+
+			File sourceFile = path.toFile();
+			if (sourceFile.exists()) {
+				MonitorUtils.begin(monitor, 100);
+				FileUtils.prepareDestination(basedDestDir, ConflictResolution.UPDATE, MonitorUtils.subMonitor(monitor, 20));
+				FileUtils.copyFile(sourceFile, basedDestDir, fileName, MonitorUtils.subMonitor(monitor, 80));
+				MonitorUtils.done(monitor);
+			} else {
+				MonitorUtils.complete(monitor);
+			}
+		} else {
+			if (path.isAbsolute())
+				basedDestDir = destDir;
+			else {
+				basedDestDir = destination.append(path).toFile();
+				path = base.append(path);
+			}
+			File sourceDir = path.toFile();
+			if (sourceDir.exists())
+				FileUtils.deepCopy(sourceDir, basedDestDir, ConflictResolution.UPDATE, monitor);
+			else
+				MonitorUtils.complete(monitor);
+		}
+	}
+
 	public void copyTo(IPath destination, IProgressMonitor monitor) throws CoreException {
 		if (!destination.isAbsolute())
 			throw new IllegalArgumentException(Messages.Destination_must_be_absolute);
@@ -84,51 +122,21 @@ public class PathGroup {
 		if (!base.isAbsolute())
 			throw new IllegalArgumentException(Messages.Source_must_be_absolute);
 
-		File destDir = destination.toFile().getAbsoluteFile();
-		File baseDir = base.toFile().getAbsoluteFile();
-
 		int idx = paths.length;
 		if (idx == 0) {
 			// We don't have any paths. Use everything below base
 			//
+			File baseDir = base.toFile().getAbsoluteFile();
 			if (baseDir.isDirectory())
-				FileUtils.deepCopy(baseDir, destDir, ConflictResolution.UPDATE, monitor);
+				FileUtils.deepCopy(baseDir, destination.toFile().getAbsoluteFile(), ConflictResolution.UPDATE, monitor);
+			else
+				MonitorUtils.complete(monitor);
 			return;
 		}
 
 		monitor.beginTask(null, idx * 100);
-		while (--idx >= 0) {
-			String fileName = null;
-			File basedDestDir = null;
-			IPath path = paths[idx];
-			if (!path.hasTrailingSeparator()) {
-				// Path denotes a file
-				//
-				fileName = path.lastSegment();
-				if (path.isAbsolute() || path.segmentCount() == 1) {
-					basedDestDir = destDir;
-					if (!path.isAbsolute())
-						path = base.append(path);
-				} else
-					basedDestDir = destination.append(path.removeLastSegments(1)).toFile();
-
-				File sourceFile = path.toFile();
-				if (sourceFile.exists()) {
-					FileUtils.prepareDestination(basedDestDir, ConflictResolution.UPDATE, MonitorUtils.subMonitor(monitor, 20));
-					FileUtils.copyFile(sourceFile, basedDestDir, fileName, MonitorUtils.subMonitor(monitor, 80));
-				}
-			} else {
-				if (path.isAbsolute())
-					basedDestDir = destDir;
-				else {
-					basedDestDir = destination.append(path).toFile();
-					path = base.append(path);
-				}
-				File sourceDir = path.toFile();
-				if (sourceDir.exists())
-					FileUtils.deepCopy(sourceDir, basedDestDir, ConflictResolution.UPDATE, MonitorUtils.subMonitor(monitor, 100));
-			}
-		}
+		while (--idx >= 0)
+			copyPathTo(paths[idx], destination, MonitorUtils.subMonitor(monitor, 100));
 		monitor.done();
 	}
 

@@ -25,27 +25,27 @@ public abstract class TopLevelAttributeBuilder extends AttributeBuilder {
 		super(cspecBuilder);
 	}
 
-	public final void addExternalPrerequisite(IComponentRequest request, String attr) throws PrerequisiteAlreadyDefinedException {
-		addPrerequisite(createPrerequisite(request.getName(), request.getComponentTypeID(), request.getVersionRange(), attr, null, null));
+	public final PrerequisiteBuilder addExternalPrerequisite(IComponentRequest request, String attr) throws PrerequisiteAlreadyDefinedException {
+		return addPrerequisite(createPrerequisite(request.getName(), request.getComponentTypeID(), request.getVersionRange(), attr, null, null));
 	}
 
-	public final void addLocalPrerequisite(AttributeBuilder attr) throws PrerequisiteAlreadyDefinedException {
-		addLocalPrerequisite(attr.getName());
+	public final PrerequisiteBuilder addLocalPrerequisite(AttributeBuilder attr) throws PrerequisiteAlreadyDefinedException {
+		return addLocalPrerequisite(attr.getName());
 	}
 
-	public final void addLocalPrerequisite(String attr) throws PrerequisiteAlreadyDefinedException {
-		addPrerequisite(createPrerequisite(null, null, null, attr, null, null));
+	public final PrerequisiteBuilder addLocalPrerequisite(String attr) throws PrerequisiteAlreadyDefinedException {
+		return addPrerequisite(createPrerequisite(null, null, null, attr, null, null));
 	}
 
-	public final void addLocalPrerequisite(String attr, String alias) throws PrerequisiteAlreadyDefinedException {
-		addPrerequisite(createPrerequisite(null, null, null, attr, alias, null));
+	public final PrerequisiteBuilder addLocalPrerequisite(String attr, String alias) throws PrerequisiteAlreadyDefinedException {
+		return addPrerequisite(createPrerequisite(null, null, null, attr, alias, null));
 	}
 
-	public final void addLocalPrerequisite(String attr, String alias, Filter filter) throws PrerequisiteAlreadyDefinedException {
-		addPrerequisite(createPrerequisite(null, null, null, attr, alias, filter));
+	public final PrerequisiteBuilder addLocalPrerequisite(String attr, String alias, Filter filter) throws PrerequisiteAlreadyDefinedException {
+		return addPrerequisite(createPrerequisite(null, null, null, attr, alias, filter));
 	}
 
-	public void addPrerequisite(PrerequisiteBuilder prerequisite) throws PrerequisiteAlreadyDefinedException {
+	public PrerequisiteBuilder addPrerequisite(PrerequisiteBuilder prerequisite) throws PrerequisiteAlreadyDefinedException {
 		throw new UnsupportedOperationException();
 	}
 

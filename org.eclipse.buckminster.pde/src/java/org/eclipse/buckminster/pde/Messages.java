@@ -164,6 +164,8 @@ public class Messages extends NLS {
 
 	public static String tpdir_0_does_not_exist;
 
+	public static String error_conflictingProperties;
+
 	static {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}

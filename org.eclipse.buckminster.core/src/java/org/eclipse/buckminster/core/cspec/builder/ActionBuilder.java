@@ -57,8 +57,9 @@ public class ActionBuilder extends TopLevelAttributeBuilder implements IAction {
 	}
 
 	@Override
-	public void addPrerequisite(PrerequisiteBuilder prerequisite) throws PrerequisiteAlreadyDefinedException {
+	public PrerequisiteBuilder addPrerequisite(PrerequisiteBuilder prerequisite) throws PrerequisiteAlreadyDefinedException {
 		prerequisitesBuilder.addPrerequisite(prerequisite);
+		return prerequisite;
 	}
 
 	public ActionArtifactBuilder addProductArtifact(String name, boolean publ, IPath output) throws AttributeAlreadyDefinedException {

@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import org.eclipse.buckminster.core.cspec.IComponentRequest;
 import org.eclipse.buckminster.core.cspec.builder.ActionBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.builder.ComponentRequestBuilder;
@@ -48,6 +49,8 @@ public abstract class CSpecFromFeature extends CSpecGenerator {
 	private static final String SOURCE_SUFFIX = ".source"; //$NON-NLS-1$
 
 	private static final String SOURCE_FEATURE_SUFFIX = ".source.feature"; //$NON-NLS-1$
+
+	private static final IFeatureChild[] noFeatures = new IFeatureChild[0];
 
 	public static String getIdWithoutSource(String sourceId) {
 		if (sourceId.endsWith(SOURCE_SUFFIX))
@@ -110,12 +113,12 @@ public abstract class CSpecFromFeature extends CSpecGenerator {
 		cspec.addGroup(ATTRIBUTE_PRODUCT_CONFIG_EXPORTS, true);
 		generateRemoveDirAction("build", OUTPUT_DIR, true, ATTRIBUTE_FULL_CLEAN); //$NON-NLS-1$
 
-		addFeatures();
+		IComponentRequest licenseFeature = addFeatures();
 		addPlugins();
 
 		MonitorUtils.begin(monitor, 100);
 
-		createFeatureJarAction(MonitorUtils.subMonitor(monitor, 20));
+		createFeatureJarAction(licenseFeature, MonitorUtils.subMonitor(monitor, 20));
 		createFeatureSourceJarAction();
 		createFeatureExportsAction();
 
@@ -179,10 +182,21 @@ public abstract class CSpecFromFeature extends CSpecGenerator {
 		return true;
 	}
 
-	void addFeatures() throws CoreException {
+	/**
+	 * Adds all feature dependencies. If a license feature is referenced, it is
+	 * also added.
+	 * 
+	 * @return The license feature if any, otherwise <code>null</code>.
+	 * @throws CoreException
+	 */
+	IComponentRequest addFeatures() throws CoreException {
+		String licenseFeatureID = Trivial.trim(feature.getLicenseFeatureID());
 		IFeatureChild[] features = feature.getIncludedFeatures();
-		if (features == null || features.length == 0)
-			return;
+		if (features == null)
+			features = noFeatures;
+
+		if (features.length == 0 && licenseFeatureID == null)
+			return null;
 
 		ComponentQuery query = getReader().getNodeQuery().getComponentQuery();
 		CSpecBuilder cspec = getCSpec();
@@ -228,20 +242,22 @@ public abstract class CSpecFromFeature extends CSpecGenerator {
 			}
 		}
 
-		String licenseFeatureID = Trivial.trim(feature.getLicenseFeatureID());
-		if (licenseFeatureID != null) {
-			VersionRange range = VersionHelper.exactRange(Version.create(feature.getLicenseFeatureVersion()));
-			ComponentRequestBuilder dep = new ComponentRequestBuilder();
-			dep.setName(licenseFeatureID);
-			dep.setComponentTypeID(IComponentType.ECLIPSE_FEATURE);
-			dep.setVersionRange(range);
-			if (!skipComponent(query, dep)) {
-				cspec.addDependency(dep);
-				featureRefs.addExternalPrerequisite(dep, ATTRIBUTE_FEATURE_JARS);
-				bundleJars.addExternalPrerequisite(dep, ATTRIBUTE_BUNDLE_JARS);
-				fullClean.addExternalPrerequisite(dep, ATTRIBUTE_FULL_CLEAN);
-			}
-		}
+		if (licenseFeatureID == null)
+			return null;
+
+		VersionRange range = VersionHelper.exactRange(Version.create(feature.getLicenseFeatureVersion()));
+		ComponentRequestBuilder dep = new ComponentRequestBuilder();
+		dep.setName(licenseFeatureID);
+		dep.setComponentTypeID(IComponentType.ECLIPSE_FEATURE);
+		dep.setVersionRange(range);
+		if (skipComponent(query, dep))
+			return null;
+
+		cspec.addDependency(dep);
+		featureRefs.addExternalPrerequisite(dep, ATTRIBUTE_FEATURE_JARS);
+		bundleJars.addExternalPrerequisite(dep, ATTRIBUTE_BUNDLE_JARS);
+		fullClean.addExternalPrerequisite(dep, ATTRIBUTE_FULL_CLEAN);
+		return dep;
 	}
 
 	void addPlugins() throws CoreException {
@@ -333,7 +349,7 @@ public abstract class CSpecFromFeature extends CSpecGenerator {
 		return createDependency(plugin.getId(), IComponentType.OSGI_BUNDLE, plugin.getVersion(), MatchRule.NONE, filter);
 	}
 
-	abstract void createFeatureJarAction(IProgressMonitor monitor) throws CoreException;
+	abstract void createFeatureJarAction(IComponentRequest licenseFeature, IProgressMonitor monitor) throws CoreException;
 
 	abstract void createFeatureSourceJarAction() throws CoreException;
 

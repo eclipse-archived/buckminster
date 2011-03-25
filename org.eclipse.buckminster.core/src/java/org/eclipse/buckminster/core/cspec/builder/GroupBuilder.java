@@ -41,11 +41,12 @@ public class GroupBuilder extends TopLevelAttributeBuilder implements IGroup {
 	}
 
 	@Override
-	public void addPrerequisite(PrerequisiteBuilder prerequisite) throws PrerequisiteAlreadyDefinedException {
+	public PrerequisiteBuilder addPrerequisite(PrerequisiteBuilder prerequisite) throws PrerequisiteAlreadyDefinedException {
 		String key = prerequisite.toString();
 		if (indexOfPrerequisite(prerequisites, key) >= 0)
 			throw new PrerequisiteAlreadyDefinedException(getCSpecName(), getName(), key);
 		prerequisites.add(prerequisite);
+		return prerequisite;
 	}
 
 	public void addSelfRequirement() throws PrerequisiteAlreadyDefinedException {

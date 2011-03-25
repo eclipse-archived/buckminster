@@ -136,7 +136,7 @@ public class SourceFeatureCreator implements IPDEConstants, IBuildPropertiesCons
 		for (File featureOrBundle : featuresAndBundles) {
 			InputStream input = null;
 			try {
-				input = GroupConsolidator.getInput(featureOrBundle, FEATURE_FILE);
+				input = GroupConsolidator.getInput(featureOrBundle, FEATURE_MANIFEST);
 				IFeatureModel model = FeatureModelReader.readFeatureModel(input);
 				IFeature feature = model.getFeature();
 

@@ -557,7 +557,7 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 		ArrayList<IFeatureModel> models = new ArrayList<IFeatureModel>(dirs.length);
 		ArrayList<IStatus> resultStatus = null;
 		for (File dir : dirs) {
-			File manifest = new File(dir, FEATURE_FILE);
+			File manifest = new File(dir, FEATURE_MANIFEST);
 			InputStream manifestInput = null;
 			try {
 				manifestInput = new FileInputStream(manifest);
