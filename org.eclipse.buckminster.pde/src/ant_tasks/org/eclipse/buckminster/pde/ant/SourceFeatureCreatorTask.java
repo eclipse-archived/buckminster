@@ -29,61 +29,69 @@ import org.eclipse.buckminster.pde.tasks.SourceFeatureCreator;
  * @author Thomas Hallgren
  */
 public class SourceFeatureCreatorTask extends Task {
-	private ArrayList<FileSet> fileSets;
+	private NestedFileSets featuresAndBundles;
 
-	private ArrayList<FileSetGroup> fileSetGroups;
+	private NestedFileSets translations;
 
 	private File input;
 
 	private File output;
 
-	/**
-	 * Adds a nested <code>&lt;filesetgroup&gt;</code> element.
-	 */
-	public void add(FileSetGroup fsGroup) throws BuildException {
-		if (fileSetGroups == null)
-			fileSetGroups = new ArrayList<FileSetGroup>();
-		fileSetGroups.add(fsGroup);
-	}
+	public static class NestedFileSets {
+		private ArrayList<FileSet> fileSets;
 
-	/**
-	 * Adds a nested <code>&lt;fileset&gt;</code> element.
-	 */
-	public void addFileset(FileSet fs) throws BuildException {
-		if (fileSets == null)
-			fileSets = new ArrayList<FileSet>();
-		fileSets.add(fs);
-	}
+		private ArrayList<FileSetGroup> fileSetGroups;
 
-	@Override
-	public void execute() throws BuildException {
-		try {
+		/**
+		 * Adds a nested <code>&lt;filesetgroup&gt;</code> element.
+		 */
+		public void add(FileSetGroup fsGroup) throws BuildException {
+			if (fileSetGroups == null)
+				fileSetGroups = new ArrayList<FileSetGroup>();
+			fileSetGroups.add(fsGroup);
+		}
+
+		/**
+		 * Adds a nested <code>&lt;fileset&gt;</code> element.
+		 */
+		public void addFileset(FileSet fs) throws BuildException {
+			if (fileSets == null)
+				fileSets = new ArrayList<FileSet>();
+			fileSets.add(fs);
+		}
+		
+		public List<File> getFiles(Project proj) {
 			if (fileSetGroups != null) {
 				for (FileSetGroup fsg : fileSetGroups)
 					for (FileSet fs : fsg.getFileSets())
 						addFileset(fs);
 				fileSetGroups = null;
 			}
+			if (fileSets == null)
+				return Collections.emptyList();
+			List<File> files = new ArrayList<File>();
+			for (FileSet fs : fileSets) {
+				DirectoryScanner ds = fs.getDirectoryScanner(proj);
+				File dir = fs.getDir(proj);
+				for (String file : ds.getIncludedFiles())
+					files.add(new File(dir, file));
+			}
+			return files;
+		}
+	}
 
+	@Override
+	public void execute() throws BuildException {
+		try {
 			if (getInput() == null)
-				throw new BuildException("Missing attribute input", getLocation()); //$NON-NLS-1$
+				throw new BuildException("Missing attribute inputFile", getLocation()); //$NON-NLS-1$
 			if (getOutput() == null)
-				throw new BuildException("Missing attribute output", getLocation()); //$NON-NLS-1$
+				throw new BuildException("Missing attribute outputDir", getLocation()); //$NON-NLS-1$
 
 			Project proj = getProject();
-			List<File> featuresAndPlugins;
-			if (fileSets == null)
-				featuresAndPlugins = Collections.emptyList();
-			else {
-				featuresAndPlugins = new ArrayList<File>();
-				for (FileSet fs : fileSets) {
-					DirectoryScanner ds = fs.getDirectoryScanner(proj);
-					File dir = fs.getDir(proj);
-					for (String file : ds.getIncludedFiles())
-						featuresAndPlugins.add(new File(dir, file));
-				}
-			}
-			SourceFeatureCreator fc = new SourceFeatureCreator(getInput(), getOutput(), featuresAndPlugins);
+			List<File> featuresAndPlugins = (featuresAndBundles == null) ? null : featuresAndBundles.getFiles(proj);
+			List<File> translationFiles = (translations == null) ? null : translations.getFiles(proj);
+			SourceFeatureCreator fc = new SourceFeatureCreator(getInput(), translationFiles, getOutput(), featuresAndPlugins);
 			fc.run();
 		} catch (Exception e) {
 			throw new BuildException(e.toString(), e, this.getLocation());
@@ -104,5 +112,15 @@ public class SourceFeatureCreatorTask extends Task {
 
 	public void setOutputDir(File output) {
 		this.output = output;
+	}
+
+	public NestedFileSets createFeaturesAndBundles() {
+		featuresAndBundles = new NestedFileSets();
+		return featuresAndBundles;
+	}
+
+	public NestedFileSets createTranslations() {
+		translations = new NestedFileSets();
+		return translations;
 	}
 }

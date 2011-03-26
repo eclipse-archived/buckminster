@@ -19,6 +19,7 @@ import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.cspec.PathGroup;
 import org.eclipse.buckminster.core.cspec.model.Action;
+import org.eclipse.buckminster.core.cspec.model.ActionArtifact;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.internal.actor.ActorFactory;
 import org.eclipse.buckminster.core.metadata.model.IModelCache;
@@ -75,6 +76,14 @@ public abstract class AbstractActor implements IActor, IExecutableExtension {
 				pathList.add(base.append(path));
 		}
 		return pathList;
+	}
+
+	public static IPath getProductPath(IActionContext ctx, String productAlias, boolean atBase) throws CoreException {
+		Action action = ctx.getAction();
+		for (ActionArtifact product : action.getProductArtifacts())
+			if (productAlias.equals(product.getAlias()))
+				return getSingleAttributePath(ctx, product, atBase);
+		throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_find_product_0_for_action_1, productAlias, action.getQualifiedName()));
 	}
 
 	public static IPath getSingleAttributePath(IActionContext ctx, Attribute attr, boolean atBase) throws CoreException {
