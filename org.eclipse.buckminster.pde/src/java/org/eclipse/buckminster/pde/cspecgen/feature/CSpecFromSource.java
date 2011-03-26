@@ -30,7 +30,6 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.equinox.internal.p2.core.helpers.StringHelper;
 import org.eclipse.pde.core.build.IBuildEntry;
 import org.eclipse.pde.internal.core.ifeature.IFeature;
-import org.eclipse.pde.internal.core.ifeature.IFeatureInfo;
 
 @SuppressWarnings("restriction")
 public class CSpecFromSource extends CSpecFromFeature {
@@ -52,18 +51,16 @@ public class CSpecFromSource extends CSpecFromFeature {
 
 	@Override
 	void createFeatureJarAction(IComponentRequest licenseFeature, IProgressMonitor monitor) throws CoreException {
-		createBinIncludesArtifact(licenseFeature, monitor);
-		createFeatureManifestAction();
-
-		CSpecBuilder cspec = getCSpec();
+		boolean versionedManifestPublic = licenseFeature == null;
+		String versionedManifest = versionedManifestPublic ? ATTRIBUTE_MANIFEST : ATTRIBUTE_VERSIONED_MANIFEST;
+		createBinIncludesArtifact(licenseFeature, versionedManifest, monitor);
+		createFeatureManifestAction(versionedManifest, versionedManifestPublic);
 
 		// Create the action that builds the final jar file for the feature
 		//
 		ActionBuilder featureJarBuilder = addAntAction(ATTRIBUTE_FEATURE_JAR, TASK_CREATE_FEATURE_JAR, false);
 		featureJarBuilder.addLocalPrerequisite(ATTRIBUTE_MANIFEST, ALIAS_MANIFEST);
-
-		if (cspec.getAttribute(ATTRIBUTE_JAR_CONTENTS) != null)
-			featureJarBuilder.addLocalPrerequisite(ATTRIBUTE_JAR_CONTENTS);
+		featureJarBuilder.addLocalPrerequisite(ATTRIBUTE_JAR_CONTENTS);
 		featureJarBuilder.setPrerequisitesAlias(ALIAS_REQUIREMENTS);
 
 		featureJarBuilder.setProductAlias(ALIAS_OUTPUT);
@@ -74,33 +71,23 @@ public class CSpecFromSource extends CSpecFromFeature {
 
 	@Override
 	void createFeatureSourceJarAction() throws CoreException {
-		boolean translations = isLocalized(feature.getLabel()) || isLocalized(feature.getProviderName());
-		if (!translations) {
-			IFeatureInfo license = feature.getFeatureInfo(IFeature.INFO_LICENSE);
-			if (license != null)
-				translations = isLocalized(license.getLabel());
-			if (!translations) {
-				IFeatureInfo copyright = feature.getFeatureInfo(IFeature.INFO_COPYRIGHT);
-				if (copyright != null)
-					translations = isLocalized(copyright.getLabel());
-			}
-		}
-		createFeatureSourceManifestAction(translations);
-
 		CSpecBuilder cspec = getCSpec();
+		boolean translations = cspec.getAttribute(ATTRIBUTE_BIN_INCLUDES) != null;
+		createFeatureSourceManifestAction(translations);
 
 		// Create the action that builds the jar file with all source bundles
 		// for the feature
 		//
 		ActionBuilder featureJarBuilder = addAntAction(ATTRIBUTE_SOURCE_FEATURE_JAR, TASK_CREATE_FEATURE_JAR, false);
 		featureJarBuilder.addLocalPrerequisite(ATTRIBUTE_SOURCE_MANIFEST, ALIAS_MANIFEST);
-		if (translations)
+		if (translations) {
+			// We use the same content as the original feature (i.e. license,
+			// etc.).
+			//
+			featureJarBuilder.addLocalPrerequisite(ATTRIBUTE_BIN_INCLUDES);
 			featureJarBuilder.addLocalPrerequisite(ATTRIBUTE_SOURCE_LOCALIZATION, ATTRIBUTE_SOURCE_LOCALIZATION);
+		}
 
-		// We use the same content as the original feature (i.e. license, etc.).
-		//
-		if (cspec.getArtifactBuilder(ATTRIBUTE_JAR_CONTENTS) != null)
-			featureJarBuilder.addLocalPrerequisite(ATTRIBUTE_JAR_CONTENTS);
 		featureJarBuilder.setPrerequisitesAlias(ALIAS_REQUIREMENTS);
 
 		featureJarBuilder.setProductAlias(ALIAS_OUTPUT);
@@ -131,9 +118,10 @@ public class CSpecFromSource extends CSpecFromFeature {
 		}
 	}
 
-	private void createBinIncludesArtifact(IComponentRequest licenseFeature, IProgressMonitor monitor) throws CoreException {
+	private void createBinIncludesArtifact(IComponentRequest licenseFeature, String versionedManifest, IProgressMonitor monitor) throws CoreException {
 		CSpecBuilder cspec = getCSpec();
 		ArtifactBuilder binIncludes = cspec.createArtifactBuilder();
+		binIncludes.setPublic(false);
 
 		if (buildProperties == null) {
 			for (String path : getReader().list(monitor)) {
@@ -165,26 +153,29 @@ public class CSpecFromSource extends CSpecFromFeature {
 		}
 
 		if (licenseFeature == null) {
+			GroupBuilder jarContents = cspec.addGroup(ATTRIBUTE_JAR_CONTENTS, true);
 			if (!binIncludes.getPaths().isEmpty()) {
-				binIncludes.setPublic(true);
-				binIncludes.setName(ATTRIBUTE_JAR_CONTENTS);
+				binIncludes.setName(ATTRIBUTE_BIN_INCLUDES);
 				cspec.addAttribute(binIncludes);
-			} else {
-				cspec.addGroup(ATTRIBUTE_JAR_CONTENTS, true);
+				jarContents.addLocalPrerequisite(binIncludes);
 			}
+			jarContents.addLocalPrerequisite(versionedManifest);
 		} else {
 			ActionBuilder mergeLicense = cspec.addAction(ATTRIBUTE_JAR_CONTENTS, true, MergeLicenseFeature.ID, false);
 			mergeLicense.addExternalPrerequisite(licenseFeature, CSpec.SELF_ARTIFACT).setAlias(ALIAS_LICENSE_FEATURE);
 			mergeLicense.addExternalPrerequisite(licenseFeature, ATTRIBUTE_JAR_CONTENTS).setAlias(ALIAS_LICENSE_FEATURE_CONTENTS);
 			mergeLicense.addExternalPrerequisite(licenseFeature, ATTRIBUTE_MANIFEST).setAlias(ALIAS_LICENSE_MANIFEST);
 			if (!binIncludes.getPaths().isEmpty()) {
-				binIncludes.setPublic(false);
-				binIncludes.setName(IBuildEntry.BIN_INCLUDES);
+				binIncludes.setName(ATTRIBUTE_BIN_INCLUDES + ".raw"); //$NON-NLS-1$
 				cspec.addAttribute(binIncludes);
-				mergeLicense.addLocalPrerequisite(IBuildEntry.BIN_INCLUDES, IBuildEntry.BIN_INCLUDES);
+				mergeLicense.addLocalPrerequisite(binIncludes).setAlias(IBuildEntry.BIN_INCLUDES);
 			}
-			mergeLicense.addLocalPrerequisite(ATTRIBUTE_MANIFEST, ALIAS_MANIFEST);
-			mergeLicense.setProductBase(OUTPUT_DIR.append(FEATURE_WITH_LICENSE_FOLDER));
+			mergeLicense.addLocalPrerequisite(versionedManifest, ALIAS_MANIFEST);
+			ActionArtifactBuilder output = mergeLicense.addProductArtifact(ATTRIBUTE_BIN_INCLUDES, true, OUTPUT_DIR.append(ATTRIBUTE_BIN_INCLUDES));
+			output.setAlias(ALIAS_OUTPUT);
+			ActionArtifactBuilder manifest = mergeLicense.addProductArtifact(ATTRIBUTE_MANIFEST, true, OUTPUT_DIR_TEMP.append(ATTRIBUTE_MANIFEST));
+			manifest.setAlias(ALIAS_MANIFEST);
+			manifest.addPath(Path.fromPortableString(FEATURE_MANIFEST));
 		}
 	}
 
@@ -203,7 +194,7 @@ public class CSpecFromSource extends CSpecFromFeature {
 		return copyFeatures;
 	}
 
-	private void createFeatureManifestAction() throws CoreException {
+	private void createFeatureManifestAction(String actionName, boolean asPublic) throws CoreException {
 		// Create the artifact that represents the original feature.xml file
 		//
 		IPath featureFile = new Path(FEATURE_MANIFEST);
@@ -212,7 +203,7 @@ public class CSpecFromSource extends CSpecFromFeature {
 
 		// Create the action that creates the version expanded feature.xml
 		//
-		ActionBuilder manifest = addAntAction(ATTRIBUTE_MANIFEST, TASK_EXPAND_FEATURE_VERSION, true);
+		ActionBuilder manifest = addAntAction(actionName, TASK_EXPAND_FEATURE_VERSION, asPublic);
 		manifest.addLocalPrerequisite(ATTRIBUTE_RAW_MANIFEST, ALIAS_MANIFEST);
 		manifest.addLocalPrerequisite(ATTRIBUTE_BUNDLE_JARS, ALIAS_BUNDLES);
 		manifest.addLocalPrerequisite(ATTRIBUTE_FEATURE_REFS, ALIAS_FEATURES);
@@ -220,7 +211,7 @@ public class CSpecFromSource extends CSpecFromFeature {
 			manifest.addLocalPrerequisite(ATTRIBUTE_BUILD_PROPERTIES, ALIAS_PROPERTIES);
 
 		manifest.setProductAlias(ALIAS_OUTPUT);
-		manifest.setProductBase(OUTPUT_DIR_TEMP.append("manifest")); //$NON-NLS-1$
+		manifest.setProductBase(OUTPUT_DIR_TEMP.append(actionName));
 		manifest.addProductPath(featureFile);
 	}
 
@@ -238,6 +229,7 @@ public class CSpecFromSource extends CSpecFromFeature {
 			manifestResult.setAlias(ALIAS_OUTPUT);
 			ArtifactBuilder translatedResult = manifest.addProductArtifact(ATTRIBUTE_SOURCE_LOCALIZATION, true, productCommonPath);
 			translatedResult.addPath(new Path("feature.properties")); //$NON-NLS-1$
+			manifest.addLocalPrerequisite(ATTRIBUTE_BIN_INCLUDES, ALIAS_TRANSLATIONS);
 		} else {
 			manifest = addAntAction(ATTRIBUTE_SOURCE_MANIFEST, TASK_CREATE_SOURCE_FEATURE, true);
 			manifest.setProductAlias(ALIAS_OUTPUT);

@@ -73,16 +73,19 @@ public class SourceFeatureCreator implements IPDEConstants, IBuildPropertiesCons
 
 	private final File outputFile;
 
-	private List<File> featuresAndBundles;
+	private final List<File> translationFiles;
+
+	private final List<File> featuresAndBundles;
 
 	private Map<String, String> translations;
 
 	private Map<String, String> usedTranslations;
 
-	public SourceFeatureCreator(File inputFile, File outputFile, List<File> featuresAndBundles) {
+	public SourceFeatureCreator(File inputFile, List<File> translationFiles, File outputFile, List<File> featuresAndBundles) {
 		this.inputFile = inputFile;
 		this.outputFile = outputFile;
 		this.featuresAndBundles = featuresAndBundles;
+		this.translationFiles = translationFiles;
 	}
 
 	public void run() throws CoreException, FileNotFoundException {
@@ -209,17 +212,23 @@ public class SourceFeatureCreator implements IPDEConstants, IBuildPropertiesCons
 			return false;
 
 		if (translations == null) {
-			InputStream inStream = null;
-			try {
-				// We need to get hold of the feature.properties from the
-				// original source
-				inStream = new BufferedInputStream(new FileInputStream(new File(ctx.getComponentLocation().toFile(), "feature.properties"))); //$NON-NLS-1$
-				translations = new BMProperties(inStream);
-			} catch (IOException e) {
-				translations = Collections.emptyMap();
-			} finally {
-				IOUtils.close(inStream);
+			// We need to get hold of the feature.properties from the
+			// original source
+			for (File translationFile : translationFiles) {
+				if ("feature.properties".equals(translationFile.getName())) { //$NON-NLS-1$
+					InputStream inStream = null;
+					try {
+						inStream = new BufferedInputStream(new FileInputStream(translationFile));
+						translations = new BMProperties(inStream);
+					} catch (IOException e) {
+					} finally {
+						IOUtils.close(inStream);
+					}
+					break;
+				}
 			}
+			if (translations == null)
+				translations = Collections.emptyMap();
 		}
 		String mapKey = key.substring(1);
 		String translated = translations.get(mapKey);

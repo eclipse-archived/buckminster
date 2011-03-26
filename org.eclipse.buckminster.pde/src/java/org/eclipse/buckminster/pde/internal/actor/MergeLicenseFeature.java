@@ -34,6 +34,7 @@ import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.pde.internal.model.EditableFeatureModel;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
+import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -90,9 +91,10 @@ public class MergeLicenseFeature extends AbstractActor {
 	@Override
 	protected IStatus internalPerform(IActionContext ctx, IProgressMonitor monitor) throws CoreException {
 		Action action = ctx.getAction();
-		IPath outputPath = AbstractActor.getSingleAttributePath(ctx, action, false);
+		IPath outputPath = AbstractActor.getProductPath(ctx, IPDEConstants.ALIAS_OUTPUT, true);
+		IPath manifestPath = AbstractActor.getProductPath(ctx, IPDEConstants.ALIAS_MANIFEST, true);
 		IPath licenseFeaturePath = null;
-		IPath manifestPath = null;
+		IPath versionedManifestPath = null;
 		IPath licenseManifestPath = null;
 		CSpec cspec = action.getCSpec();
 		Attribute binIncludes = null;
@@ -113,7 +115,7 @@ public class MergeLicenseFeature extends AbstractActor {
 				if (rt == null)
 					continue;
 
-				manifestPath = AbstractActor.getSingleAttributePath(ctx, rt, true);
+				versionedManifestPath = AbstractActor.getSingleAttributePath(ctx, rt, true);
 				continue;
 			}
 			if (IPDEConstants.ALIAS_LICENSE_MANIFEST.equals(preq.getAlias())) {
@@ -137,7 +139,7 @@ public class MergeLicenseFeature extends AbstractActor {
 		if (licenseFeaturePath == null)
 			throw new MissingPrerequisiteException(action, IPDEConstants.ALIAS_LICENSE_FEATURE);
 
-		if (manifestPath == null)
+		if (versionedManifestPath == null)
 			throw new MissingPrerequisiteException(action, IPDEConstants.ALIAS_MANIFEST);
 
 		if (!outputPath.hasTrailingSeparator())
@@ -175,7 +177,9 @@ public class MergeLicenseFeature extends AbstractActor {
 			if (licenseFeatureContents != null)
 				copyBinIncludes(licenseFeatureContents, licenseFeatureDir, outputPath, ctx, monitor);
 
-			EditableFeatureModel payloadFeatureModel = new EditableFeatureModel(manifestPath.append(IPDEConstants.FEATURE_MANIFEST).toFile());
+			mergeProperties(licenseFeatureDir, payloadFeatureDir, outputDir);
+
+			EditableFeatureModel payloadFeatureModel = new EditableFeatureModel(versionedManifestPath.append(IPDEConstants.FEATURE_MANIFEST).toFile());
 			payloadFeatureModel.load();
 			EditableFeatureModel licenseFeatureModel = new EditableFeatureModel(licenseManifestPath.append(IPDEConstants.FEATURE_MANIFEST).toFile());
 			licenseFeatureModel.load();
@@ -188,11 +192,14 @@ public class MergeLicenseFeature extends AbstractActor {
 			info = licenseFeature.getFeatureInfo(IFeature.INFO_COPYRIGHT);
 			if (info != null)
 				payloadFeature.setFeatureInfo(info, IFeature.INFO_COPYRIGHT);
+			if (Trivial.trim(payloadFeature.getProviderName()) == null)
+				payloadFeature.setProviderName(licenseFeature.getProviderName());
 			payloadFeature.setLicenseFeatureID(null);
 			payloadFeature.setLicenseFeatureVersion(null);
 
-			payloadFeatureModel.save(new File(outputDir, IPDEConstants.FEATURE_MANIFEST));
-			mergeProperties(licenseFeatureDir, payloadFeatureDir, outputDir);
+			File manifestDir = manifestPath.toFile();
+			manifestDir.mkdirs();
+			payloadFeatureModel.save(new File(manifestDir, IPDEConstants.FEATURE_MANIFEST));
 		} catch (IOException e) {
 			throw BuckminsterException.wrap(e);
 		}

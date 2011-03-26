@@ -601,6 +601,8 @@ public class Messages extends NLS {
 
 	public static String workspace_disable_in_query;
 
+	public static String unable_to_find_product_0_for_action_1;
+
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);

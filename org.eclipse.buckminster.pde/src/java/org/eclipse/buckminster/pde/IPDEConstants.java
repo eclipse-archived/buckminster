@@ -33,6 +33,8 @@ public interface IPDEConstants {
 
 	static final String ALIAS_MANIFEST = "manifest"; //$NON-NLS-1$
 
+	static final String ALIAS_TRANSLATIONS = "translations"; //$NON-NLS-1$
+
 	static final String ALIAS_OUTPUT = "action.output"; //$NON-NLS-1$
 
 	static final String ALIAS_PROPERTIES = "properties"; //$NON-NLS-1$
@@ -120,6 +122,8 @@ public interface IPDEConstants {
 
 	static final String ATTRIBUTE_JAR_CONTENTS = "jar.contents"; //$NON-NLS-1$
 
+	static final String ATTRIBUTE_BIN_INCLUDES = "bin.includes"; //$NON-NLS-1$
+
 	/**
 	 * Denotes the external classpath for the bundle. This will be the sum of
 	 * all exported binaries from the imported bundles plus the exported
@@ -128,6 +132,8 @@ public interface IPDEConstants {
 	static final String ATTRIBUTE_JAVA_BINARIES = WellKnownExports.JAVA_BINARIES;
 
 	static final String ATTRIBUTE_MANIFEST = "manifest"; //$NON-NLS-1$
+
+	static final String ATTRIBUTE_TRANSLATIONS = "translations"; //$NON-NLS-1$
 
 	/**
 	 * Denotes a list consisting of all product configurations contained in the
@@ -145,6 +151,8 @@ public interface IPDEConstants {
 	static final String ATTRIBUTE_RAW_ABOUT_MAPPINGS = "raw.about.mappings"; //$NON-NLS-1$
 
 	static final String ATTRIBUTE_RAW_MANIFEST = "raw.manifest"; //$NON-NLS-1$
+
+	static final String ATTRIBUTE_VERSIONED_MANIFEST = "versioned.manifest"; //$NON-NLS-1$
 
 	/**
 	 * <p>
