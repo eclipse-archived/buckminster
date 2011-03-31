@@ -9,7 +9,9 @@
 package org.eclipse.buckminster.ui.providers;
 
 import org.eclipse.buckminster.core.cspec.ICSpecData;
+import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
+import org.eclipse.buckminster.core.cspec.model.Group;
 import org.eclipse.buckminster.core.metadata.IResolution;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.version.VersionHelper;
@@ -26,9 +28,10 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.equinox.p2.metadata.Version;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
-import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
+import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 /**
  * A default LabelProvider for data elements found in Buckminster artifacts and
@@ -52,6 +55,10 @@ public class BuckminsterLabelProvider extends ColumnLabelProvider implements ISt
 
 	private Image dependencyImage;
 
+	private Image groupImage;
+
+	private Image actionImage;
+
 	public BuckminsterLabelProvider() {
 	}
 
@@ -71,6 +78,10 @@ public class BuckminsterLabelProvider extends ColumnLabelProvider implements ISt
 			dependencyImage.dispose();
 		if (dependantImage != null)
 			dependantImage.dispose();
+		if (groupImage != null)
+			groupImage.dispose();
+		if (actionImage != null)
+			actionImage.dispose();
 
 		// note - do not dispose of images that were not created !
 		super.dispose();
@@ -102,6 +113,16 @@ public class BuckminsterLabelProvider extends ColumnLabelProvider implements ISt
 
 		if (element instanceof ComponentReference)
 			return ((ComponentReference) element).getMode() == ComponentReference.Mode.IN ? getDependantImage() : getDependencyImage();
+
+		if (element instanceof Attribute) {
+			Attribute attribute = (Attribute) element;
+			if (attribute.isPublic()) {
+				if (attribute instanceof Group) {
+					return getGroupImage();
+				}
+				return getActionImage();
+			}
+		}
 
 		// Parents default to Folder
 		if (selected instanceof BasicTreeParentDataNode)
@@ -146,6 +167,11 @@ public class BuckminsterLabelProvider extends ColumnLabelProvider implements ISt
 			}
 			return bld;
 		}
+		if (element instanceof Attribute) {
+			Attribute attr = (Attribute) element;
+			StyledString bld = new StyledString(attr.getName());
+			return bld;
+		}
 
 		if (element instanceof ICSpecData) {
 			return new StyledString(Messages.component_specification_and_cspec_in_paranthesis);
@@ -160,6 +186,13 @@ public class BuckminsterLabelProvider extends ColumnLabelProvider implements ISt
 	@Override
 	public String getText(Object element) {
 		return getStyledText(element).toString();
+	}
+
+	private Image getActionImage() {
+		if (actionImage == null) {
+			actionImage = AbstractUIPlugin.imageDescriptorFromPlugin(UiPlugin.getID(), "icons/action.gif").createImage(); //$NON-NLS-1$
+		}
+		return actionImage;
 	}
 
 	private Image getComponentImage() {
@@ -202,5 +235,12 @@ public class BuckminsterLabelProvider extends ColumnLabelProvider implements ISt
 		if (projectImage == null)
 			projectImage = UiPlugin.getImageDescriptor("icons/prj_obj.gif").createImage(); //$NON-NLS-1$
 		return projectImage;
+	}
+
+	private Image getGroupImage() {
+		if (groupImage == null) {
+			groupImage = AbstractUIPlugin.imageDescriptorFromPlugin(UiPlugin.getID(), "icons/group.gif").createImage(); //$NON-NLS-1$
+		}
+		return groupImage;
 	}
 }
