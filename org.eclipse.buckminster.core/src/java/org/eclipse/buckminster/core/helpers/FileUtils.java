@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.channels.FileChannel;
 import java.security.DigestOutputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -285,6 +286,16 @@ public abstract class FileUtils {
 	}
 
 	public static long copyFile(InputStream input, OutputStream output, IProgressMonitor monitor) throws IOException {
+		if (input instanceof FileInputStream && output instanceof FileOutputStream) {
+			// Use nio style copying with FileChannels
+			FileChannel in = ((FileInputStream) input).getChannel();
+			FileChannel out = ((FileOutputStream) output).getChannel();
+			long size = in.size();
+			if (in.transferTo(0, size, out) != size)
+				throw new IOException("Incomplete copy!"); //$NON-NLS-1$
+			MonitorUtils.complete(monitor);
+			return size;
+		}
 		return copyFile(input, output, new byte[0x2000], monitor);
 	}
 

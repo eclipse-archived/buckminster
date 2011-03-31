@@ -8,9 +8,10 @@
 
 package org.eclipse.buckminster.pde.cspecgen.bundle;
 
+import java.io.File;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -19,6 +20,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
+import org.eclipse.buckminster.ant.actor.CopyActor;
 import org.eclipse.buckminster.ant.tasks.VersionQualifierTask;
 import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.cspec.WellknownActions;
@@ -32,15 +34,18 @@ import org.eclipse.buckminster.core.cspec.builder.GroupBuilder;
 import org.eclipse.buckminster.core.cspec.builder.PrerequisiteBuilder;
 import org.eclipse.buckminster.core.cspec.model.UpToDatePolicy;
 import org.eclipse.buckminster.core.ctype.IComponentType;
+import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.core.reader.IReaderType;
+import org.eclipse.buckminster.core.reader.LocalReader;
 import org.eclipse.buckminster.core.reader.ProjectDescReader;
 import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.jdt.ClasspathReader;
 import org.eclipse.buckminster.pde.cspecgen.CSpecGenerator;
 import org.eclipse.buckminster.pde.internal.actor.FragmentsActor;
 import org.eclipse.buckminster.pde.tasks.VersionConsolidator;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.core.internal.resources.LinkDescription;
@@ -288,12 +293,23 @@ public class CSpecFromSource extends CSpecGenerator {
 		// (build entries)
 		// 3. Pre-built extra jar files present in the bundle.
 		//
-		String bundleClassPath = null;
-		IBuildEntry binIncludesEntry = build.getEntry(IBuildEntry.BIN_INCLUDES);
-		Set<String> binIncludesSet = null;
-		if (binIncludesEntry != null)
-			binIncludesSet = new HashSet<String>(Arrays.asList(binIncludesEntry.getTokens()));
+		List<String> binIncludes;
+		List<String> srcIncludes;
+		if (getReader() instanceof LocalReader) {
+			File baseDir;
+			try {
+				baseDir = new File(((LocalReader) getReader()).getURL().toURI());
+			} catch (URISyntaxException e) {
+				throw BuckminsterException.wrap(e);
+			}
+			binIncludes = expandBinFiles(baseDir, build);
+			srcIncludes = expandSrcFiles(baseDir, build);
+		} else {
+			binIncludes = Collections.emptyList();
+			srcIncludes = Collections.emptyList();
+		}
 
+		String bundleClassPath = null;
 		if (plugin instanceof BundlePlugin) {
 			IBundle bundle = ((BundlePlugin) plugin).getBundle();
 			setFilter(bundle.getHeader(ICoreConstants.PLATFORM_FILTER));
@@ -317,7 +333,7 @@ public class CSpecFromSource extends CSpecGenerator {
 						//
 						continue;
 
-					if (binIncludesSet.contains(token))
+					if (binIncludes.contains(token))
 						// This one is covered by bin.includes so don't add it
 						// here
 						continue;
@@ -405,7 +421,7 @@ public class CSpecFromSource extends CSpecGenerator {
 		//
 		if (jarsToCompile != null) {
 			for (String jarName : jarsToCompile)
-				derivedArtifacts.add(createJarAction(jarName, classPath, build, simpleBundle ? eclipseBuildProducts : null));
+				derivedArtifacts.add(createJarAction(jarName, classPath, build, outputMap, simpleBundle ? eclipseBuildProducts : null));
 		}
 
 		if (simpleBundle) {
@@ -424,13 +440,10 @@ public class CSpecFromSource extends CSpecGenerator {
 		boolean includeBuildProps = false;
 		boolean considerAboutMappings = VersionConsolidator.getBooleanProperty(getReader().getNodeQuery().getProperties(),
 				PROP_PDE_CONSIDER_ABOUT_MAPPINGS, true);
-		if (binIncludesEntry != null) {
+		if (!binIncludes.isEmpty()) {
 			GroupBuilder binIncludesSource = null;
 			cnt = 0;
-			for (String token : expandIncludes(binIncludesEntry.getTokens())) {
-				if (token.length() == 0)
-					continue;
-
+			for (String token : binIncludes) {
 				if (BUNDLE_FILE.equalsIgnoreCase(token))
 					//
 					// Handled separately (might be derived)
@@ -450,14 +463,14 @@ public class CSpecFromSource extends CSpecGenerator {
 					continue;
 
 				if (binIncludesSource == null)
-					binIncludesSource = cspec.addGroup(IBuildEntry.BIN_INCLUDES, false);
+					binIncludesSource = cspec.addGroup(ATTRIBUTE_BIN_INCLUDES, false);
 
 				if (considerAboutMappings && ABOUT_MAPPINGS_FILE.equalsIgnoreCase(token)) {
 					AttributeBuilder aboutMappings = addAboutMappingsAction(binInclude, projectRootReplacement[0]);
 					binIncludesSource.addLocalPrerequisite(aboutMappings);
 				} else {
 					IPath biPath = resolveLink(binInclude, projectRootReplacement);
-					ArtifactBuilder ab = cspec.addArtifact(IBuildEntry.BIN_INCLUDES + '_' + cnt++, false, projectRootReplacement[0]);
+					ArtifactBuilder ab = cspec.addArtifact(ATTRIBUTE_BIN_INCLUDES + '_' + cnt++, false, projectRootReplacement[0]);
 					ab.addPath(biPath);
 					binIncludesSource.addLocalPrerequisite(ab);
 				}
@@ -465,27 +478,23 @@ public class CSpecFromSource extends CSpecGenerator {
 
 			if (binIncludesSource != null) {
 				normalizeGroup(binIncludesSource);
-				jarContents.addLocalPrerequisite(IBuildEntry.BIN_INCLUDES);
+				jarContents.addLocalPrerequisite(ATTRIBUTE_BIN_INCLUDES);
 			}
 			if (includeBuildProps)
 				jarContents.addLocalPrerequisite(ATTRIBUTE_BUILD_PROPERTIES);
 		}
 
 		GroupBuilder srcIncludesSource = null;
-		IBuildEntry srcIncludesEntry = build.getEntry(IBuildEntry.SRC_INCLUDES);
-		if (srcIncludesEntry != null) {
+		if (!srcIncludes.isEmpty()) {
 			cnt = 0;
-			for (String token : expandIncludes(srcIncludesEntry.getTokens())) {
-				if (token.length() == 0)
-					continue;
-
+			for (String token : srcIncludes) {
 				IPath srcInclude = new Path(token);
 
 				if (srcIncludesSource == null)
-					srcIncludesSource = cspec.addGroup(IBuildEntry.SRC_INCLUDES, false);
+					srcIncludesSource = cspec.addGroup(ATTRIBUTE_SRC_INCLUDES, false);
 
 				IPath biPath = resolveLink(srcInclude, projectRootReplacement);
-				ArtifactBuilder ab = cspec.addArtifact(IBuildEntry.SRC_INCLUDES + '_' + cnt++, false, projectRootReplacement[0]);
+				ArtifactBuilder ab = cspec.addArtifact(ATTRIBUTE_SRC_INCLUDES + '_' + cnt++, false, projectRootReplacement[0]);
 				ab.addPath(biPath);
 				srcIncludesSource.addLocalPrerequisite(ab);
 			}
@@ -497,12 +506,26 @@ public class CSpecFromSource extends CSpecGenerator {
 			srcIncludesSource.addLocalPrerequisite(buildSource);
 		}
 
-		if (simpleBundle && binIncludesSet != null) {
+		if (simpleBundle && !binIncludes.isEmpty()) {
 			// These products from the eclipse.build will contain the .class
 			// files for the bundle
 			//
+			String excludesStr = null;
+			IBuildEntry excludes = build.getEntry(PROPERTY_EXCLUDE_PREFIX + '.');
+			if (excludes != null)
+				excludesStr = TextUtils.concat(excludes.getTokens(), ",");
+
 			for (AttributeBuilder product : eclipseBuildProducts.values()) {
-				jarContents.addLocalPrerequisite(product);
+				if (excludesStr == null)
+					jarContents.addLocalPrerequisite(product);
+				else {
+					String pruneName = product.getName() + ".pruned"; //$NON-NLS-1$
+					ActionBuilder prune = cspec.addAction(pruneName, false, CopyActor.ID, false);
+					prune.addLocalPrerequisite(product);
+					prune.addProperty(CopyActor.PROP_EXCLUDES, excludesStr, false);
+					prune.setProductBase(OUTPUT_DIR_TEMP.append(pruneName));
+					jarContents.addLocalPrerequisite(prune);
+				}
 			}
 		}
 
@@ -651,8 +674,8 @@ public class CSpecFromSource extends CSpecGenerator {
 		return resolveLink(classpathEntryPath.removeFirstSegments(1).addTrailingSeparator(), projectRootReplacement);
 	}
 
-	private IPath createJarAction(String jarName, IClasspathEntry[] classPath, IBuild build, Map<IPath, AttributeBuilder> eclipseBuildProducts)
-			throws CoreException {
+	private IPath createJarAction(String jarName, IClasspathEntry[] classPath, IBuild build, Map<IPath, IPath> outputMap,
+			Map<IPath, AttributeBuilder> eclipseBuildProducts) throws CoreException {
 		CSpecBuilder cspec = getCSpec();
 		IPath jarPath = new Path(jarName);
 
@@ -675,8 +698,7 @@ public class CSpecFromSource extends CSpecGenerator {
 
 		if (missingEntries.length > 0) {
 			// We have sources that are not input to the eclipse.build. We need
-			// some
-			// custom action here in order to deal with them.
+			// some custom action here in order to deal with them.
 			// TODO: investigate
 			ArtifactBuilder rougeSources = cspec.addArtifact(PREFIX_ROUGE_SOURCE + jarFlatName, false, null);
 			for (IPath notFound : missingEntries)
@@ -685,8 +707,7 @@ public class CSpecFromSource extends CSpecGenerator {
 		}
 
 		// Remaining sources corresponds to IClasspathEntries in the development
-		// classpath
-		// so let's trust the output from the eclipse.build
+		// classpath so let's trust the output from the eclipse.build
 		//
 		IPath[] projectRootReplacement = new IPath[1];
 		IPath defaultOutputLocation = getDefaultOutputLocation(classPath, projectRootReplacement);
@@ -702,6 +723,26 @@ public class CSpecFromSource extends CSpecGenerator {
 			// Several source entries might share the same output folder
 			//
 			String artifactName = getArtifactName(output);
+			IPath targetOutput = outputMap.get(output);
+			if (targetOutput != null) {
+				IBuildEntry excludes = build.getEntry(PROPERTY_EXCLUDE_PREFIX + targetOutput.toPortableString());
+				if (excludes != null) {
+					String pruneName = artifactName + ".pruned"; //$NON-NLS-1$
+					if (cspec.getAttribute(pruneName) != null)
+						continue;
+
+					String excludesString = TextUtils.concat(excludes.getTokens(), ","); //$NON-NLS-1$
+					ActionBuilder prune = cspec.addAction(pruneName, false, CopyActor.ID, false);
+					prune.addProperty(CopyActor.PROP_EXCLUDES, excludesString, false);
+					prune.addLocalPrerequisite(artifactName);
+					prune.setProductBase(OUTPUT_DIR_TEMP.append(pruneName));
+					action.addLocalPrerequisite(pruneName);
+					if (eclipseBuildProducts != null)
+						eclipseBuildProducts.remove(output);
+					continue;
+				}
+			}
+
 			if (action.getPrerequisite(artifactName) == null) {
 				action.addLocalPrerequisite(artifactName);
 				if (eclipseBuildProducts != null)

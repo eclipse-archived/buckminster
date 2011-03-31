@@ -18,6 +18,10 @@
 	</extension>
 	<extension point="org.eclipse.buckminster.core.actors">
 		<actor
+			ID="copy"
+			class="org.eclipse.buckminster.ant.actor.CopyActor"
+			name="Copy Actor" />
+		<actor
 			ID="ant"
 			class="org.eclipse.buckminster.ant.actor.AntActor"
 			name="Ant Actor" />
