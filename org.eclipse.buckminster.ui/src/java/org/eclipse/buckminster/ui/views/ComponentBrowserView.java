@@ -8,16 +8,23 @@
 
 package org.eclipse.buckminster.ui.views;
 
+import java.io.File;
+import java.util.ArrayList;
+
+import org.eclipse.buckminster.core.cspec.IAction;
 import org.eclipse.buckminster.core.cspec.ICSpecData;
+import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.generic.model.tree.ITreeParentDataNode;
 import org.eclipse.buckminster.generic.ui.GenericUiPlugin;
 import org.eclipse.buckminster.generic.ui.actions.IBrowseable;
 import org.eclipse.buckminster.generic.ui.actions.IBrowseableFeed;
 import org.eclipse.buckminster.generic.ui.actions.ViewInBrowserAction;
+import org.eclipse.buckminster.ui.InvokeActionJob;
 import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.buckminster.ui.UiPlugin;
 import org.eclipse.buckminster.ui.ViewCSpecAction;
+import org.eclipse.buckminster.ui.dialogs.InvokeActionDialog;
 import org.eclipse.buckminster.ui.providers.BuckminsterLabelProvider;
 import org.eclipse.buckminster.ui.providers.ResolutionsTreeContentProvider;
 import org.eclipse.core.runtime.IAdaptable;
@@ -37,6 +44,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeExpansionEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
@@ -213,6 +221,23 @@ public class ComponentBrowserView extends ViewPart {
 						vca.run(this);
 						return;
 					}
+					// Schedule the InvokeActionJob
+					Attribute attribute = (Attribute) ((IAdaptable) obj).getAdapter(IAction.class);
+					if (attribute != null) {
+						final ArrayList<Attribute> attributes = new ArrayList<Attribute>();
+						attributes.add(attribute);
+
+						InvokeActionDialog dialog = new InvokeActionDialog(getSite().getShell(), Messages.invoke_action, attributes);
+
+						if (dialog.open() == Window.OK) {
+							File propertiesFile = dialog.getPropertiesFile();
+							boolean forceRebuild = dialog.isForceRebuild();
+							InvokeActionJob job = new InvokeActionJob(attributes.get(0).getName(), attributes, propertiesFile, forceRebuild);
+							job.schedule();
+						}
+						return;
+					}
+
 					IBrowseableFeed feed = (IBrowseableFeed) ((IAdaptable) obj).getAdapter(IBrowseableFeed.class);
 					if (feed != null) {
 						IObjectActionDelegate delegate = UiPlugin.getDefault().getOpenRssFeedAction();

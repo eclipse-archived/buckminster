@@ -9,26 +9,27 @@
 package org.eclipse.buckminster.ui.adapters;
 
 import java.util.Collection;
-import java.util.Map;
 
+import org.eclipse.buckminster.core.cspec.model.Action;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
-import org.eclipse.buckminster.core.cspec.model.CSpec;
-import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.generic.model.tree.BasicTreeParentDataNode;
+import org.eclipse.buckminster.generic.model.tree.ITreeDataNode;
+import org.eclipse.buckminster.ui.Messages;
 
-public class CSpecDataNode extends BasicTreeParentDataNode {
+/**
+ * @author macon
+ * 
+ */
+public class ActionsDataNode extends BasicTreeParentDataNode implements ITreeDataNode {
 
-	public CSpecDataNode(CSpec data) {
-		super(data);
+	public ActionsDataNode(Collection<Attribute> attributes) {
+		super(Messages.actions);
 
-		// add dependencies
-		Collection<ComponentRequest> dependencies = data.getDependencies();
-		if (dependencies != null && dependencies.size() > 0)
-			addChild(new DependenciesDataNode(dependencies));
-
-		// add actions
-		Map<String, Attribute> attributes = data.getAttributes();
-		if (attributes != null && attributes.size() > 0)
-			addChild(new ActionsDataNode(attributes.values()));
+		for (Attribute attribute : attributes) {
+			if (attribute instanceof Action && attribute.isPublic()) {
+				addChild(new ActionDataNode((Action) attribute));
+			}
+		}
 	}
+
 }
