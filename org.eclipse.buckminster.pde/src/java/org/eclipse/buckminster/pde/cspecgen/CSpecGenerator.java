@@ -13,13 +13,15 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
+import org.apache.tools.ant.DirectoryScanner;
 import org.eclipse.buckminster.ant.actor.AntActor;
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.TargetPlatform;
+import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.cspec.IComponentRequest;
 import org.eclipse.buckminster.core.cspec.builder.ActionBuilder;
 import org.eclipse.buckminster.core.cspec.builder.ArtifactBuilder;
@@ -58,6 +60,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.equinox.internal.p2.core.helpers.StringHelper;
 import org.eclipse.equinox.internal.p2.metadata.VersionFormat;
 import org.eclipse.equinox.internal.p2.publisher.eclipse.IProductDescriptor;
 import org.eclipse.equinox.internal.p2.publisher.eclipse.ProductFile;
@@ -67,12 +70,15 @@ import org.eclipse.equinox.p2.metadata.VersionRange;
 import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.osgi.service.resolver.BundleSpecification;
 import org.eclipse.osgi.util.ManifestElement;
+import org.eclipse.pde.core.build.IBuild;
+import org.eclipse.pde.core.build.IBuildEntry;
 import org.eclipse.pde.core.plugin.IFragment;
 import org.eclipse.pde.core.plugin.IFragmentModel;
 import org.eclipse.pde.core.plugin.IMatchRules;
 import org.eclipse.pde.core.plugin.IPluginBase;
 import org.eclipse.pde.core.plugin.IPluginModelBase;
 import org.eclipse.pde.internal.build.IBuildPropertiesConstants;
+import org.eclipse.pde.internal.build.IXMLConstants;
 import org.eclipse.pde.internal.core.ICoreConstants;
 import org.eclipse.pde.internal.core.ibundle.IBundleModel;
 import org.eclipse.pde.internal.core.ibundle.IBundlePluginModelBase;
@@ -87,7 +93,7 @@ import org.osgi.framework.InvalidSyntaxException;
  * 
  */
 @SuppressWarnings("restriction")
-public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEConstants {
+public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEConstants, IXMLConstants {
 	public static class ImportSpecification {
 		private final String name;
 
@@ -332,29 +338,6 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 			importSpecs[sz] = new ImportSpecification(r.getId(), new VersionRange(r.getVersion()), r.isReexported(), r.isOptional());
 		}
 		return importSpecs;
-	}
-
-	private static Pattern convertIncludeToPattern(String include) {
-		int len = include.length();
-		StringBuilder bld = new StringBuilder(len + 4);
-		for (int idx = 0; idx < len; ++idx) {
-			char c = include.charAt(idx);
-			switch (c) {
-				case '?':
-					bld.append('.');
-					break;
-				case '*':
-					bld.append('.');
-					bld.append('*');
-					break;
-				case '.':
-					bld.append('\\');
-					bld.append('.');
-				default:
-					bld.append(c);
-			}
-		}
-		return Pattern.compile(bld.toString());
 	}
 
 	private final CSpecBuilder cspecBuilder;
@@ -626,24 +609,22 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		return value;
 	}
 
-	protected List<String> expandIncludes(String[] tokens) throws CoreException {
-		if (tokens == null || tokens.length == 0)
-			return Collections.emptyList();
+	protected List<String> expandBinFiles(File baseDir, IBuild build) throws CoreException {
+		IBuildEntry includes = build.getEntry(PROPERTY_BIN_INCLUDES);
+		IBuildEntry excludes = build.getEntry(PROPERTY_BIN_EXCLUDES);
+		return expandFiles(baseDir, includes, excludes);
+	}
 
-		ArrayList<String> result = new ArrayList<String>(tokens.length);
-		for (String token : tokens) {
-			if (token.indexOf('*') >= 0) {
-				Pattern pattern = convertIncludeToPattern(token);
-				try {
-					for (FileHandle matchingFile : reader.getRootFiles(pattern, new NullProgressMonitor()))
-						result.add(matchingFile.getName());
-				} catch (IOException e) {
-					throw BuckminsterException.wrap(e);
-				}
-			} else
-				result.add(token);
-		}
-		return result;
+	protected List<String> expandBinFiles(File baseDir, Map<String, String> props) throws CoreException {
+		String includes = props.get(PROPERTY_BIN_INCLUDES);
+		String excludes = props.get(PROPERTY_BIN_EXCLUDES);
+		return expandFiles(baseDir, StringHelper.getArrayFromString(includes, ','), StringHelper.getArrayFromString(excludes, ','));
+	}
+
+	protected List<String> expandSrcFiles(File baseDir, IBuild build) throws CoreException {
+		IBuildEntry includes = build.getEntry(PROPERTY_SRC_INCLUDES);
+		IBuildEntry excludes = build.getEntry(PROPERTY_SRC_EXCLUDES);
+		return expandFiles(baseDir, includes, excludes);
 	}
 
 	protected AttributeBuilder generateRemoveDirAction(String dirTag, IPath dirPath, boolean publ) throws CoreException {
@@ -748,5 +729,103 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 			if (productConfig.isTemporary())
 				productConfig.getFile().delete();
 		}
+	}
+
+	private List<String> expandFiles(File baseDir, IBuildEntry includes, IBuildEntry excludes) throws CoreException {
+		if (includes == null && excludes == null)
+			return Collections.emptyList();
+		String[] incTokens = includes == null ? StringHelper.EMPTY_ARRAY : includes.getTokens();
+		String[] excTokens = excludes == null ? StringHelper.EMPTY_ARRAY : excludes.getTokens();
+		return expandFiles(baseDir, incTokens, excTokens);
+	}
+
+	private List<String> expandFiles(File baseDir, String[] includes, String[] excludes) throws CoreException {
+		includes = replaceVariables(includes);
+		excludes = replaceVariables(excludes);
+
+		DirectoryScanner scanner = new DirectoryScanner();
+		scanner.setBasedir(baseDir);
+		scanner.setIncludes(includes.length == 0 ? null : includes);
+		scanner.setExcludes(excludes.length == 0 ? null : excludes);
+		scanner.addDefaultExcludes();
+		scanner.scan();
+
+		// If we have includes that end with a '/' that are unaffected by
+		// excludes, then we want to retain the directory notion and
+		// not get all files.
+		String[] deselectedFiles = scanner.getDeselectedFiles();
+		ArrayList<String> plainDirs = null;
+		for (String include : includes) {
+			if (include.indexOf('*') >= 0 || include.charAt(include.length() - 1) != '/')
+				continue;
+
+			int idx = deselectedFiles.length;
+			while (--idx >= 0) {
+				if (deselectedFiles[idx].startsWith(include))
+					break;
+			}
+			if (idx < 0) {
+				if (plainDirs == null)
+					plainDirs = new ArrayList<String>();
+				plainDirs.add(include);
+			}
+		}
+
+		HashSet<String> plainDirsWithFiles = null;
+		ArrayList<String> result = new ArrayList<String>();
+		String[] includedFiles = scanner.getIncludedFiles();
+		int top = includedFiles.length;
+		for (int idx = 0; idx < top; ++idx) {
+			String includedFile = Path.fromOSString(includedFiles[idx]).toPortableString();
+			if (plainDirs != null) {
+				int ndx = plainDirs.size();
+				while (--ndx >= 0) {
+					String plainDir = plainDirs.get(ndx);
+					if (includedFile.startsWith(plainDir)) {
+						if (plainDirsWithFiles == null)
+							plainDirsWithFiles = new HashSet<String>();
+						plainDirsWithFiles.add(plainDir);
+						break;
+					}
+				}
+				if (ndx >= 0)
+					continue;
+			}
+			result.add(includedFile);
+		}
+		if (plainDirsWithFiles != null)
+			result.addAll(plainDirsWithFiles);
+		return result;
+	}
+
+	private String[] replaceVariables(String sources[]) throws CoreException {
+		if (sources == null)
+			return StringHelper.EMPTY_ARRAY;
+		int top = sources.length;
+		ArrayList<String> result = new ArrayList<String>(top);
+		for (int idx = 0; idx < top; ++idx) {
+			String source = replaceVariables(sources[idx]);
+			if (source != null)
+				result.add(source);
+		}
+		return result.toArray(new String[result.size()]);
+	}
+
+	private String replaceVariables(String source) throws CoreException {
+		if (source == null)
+			return null;
+
+		if (source.length() >= 4) {
+			source = source.replace(DESCRIPTION_VARIABLE_WS, "${target.ws}"); //$NON-NLS-1$
+			source = source.replace(DESCRIPTION_VARIABLE_OS, "${target.os}"); //$NON-NLS-1$
+			source = source.replace(DESCRIPTION_VARIABLE_ARCH, "${target.arch}"); //$NON-NLS-1$
+			source = source.replace(DESCRIPTION_VARIABLE_NL, "${target.nl}"); //$NON-NLS-1$
+		}
+		source = Trivial.trim(ExpandingProperties.expand(getProperties(), source, 0));
+
+		// Our objective is to create a fileset so we don't want the . or ./
+		if (source != null && (".".equals(source) || "./".equals(source))) //$NON-NLS-1$//$NON-NLS-2$
+			source = null;
+		return source;
 	}
 }

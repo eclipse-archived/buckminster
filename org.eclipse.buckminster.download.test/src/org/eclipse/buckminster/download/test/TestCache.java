@@ -30,8 +30,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
  */
 public class TestCache extends TestCase
 {
-	private static final String zipFile = "http://download.eclipse.org/eclipse/downloads/drops/R-3.6-201006080911/org.eclipse.releng.tools-3.6.zip";
-	private static final String zipDigest = "http://download.eclipse.org/eclipse/downloads/drops/R-3.6-201006080911/checksum/org.eclipse.releng.tools-3.6.zip.md5";
+	private static final String zipFile = "http://archive.eclipse.org/eclipse/downloads/drops/R-3.6-201006080911/org.eclipse.releng.tools-3.6.zip";
+	private static final String zipDigest = "http://archive.eclipse.org/eclipse/downloads/drops/R-3.6-201006080911/checksum/org.eclipse.releng.tools-3.6.zip.md5";
 
 	private final File m_cacheFolder;
 	private final IProgressMonitor m_monitor = new PrintingMonitor();

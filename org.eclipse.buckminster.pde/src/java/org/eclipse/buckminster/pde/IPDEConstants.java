@@ -124,6 +124,8 @@ public interface IPDEConstants {
 
 	static final String ATTRIBUTE_BIN_INCLUDES = "bin.includes"; //$NON-NLS-1$
 
+	static final String ATTRIBUTE_SRC_INCLUDES = "src.includes"; //$NON-NLS-1$
+
 	/**
 	 * Denotes the external classpath for the bundle. This will be the sum of
 	 * all exported binaries from the imported bundles plus the exported

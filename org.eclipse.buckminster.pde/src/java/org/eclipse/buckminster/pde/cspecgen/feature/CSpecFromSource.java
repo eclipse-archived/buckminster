@@ -7,6 +7,10 @@
  *****************************************************************************/
 package org.eclipse.buckminster.pde.cspecgen.feature;
 
+import java.io.File;
+import java.net.URISyntaxException;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.buckminster.core.cspec.IComponentRequest;
@@ -20,23 +24,20 @@ import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.UpToDatePolicy;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
+import org.eclipse.buckminster.core.reader.LocalReader;
 import org.eclipse.buckminster.pde.internal.actor.MergeLicenseFeature;
 import org.eclipse.buckminster.pde.tasks.SourceFeatureCreator;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.equinox.internal.p2.core.helpers.StringHelper;
 import org.eclipse.pde.core.build.IBuildEntry;
 import org.eclipse.pde.internal.core.ifeature.IFeature;
 
 @SuppressWarnings("restriction")
 public class CSpecFromSource extends CSpecFromFeature {
-	private static boolean isLocalized(String str) {
-		return str != null && str.startsWith("%"); //$NON-NLS-1$
-	}
-
 	private final Map<String, String> buildProperties;
 
 	protected CSpecFromSource(CSpecBuilder cspecBuilder, ICatalogReader reader, IFeature feature, Map<String, String> buildProperties) {
@@ -120,9 +121,9 @@ public class CSpecFromSource extends CSpecFromFeature {
 
 	private void createBinIncludesArtifact(IComponentRequest licenseFeature, String versionedManifest, IProgressMonitor monitor) throws CoreException {
 		CSpecBuilder cspec = getCSpec();
-		ArtifactBuilder binIncludes = cspec.createArtifactBuilder();
-		binIncludes.setPublic(false);
 
+		ArtifactBuilder binIncludesArtifact = cspec.createArtifactBuilder();
+		binIncludesArtifact.setPublic(false);
 		if (buildProperties == null) {
 			for (String path : getReader().list(monitor)) {
 				if (FEATURE_MANIFEST.equals(path))
@@ -130,34 +131,41 @@ public class CSpecFromSource extends CSpecFromFeature {
 					// Handled separately
 					//
 					continue;
-				binIncludes.addPath(new Path(path));
+				binIncludesArtifact.addPath(new Path(path));
 			}
 		} else {
-			cspec.addArtifact(ATTRIBUTE_BUILD_PROPERTIES, false, null).addPath(new Path(BUILD_PROPERTIES_FILE));
-			for (Map.Entry<String, String> entry : buildProperties.entrySet()) {
-				String key = entry.getKey();
-				if (IBuildEntry.BIN_INCLUDES.equals(key)) {
-					for (String path : expandIncludes(StringHelper.getArrayFromString(entry.getValue(), ','))) {
-						if (FEATURE_MANIFEST.equals(path))
-							//
-							// Handled separately
-							//
-							continue;
-
-						binIncludes.addPath(new Path(path));
-					}
-					continue;
+			List<String> binIncludes;
+			if (getReader() instanceof LocalReader) {
+				File baseDir;
+				try {
+					baseDir = new File(((LocalReader) getReader()).getURL().toURI());
+				} catch (URISyntaxException e) {
+					throw BuckminsterException.wrap(e);
 				}
+				binIncludes = expandBinFiles(baseDir, buildProperties);
+			} else {
+				binIncludes = Collections.emptyList();
+			}
+
+			cspec.addArtifact(ATTRIBUTE_BUILD_PROPERTIES, false, null).addPath(new Path(BUILD_PROPERTIES_FILE));
+			for (String path : binIncludes) {
+				if (FEATURE_MANIFEST.equals(path))
+					//
+					// Handled separately
+					//
+					continue;
+
+				binIncludesArtifact.addPath(new Path(path));
 			}
 			MonitorUtils.complete(monitor);
 		}
 
 		if (licenseFeature == null) {
 			GroupBuilder jarContents = cspec.addGroup(ATTRIBUTE_JAR_CONTENTS, true);
-			if (!binIncludes.getPaths().isEmpty()) {
-				binIncludes.setName(ATTRIBUTE_BIN_INCLUDES);
-				cspec.addAttribute(binIncludes);
-				jarContents.addLocalPrerequisite(binIncludes);
+			if (!binIncludesArtifact.getPaths().isEmpty()) {
+				binIncludesArtifact.setName(ATTRIBUTE_BIN_INCLUDES);
+				cspec.addAttribute(binIncludesArtifact);
+				jarContents.addLocalPrerequisite(binIncludesArtifact);
 			}
 			jarContents.addLocalPrerequisite(versionedManifest);
 		} else {
@@ -165,10 +173,10 @@ public class CSpecFromSource extends CSpecFromFeature {
 			mergeLicense.addExternalPrerequisite(licenseFeature, CSpec.SELF_ARTIFACT).setAlias(ALIAS_LICENSE_FEATURE);
 			mergeLicense.addExternalPrerequisite(licenseFeature, ATTRIBUTE_JAR_CONTENTS).setAlias(ALIAS_LICENSE_FEATURE_CONTENTS);
 			mergeLicense.addExternalPrerequisite(licenseFeature, ATTRIBUTE_MANIFEST).setAlias(ALIAS_LICENSE_MANIFEST);
-			if (!binIncludes.getPaths().isEmpty()) {
-				binIncludes.setName(ATTRIBUTE_BIN_INCLUDES + ".raw"); //$NON-NLS-1$
-				cspec.addAttribute(binIncludes);
-				mergeLicense.addLocalPrerequisite(binIncludes).setAlias(IBuildEntry.BIN_INCLUDES);
+			if (!binIncludesArtifact.getPaths().isEmpty()) {
+				binIncludesArtifact.setName(ATTRIBUTE_BIN_INCLUDES + ".raw"); //$NON-NLS-1$
+				cspec.addAttribute(binIncludesArtifact);
+				mergeLicense.addLocalPrerequisite(binIncludesArtifact).setAlias(IBuildEntry.BIN_INCLUDES);
 			}
 			mergeLicense.addLocalPrerequisite(versionedManifest, ALIAS_MANIFEST);
 			ActionArtifactBuilder output = mergeLicense.addProductArtifact(ATTRIBUTE_BIN_INCLUDES, true, OUTPUT_DIR.append(ATTRIBUTE_BIN_INCLUDES));
