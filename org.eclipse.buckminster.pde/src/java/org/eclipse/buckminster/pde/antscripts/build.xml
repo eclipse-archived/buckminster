@@ -19,10 +19,10 @@
 		<sequential>
 			<loadfile property="@{property}" srcfile="@{file}">
 				<filterchain>
-					<linecontains>
-						<contains value="Bundle-Version:"/>
-					</linecontains>
-					<replaceregex pattern="Bundle-Version: (.*)$" replace="\1"/>
+					<linecontainsregexp>
+						<regexp pattern="^Bundle-Version:"/>
+					</linecontainsregexp>
+					<replaceregex pattern="^Bundle-Version: (.*)$" replace="\1"/>
 					<striplinebreaks/>
 				</filterchain>
 			</loadfile>
@@ -36,10 +36,10 @@
 			<loadfile property="@{property}" srcfile="@{file}">
 				<filterchain>
 					<replaceregex pattern="(.*)\n\s+(.*)" replace="\1\2" flags="gm" byline="false"/>
-					<linecontains>
-						<contains value="Bundle-SymbolicName:"/>
-					</linecontains>
-					<replaceregex pattern="Bundle-SymbolicName: ([^;]+)(;.*)?$" replace="\1" flags="gm" byline="false"/>
+					<linecontainsregexp>
+						<regexp pattern="^Bundle-SymbolicName:"/>
+					</linecontainsregexp>
+					<replaceregex pattern="^Bundle-SymbolicName: ([^;]+)(;.*)?$" replace="\1" flags="gm" byline="false"/>
 					<striplinebreaks/>
 				</filterchain>
 			</loadfile>
