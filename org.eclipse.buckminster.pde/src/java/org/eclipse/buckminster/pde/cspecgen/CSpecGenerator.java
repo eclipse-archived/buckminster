@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.tools.ant.DirectoryScanner;
+import org.apache.tools.ant.types.selectors.SelectorUtils;
 import org.eclipse.buckminster.ant.actor.AntActor;
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.TargetPlatform;
@@ -753,15 +754,32 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		// If we have includes that end with a '/' that are unaffected by
 		// excludes, then we want to retain the directory notion and
 		// not get all files.
-		String[] deselectedFiles = scanner.getDeselectedFiles();
+		String[] excludedFiles = scanner.getExcludedFiles();
+		if (excludedFiles.length > 0) {
+			String[] defaultExcludes = DirectoryScanner.getDefaultExcludes();
+			ArrayList<String> prunedExcludes = new ArrayList<String>();
+			for (String excludedFile : excludedFiles) {
+				boolean excludedByDefault = false;
+				for (String defaultExclude : defaultExcludes) {
+					if (SelectorUtils.matchPath(defaultExclude, excludedFile)) {
+						excludedByDefault = true;
+						break;
+					}
+				}
+				if (!excludedByDefault)
+					prunedExcludes.add(excludedFile);
+			}
+			excludedFiles = prunedExcludes.toArray(new String[prunedExcludes.size()]);
+		}
+
 		ArrayList<String> plainDirs = null;
 		for (String include : includes) {
 			if (include.indexOf('*') >= 0 || include.charAt(include.length() - 1) != '/')
 				continue;
 
-			int idx = deselectedFiles.length;
+			int idx = excludedFiles.length;
 			while (--idx >= 0) {
-				if (deselectedFiles[idx].startsWith(include))
+				if (excludedFiles[idx].startsWith(include))
 					break;
 			}
 			if (idx < 0) {
