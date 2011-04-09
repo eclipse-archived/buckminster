@@ -20,6 +20,7 @@
    <requires>
       <import plugin="org.eclipse.jgit"/>
       <import plugin="org.eclipse.egit.core"/>
+      <import plugin="org.eclipse.egit.fetchfactory"/>
    </requires>
 
    <plugin
