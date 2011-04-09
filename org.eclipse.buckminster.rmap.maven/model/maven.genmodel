@@ -16,7 +16,8 @@
   </genAnnotations>
   <foreignModel>maven.ecore</foreignModel>
   <genPackages prefix="Maven" basePackage="org.eclipse.buckminster.rmap" disposableProviderFactory="true"
-      extensibleProviderFactory="true" childCreationExtenders="true" ecorePackage="maven.ecore#/">
+      generateExampleClass="false" extensibleProviderFactory="true" childCreationExtenders="true"
+      ecorePackage="maven.ecore#/">
     <genAnnotations source="http://www.eclipse.org/emf/2002/GenModel/exporter/org.eclipse.xsd.ecore.exporter">
       <genAnnotations source="maven.xsd"/>
     </genAnnotations>
@@ -38,6 +39,8 @@
     </genClasses>
     <genClasses ecoreClass="maven.ecore#//MavenProvider">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference maven.ecore#//MavenProvider/mappings"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference maven.ecore#//MavenProvider/scopes"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute maven.ecore#//MavenProvider/transitive"/>
       <genOperations ecoreOperation="maven.ecore#//MavenProvider/getComponentName">
         <genParameters ecoreParameter="maven.ecore#//MavenProvider/getComponentName/groupId"/>
         <genParameters ecoreParameter="maven.ecore#//MavenProvider/getComponentName/artifactId"/>
@@ -45,6 +48,13 @@
       <genOperations ecoreOperation="maven.ecore#//MavenProvider/getMapEntry">
         <genParameters ecoreParameter="maven.ecore#//MavenProvider/getMapEntry/name"/>
       </genOperations>
+    </genClasses>
+    <genClasses ecoreClass="maven.ecore#//Scopes">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference maven.ecore#//Scopes/scope"/>
+    </genClasses>
+    <genClasses ecoreClass="maven.ecore#//Scope">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute maven.ecore#//Scope/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute maven.ecore#//Scope/exclude"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>

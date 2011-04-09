@@ -12,7 +12,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,10 +19,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.common.model.ExpandingProperties;
+import org.eclipse.buckminster.core.common.model.Replace;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.ctype.IComponentType;
-import org.eclipse.buckminster.core.helpers.AccessibleByteArrayOutputStream;
-import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.runtime.Logger;
@@ -48,15 +47,14 @@ public class MapFile {
 
 	private static FetchTaskFactoriesRegistry fetchTaskFactories;
 
-	public static void parse(InputStream inputStream, String streamName, List<MapFileEntry> receivingList) throws IOException {
+	public static void parse(InputStream inputStream, String streamName, Replace replace, Map<String, ? extends Object> queryProps,
+			List<MapFileEntry> receivingList) throws IOException {
 		CorePlugin core = CorePlugin.getDefault();
 		Logger logger = CorePlugin.getLogger();
 
 		if (fetchTaskFactories == null)
 			fetchTaskFactories = new FetchTaskFactoriesRegistry();
-		AccessibleByteArrayOutputStream buffer = new AccessibleByteArrayOutputStream();
-		FileUtils.substituteParameters(inputStream, buffer, '@', Collections.singletonMap("CVSTag", "HEAD")); //$NON-NLS-1$ //$NON-NLS-2$
-		BufferedReader input = new BufferedReader(new InputStreamReader(buffer.getInputStream()));
+		BufferedReader input = new BufferedReader(new InputStreamReader(inputStream));
 		String line;
 		nextLine: while ((line = input.readLine()) != null) {
 			// find first non-whitespace character on the line
@@ -77,6 +75,14 @@ public class MapFile {
 				// Just whitespace
 				continue;
 
+			if (replace != null) {
+				line = replace.replace(line);
+
+				// Expand since the replacement might have introduced
+				// property expansion constructs.
+				line = ExpandingProperties.expand(queryProps, line, 0);
+			}
+
 			Matcher m = pattern.matcher(line);
 			if (!m.matches())
 				continue;
@@ -94,12 +100,12 @@ public class MapFile {
 			IFetchFactory ff = fetchTaskFactories.getFactory(fetchType);
 			if (ff == null) {
 				// Assume that the fetchType that we encountered is part of the
-				// fetchTypeSpecific string and that the real fetchType is CVS.
+				// fetchTypeSpecific string and use the CVS IFetchFactory
+				// to parse the string.
 				//
 				fetchTypeSpecific = fetchType + ',' + fetchTypeSpecific;
-				fetchType = "CVS"; //$NON-NLS-1$
 
-				ff = fetchTaskFactories.getFactory(fetchType);
+				ff = fetchTaskFactories.getFactory("CVS"); //$NON-NLS-1$
 				if (ff == null) {
 					logger.warning(NLS.bind(Messages.no_factory_found_for_0_in_PDEmap_1, fetchType, streamName));
 					continue;

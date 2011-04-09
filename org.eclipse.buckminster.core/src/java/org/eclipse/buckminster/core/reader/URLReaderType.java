@@ -14,9 +14,11 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
@@ -81,6 +83,14 @@ public class URLReaderType extends AbstractReaderType {
 		} catch (URISyntaxException e) {
 			return null;
 		}
+	}
+
+	@Override
+	public Map<String, String> getFetchFactoryProviderProps(Map<String, String> properties, Provider delegee) {
+		Map<String, String> props = new HashMap<String, String>();
+		props.put(KeyConstants.IS_SOURCE, Boolean.FALSE.toString());
+		props.put(KeyConstants.IS_MUTABLE, Boolean.FALSE.toString());
+		return props;
 	}
 
 	@Override

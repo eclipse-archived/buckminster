@@ -2,8 +2,12 @@ package org.eclipse.buckminster.git.internal;
 
 import java.io.File;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
+import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
@@ -14,6 +18,7 @@ import org.eclipse.buckminster.core.reader.IVersionFinder;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.ProviderMatch;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -26,6 +31,8 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.egit.core.RepositoryUtil;
 import org.eclipse.egit.core.op.ConnectProviderOperation;
 import org.eclipse.jgit.lib.Constants;
+import org.eclipse.jgit.transport.URIish;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.team.core.RepositoryProvider;
 import org.eclipse.team.core.history.IFileHistory;
 import org.eclipse.team.core.history.IFileHistoryProvider;
@@ -33,8 +40,40 @@ import org.eclipse.team.core.history.IFileRevision;
 
 public class GitReaderType extends CatalogReaderType {
 	@Override
+	public String convertFetchFactoryLocator(Map<String, String> fetchFactoryLocator, String componentName) throws CoreException {
+		String repo = fetchFactoryLocator.get("repo"); //$NON-NLS-1$
+		if (repo == null)
+			throw new IllegalArgumentException(NLS.bind(Messages.git_reader_type_is_missing_required_property_0, "repo")); //$NON-NLS-1$
+		String localClone = "${workspace.root}"; //$NON-NLS-1$
+		try {
+			URIish tmpURI = new URIish(repo);
+			IPath tmpPath = Path.fromPortableString(tmpURI.getPath());
+			localClone += '/' + tmpPath.lastSegment();
+		} catch (URISyntaxException e) {
+			throw BuckminsterException.wrap(e);
+		}
+		String path = fetchFactoryLocator.get("path"); //$NON-NLS-1$
+		if (path != null)
+			localClone += ',' + path;
+		return localClone;
+	}
+
+	@Override
 	public URI getArtifactURL(Resolution resolution, RMContext context) throws CoreException {
 		return null;
+	}
+
+	@Override
+	public Map<String, String> getFetchFactoryProviderProps(Map<String, String> fetchFactoryLocator, Provider delegee) {
+		Map<String, String> props = new HashMap<String, String>();
+		props.put(KeyConstants.IS_SOURCE, Boolean.TRUE.toString());
+		props.put(KeyConstants.IS_MUTABLE, Boolean.TRUE.toString());
+
+		String repo = fetchFactoryLocator.get("repo"); //$NON-NLS-1$
+		if (repo == null)
+			throw new IllegalArgumentException(NLS.bind(Messages.git_reader_type_is_missing_required_property_0, "repo")); //$NON-NLS-1$
+		props.put(IPropertyKeys.PROP_REMOTE_URI, repo);
+		return props;
 	}
 
 	@Override

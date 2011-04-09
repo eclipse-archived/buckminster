@@ -53,7 +53,7 @@ public class VersionFinder extends AbstractSCCSVersionFinder {
 
 	@Override
 	protected List<RevisionEntry> getBranchesOrTags(boolean branches, IProgressMonitor monitor) throws CoreException {
-		Repository repo = repoAccess.getRepository(monitor);
+		Repository repo = repoAccess.getRepository(null, monitor);
 		RevWalk revWalk = new RevWalk(repo);
 		try {
 			ArrayList<RevisionEntry> branchesOrTags = new ArrayList<RevisionEntry>();
@@ -112,7 +112,7 @@ public class VersionFinder extends AbstractSCCSVersionFinder {
 
 	@Override
 	protected RevisionEntry getTrunk(IProgressMonitor monitor) throws CoreException {
-		Repository repo = repoAccess.getRepository(monitor);
+		Repository repo = repoAccess.getRepository(null, monitor);
 		RevWalk revWalk = new RevWalk(repo);
 		try {
 			String component = repoAccess.getComponent();

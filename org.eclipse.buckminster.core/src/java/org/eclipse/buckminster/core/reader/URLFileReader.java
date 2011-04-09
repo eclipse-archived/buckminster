@@ -70,6 +70,11 @@ public class URLFileReader extends AbstractReader implements IFileReader {
 		return fileInfo;
 	}
 
+	@Override
+	public File getLocation() throws CoreException {
+		return FileUtils.getFile(getURL());
+	}
+
 	public final URI getURI() {
 		return uri;
 	}

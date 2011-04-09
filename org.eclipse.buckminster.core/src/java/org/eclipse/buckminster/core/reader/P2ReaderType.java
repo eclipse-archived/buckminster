@@ -13,9 +13,11 @@ import java.io.File;
 import java.net.URI;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.ctype.IComponentType;
@@ -148,6 +150,14 @@ public class P2ReaderType extends CatalogReaderType {
 	@Override
 	public URI getArtifactURL(Resolution resolution, RMContext context) throws CoreException {
 		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Map<String, String> getFetchFactoryProviderProps(Map<String, String> properties, Provider delegee) {
+		Map<String, String> props = new HashMap<String, String>();
+		props.put(KeyConstants.IS_SOURCE, Boolean.FALSE.toString());
+		props.put(KeyConstants.IS_MUTABLE, Boolean.FALSE.toString());
+		return props;
 	}
 
 	@Override

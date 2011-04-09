@@ -11,6 +11,7 @@
 package org.eclipse.buckminster.core.reader;
 
 import java.io.Closeable;
+import java.io.File;
 
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
@@ -48,6 +49,13 @@ public interface IComponentReader extends IResolverBackchannel, Closeable {
 	 * Returns the security context used for connect (if any).
 	 */
 	IConnectContext getConnectContext();
+
+	/**
+	 * Returns the location of the artifact (directory or file) that this reader
+	 * can read, or <code>null</code> if that location cannot be represented as
+	 * a {@link java.io.File file}.
+	 */
+	File getLocation() throws CoreException;
 
 	/**
 	 * Returns the current node query.

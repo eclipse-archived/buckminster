@@ -13,25 +13,27 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.XMLConstants;
 import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.common.model.Format;
+import org.eclipse.buckminster.core.common.model.Replace;
 import org.eclipse.buckminster.core.cspec.IComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
+import org.eclipse.buckminster.core.helpers.FileHandle;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
+import org.eclipse.buckminster.core.resolver.ResolverDecision;
+import org.eclipse.buckminster.core.resolver.ResolverDecisionType;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.rmap.model.ProviderScore;
 import org.eclipse.buckminster.core.rmap.model.SearchPath;
@@ -66,24 +68,12 @@ public class PDEMapProvider extends Provider {
 
 	public static final String BM_PDEMAP_PROVIDER_PREFIX = "pmp"; //$NON-NLS-1$
 
-	private static void collectEntries(File mapFile, Map<ComponentIdentifier, MapFileEntry> map) throws CoreException {
-		InputStream input = null;
-		try {
-			input = new FileInputStream(mapFile);
-			ArrayList<MapFileEntry> list = new ArrayList<MapFileEntry>();
-			MapFile.parse(input, mapFile.getCanonicalPath(), list);
-			for (MapFileEntry entry : list)
-				map.put(entry.getComponentIdentifier(), entry);
-		} catch (IOException e) {
-			throw BuckminsterException.wrap(e);
-		} finally {
-			IOUtils.close(input);
-		}
-	}
+	private final Replace replace;
 
 	public PDEMapProvider(SearchPath searchPath, String remoteReaderType, String[] componentTypes, VersionConverterDesc vcDesc, Format uri,
-			Filter resolutionFilter, Map<String, String> properties, Documentation documentation) {
+			Filter resolutionFilter, Map<String, String> properties, Replace replace, Documentation documentation) {
 		super(searchPath, remoteReaderType, componentTypes, vcDesc, uri, null, null, resolutionFilter, properties, null, documentation);
+		this.replace = replace;
 	}
 
 	@Override
@@ -100,21 +90,23 @@ public class PDEMapProvider extends Provider {
 			String readerType = getReaderTypeId();
 			ProviderScore score = query.getProviderScore(isMutable(), hasSource());
 			if (score == ProviderScore.REJECTED) {
-				String msg = NLS.bind(Messages.provider_0_for_1_score_below_treshold, readerType, providerURI);
-				problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, msg, null));
+				ResolverDecision decision = query.logDecision(ResolverDecisionType.REJECTING_PROVIDER, readerType, providerURI,
+						org.eclipse.buckminster.core.Messages.Score_is_below_threshold);
+				problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, decision.toString(), null));
 				return null;
 			}
 
 			MapFileEntry tv = getMapFileEntry(query, problemCollector, getMap(query, problemCollector, MonitorUtils.subMonitor(monitor, 50)));
 
-			if (tv == null)
+			if (tv == null) {
 				//
 				// Map was not materialized
 				//
+				String msg = NLS.bind(Messages.PDEMapProvider_0_for_1_did_not_find_any_maps, readerType, providerURI);
+				problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, msg, null));
 				return null;
+			}
 
-			boolean source = true;
-			boolean mutable = true;
 			Map<String, String> properties = tv.getProperties();
 			Version v = null;
 			VersionSelector vs = null;
@@ -123,10 +115,8 @@ public class PDEMapProvider extends Provider {
 			if ("p2".equals(rt.getId())) { //$NON-NLS-1$
 				String vstr = properties.get("version"); //$NON-NLS-1$
 				if (vstr != null)
-					v = Version.parseVersion(vstr);
+					v = Version.create(vstr);
 				id = properties.get("id"); //$NON-NLS-1$
-				source = false;
-				mutable = false;
 			} else {
 				String tag = properties.get("tag"); //$NON-NLS-1$
 				if (tag != null)
@@ -138,24 +128,22 @@ public class PDEMapProvider extends Provider {
 					//
 					v = vc.createVersion(vs);
 				}
-				if ("url".equals(rt.getId())) { //$NON-NLS-1$
-					source = false;
-					mutable = false;
-				}
 			}
 			if (v != null) {
 				VersionRange vd = query.getVersionRange();
-				if (!(vd == null || vd.isIncluded(v)))
+				if (!(vd == null || vd.isIncluded(v))) {
+					ResolverDecision decision = query.logDecision(ResolverDecisionType.VERSION_REJECTED, v,
+							NLS.bind(org.eclipse.buckminster.core.Messages.Not_designated_by_0, vd));
+					problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, decision.toString(), null));
 					return null;
+				}
 			}
 
 			VersionMatch vm = new VersionMatch(v, vs, -1, null, id);
 			ComponentRequest rq = query.getComponentRequest();
 			String repoLocator = rt.convertFetchFactoryLocator(properties, rq.getName());
 			Format uri = new Format(repoLocator);
-			Map<String, String> props = new HashMap<String, String>();
-			props.put(KeyConstants.IS_SOURCE, Boolean.toString(source));
-			props.put(KeyConstants.IS_MUTABLE, Boolean.toString(mutable));
+			Map<String, String> props = rt.getFetchFactoryProviderProps(properties, this);
 			Provider delegated = new Provider(getSearchPath(), rt.getId(), getComponentTypeIDs(), getVersionConverterDesc(), uri, null, null,
 					getResolutionFilter(), props, null, null);
 
@@ -191,17 +179,16 @@ public class PDEMapProvider extends Provider {
 			if (map != null)
 				return map;
 
-			File tempFolder = null;
+			FileHandle folderHandle = null;
 			try {
-				tempFolder = FileUtils.createTempFolder("bucky", ".tmp"); //$NON-NLS-1$ //$NON-NLS-2$
 				VersionSelector[] btPath = query.getBranchTagPath();
 				if (btPath.length == 0)
-					materializeMaps(tempFolder, null, query, MonitorUtils.subMonitor(monitor, 500));
+					folderHandle = materializeMaps(null, query, MonitorUtils.subMonitor(monitor, 500));
 				else {
 					CoreException lastException = null;
 					for (VersionSelector bt : btPath) {
 						try {
-							materializeMaps(tempFolder, bt, query, MonitorUtils.subMonitor(monitor, 500));
+							folderHandle = materializeMaps(bt, query, MonitorUtils.subMonitor(monitor, 500));
 							lastException = null;
 							break;
 						} catch (CoreException e) {
@@ -213,16 +200,18 @@ public class PDEMapProvider extends Provider {
 				}
 
 				map = new HashMap<ComponentIdentifier, MapFileEntry>();
-				String[] mapFiles = tempFolder.list();
+				File folder = folderHandle.getFile();
+				String[] mapFiles = folder.list();
 				if (mapFiles == null || mapFiles.length == 0)
 					return null;
 
 				MonitorUtils.worked(monitor, 50);
 
 				int amountPerFile = 100 / mapFiles.length;
+				Map<String, ? extends Object> queryProps = getProperties(query.getProperties());
 				for (String file : mapFiles) {
 					if (file.endsWith(".map")) //$NON-NLS-1$
-						collectEntries(new File(tempFolder, file), map);
+						collectEntries(queryProps, new File(folder, file), map);
 					MonitorUtils.worked(monitor, amountPerFile);
 				}
 				map = Collections.unmodifiableMap(map);
@@ -233,8 +222,8 @@ public class PDEMapProvider extends Provider {
 				PDEPlugin.getLogger().debug(e.getMessage());
 				return null;
 			} finally {
-				if (tempFolder != null)
-					FileUtils.deleteRecursive(tempFolder, MonitorUtils.subMonitor(monitor, 50));
+				if (folderHandle != null && folderHandle.isTemporary())
+					FileUtils.deleteRecursive(folderHandle.getFile(), MonitorUtils.subMonitor(monitor, 50));
 				monitor.done();
 			}
 		}
@@ -249,6 +238,22 @@ public class PDEMapProvider extends Provider {
 
 	private void cacheMap(Map<UUID, Object> userCache, Map<ComponentIdentifier, MapFileEntry> map) {
 		userCache.put(getId(), map);
+	}
+
+	private void collectEntries(Map<String, ? extends Object> queryProps, File mapFile, Map<ComponentIdentifier, MapFileEntry> map)
+			throws CoreException {
+		InputStream input = null;
+		try {
+			input = new FileInputStream(mapFile);
+			ArrayList<MapFileEntry> list = new ArrayList<MapFileEntry>();
+			MapFile.parse(input, mapFile.getCanonicalPath(), replace, queryProps, list);
+			for (MapFileEntry entry : list)
+				map.put(entry.getComponentIdentifier(), entry);
+		} catch (IOException e) {
+			throw BuckminsterException.wrap(e);
+		} finally {
+			IOUtils.close(input);
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -298,14 +303,25 @@ public class PDEMapProvider extends Provider {
 		return candidateEntry;
 	}
 
-	private void materializeMaps(File tempFolder, VersionSelector vs, NodeQuery query, IProgressMonitor monitor) throws CoreException {
+	private FileHandle materializeMaps(VersionSelector vs, NodeQuery query, IProgressMonitor monitor) throws CoreException {
 		MonitorUtils.begin(monitor, 500);
 
 		ProviderMatch match = new ProviderMatch(this, CorePlugin.getDefault().getComponentType(IComponentType.UNKNOWN), new VersionMatch(null, vs,
-				-1, new Date(), null), ProviderScore.GOOD, query);
+				-1, null, null), ProviderScore.GOOD, query);
 		IComponentReader reader = match.getReader(MonitorUtils.subMonitor(monitor, 100));
 		try {
-			((ICatalogReader) reader).innerMaterialize(new Path(tempFolder.toString()), MonitorUtils.subMonitor(monitor, 400));
+			File location = reader.getLocation();
+			if (location != null)
+				return new FileHandle(location.getAbsolutePath(), location, false);
+
+			File tempFolder = FileUtils.createTempFolder("bucky", ".tmp"); //$NON-NLS-1$ //$NON-NLS-2$
+			try {
+				((ICatalogReader) reader).innerMaterialize(Path.fromOSString(tempFolder.getAbsolutePath()), MonitorUtils.subMonitor(monitor, 350));
+			} catch (CoreException e) {
+				FileUtils.deleteRecursive(tempFolder, MonitorUtils.subMonitor(monitor, 50));
+				throw e;
+			}
+			return new FileHandle(tempFolder.getName(), tempFolder, true);
 		} finally {
 			IOUtils.close(reader);
 			MonitorUtils.done(monitor);

@@ -136,6 +136,26 @@ public class EclipsePlatformReader extends AbstractCatalogReader {
 		return (IFeatureModel) model;
 	}
 
+	@Override
+	public File getLocation() throws CoreException {
+		File installLocation;
+		if (type == InstalledType.PLUGIN) {
+			BundleInfo pluginModel;
+			try {
+				pluginModel = getBundleInfo();
+			} catch (IllegalStateException e) {
+				return null;
+			}
+			installLocation = EclipsePlatformReaderType.getBundleLocation(pluginModel);
+		} else {
+			IFeatureModel featureModel = getFeatureModel();
+			if (featureModel == null)
+				return null;
+			installLocation = new File(featureModel.getInstallLocation());
+		}
+		return installLocation;
+	}
+
 	public synchronized IPluginModelBase getPluginModelBase() throws CoreException {
 		if (type != InstalledType.PLUGIN)
 			throw new IllegalStateException(Messages.plugin_requested_from_feature_reader);
@@ -162,7 +182,7 @@ public class EclipsePlatformReader extends AbstractCatalogReader {
 	}
 
 	protected String getResolvedFile(String relativeFile, InputStream[] isReturn) throws IOException, CoreException {
-		File modelRoot = getModelRoot();
+		File modelRoot = getLocation();
 		if (modelRoot == null)
 			throw new FileNotFoundException(relativeFile);
 
@@ -221,7 +241,7 @@ public class EclipsePlatformReader extends AbstractCatalogReader {
 
 	@Override
 	protected void innerList(List<String> files, IProgressMonitor monitor) throws CoreException {
-		File modelRoot = getModelRoot();
+		File modelRoot = getLocation();
 		if (modelRoot == null)
 			return;
 
@@ -293,24 +313,5 @@ public class EclipsePlatformReader extends AbstractCatalogReader {
 				desiredVersion = VersionHelper.exactRange(version);
 		}
 		return desiredVersion;
-	}
-
-	private File getModelRoot() throws CoreException {
-		File installLocation;
-		if (type == InstalledType.PLUGIN) {
-			BundleInfo pluginModel;
-			try {
-				pluginModel = getBundleInfo();
-			} catch (IllegalStateException e) {
-				return null;
-			}
-			installLocation = EclipsePlatformReaderType.getBundleLocation(pluginModel);
-		} else {
-			IFeatureModel featureModel = getFeatureModel();
-			if (featureModel == null)
-				return null;
-			installLocation = new File(featureModel.getInstallLocation());
-		}
-		return installLocation;
 	}
 }

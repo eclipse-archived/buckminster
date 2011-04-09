@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- 
 	Copyright (c) 2006-2007, Cloudsmith Inc.
 	The code, documentation and other materials contained herein have been
@@ -6,19 +6,17 @@
 	listed above, as the Initial Contributor under such license. The text of
 	such license is available at www.eclipse.org.
 -->
-<schema
-	xmlns="http://www.w3.org/2001/XMLSchema"
-	targetNamespace="http://www.eclipse.org/buckminster/PDEMapProvider-1.0"
-	xmlns:pmp="http://www.eclipse.org/buckminster/PDEMapProvider-1.0"
-	xmlns:rm="http://www.eclipse.org/buckminster/RMap-1.0"
-	attributeFormDefault="unqualified"
-	elementFormDefault="qualified">
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:bc="http://www.eclipse.org/buckminster/Common-1.0" xmlns:pmp="http://www.eclipse.org/buckminster/PDEMapProvider-1.0" xmlns:rm="http://www.eclipse.org/buckminster/RMap-1.0" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://www.eclipse.org/buckminster/PDEMapProvider-1.0">
 
 	<import namespace="http://www.eclipse.org/buckminster/RMap-1.0" schemaLocation="platform:/plugin/org.eclipse.buckminster.core/rmap-1.0.xsd"/>
+	<import namespace="http://www.eclipse.org/buckminster/Common-1.0" schemaLocation="platform:/plugin/org.eclipse.buckminster.core/common-1.0.xsd"/>
 
 	<complexType name="PDEMapProvider">
 		<complexContent>
 			<extension base="rm:Provider">
+		        <sequence>
+		          <element form="qualified" maxOccurs="1" minOccurs="0" name="replace" type="bc:Replace"/>
+		        </sequence>
 			</extension>
 		</complexContent>
 	</complexType>
