@@ -6,6 +6,7 @@
  */
 package org.eclipse.buckminster.rmap.pde.impl;
 
+import org.eclipse.buckminster.model.common.Replace;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -35,6 +36,8 @@ import org.eclipse.buckminster.rmap.VersionConverter;
 import org.eclipse.buckminster.rmap.impl.ProviderImpl;
 import org.eclipse.buckminster.rmap.pde.PDEMapProvider;
 import org.eclipse.buckminster.rmap.pde.PdePackage;
+import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.buckminster.rmap.pde.util.MapFileEntry;
 import org.eclipse.buckminster.rmap.util.ICatalogReader;
 import org.eclipse.buckminster.rmap.util.IComponentReader;
@@ -50,6 +53,8 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.InternalEObject;
+import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
@@ -60,6 +65,12 @@ import org.eclipse.equinox.p2.metadata.Version;
  * <!-- begin-user-doc --> An implementation of the model object '
  * <em><b>PDE Map Provider</b></em>'. <!-- end-user-doc -->
  * <p>
+ * The following features are implemented:
+ * <ul>
+ * <li>
+ * {@link org.eclipse.buckminster.rmap.pde.impl.PDEMapProviderImpl#getReplace
+ * <em>Replace</em>}</li>
+ * </ul>
  * </p>
  * 
  * @generated
@@ -183,12 +194,114 @@ public class PDEMapProviderImpl extends ProviderImpl implements PDEMapProvider {
 	}
 
 	/**
+	 * The cached value of the '{@link #getReplace() <em>Replace</em>}'
+	 * containment reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @see #getReplace()
+	 * @generated
+	 * @ordered
+	 */
+	protected Replace replace;
+
+	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
 	protected PDEMapProviderImpl() {
 		super();
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public NotificationChain basicSetReplace(Replace newReplace, NotificationChain msgs) {
+		Replace oldReplace = replace;
+		replace = newReplace;
+		if (eNotificationRequired()) {
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, PdePackage.PDE_MAP_PROVIDER__REPLACE, oldReplace,
+					newReplace);
+			if (msgs == null)
+				msgs = notification;
+			else
+				msgs.add(notification);
+		}
+		return msgs;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case PdePackage.PDE_MAP_PROVIDER__REPLACE:
+				return getReplace();
+		}
+		return super.eGet(featureID, resolve, coreType);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case PdePackage.PDE_MAP_PROVIDER__REPLACE:
+				return basicSetReplace(null, msgs);
+		}
+		return super.eInverseRemove(otherEnd, featureID, msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case PdePackage.PDE_MAP_PROVIDER__REPLACE:
+				return replace != null;
+		}
+		return super.eIsSet(featureID);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case PdePackage.PDE_MAP_PROVIDER__REPLACE:
+				setReplace((Replace) newValue);
+				return;
+		}
+		super.eSet(featureID, newValue);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case PdePackage.PDE_MAP_PROVIDER__REPLACE:
+				setReplace((Replace) null);
+				return;
+		}
+		super.eUnset(featureID);
 	}
 
 	@Override
@@ -380,9 +493,39 @@ public class PDEMapProviderImpl extends ProviderImpl implements PDEMapProvider {
 		}
 	}
 
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public Replace getReplace() {
+		return replace;
+	}
+
 	@Override
 	public boolean hasDelegationMap() {
 		return true;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public void setReplace(Replace newReplace) {
+		if (newReplace != replace) {
+			NotificationChain msgs = null;
+			if (replace != null)
+				msgs = ((InternalEObject) replace).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - PdePackage.PDE_MAP_PROVIDER__REPLACE, null, msgs);
+			if (newReplace != null)
+				msgs = ((InternalEObject) newReplace).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - PdePackage.PDE_MAP_PROVIDER__REPLACE, null, msgs);
+			msgs = basicSetReplace(newReplace, msgs);
+			if (msgs != null)
+				msgs.dispatch();
+		} else if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, PdePackage.PDE_MAP_PROVIDER__REPLACE, newReplace, newReplace));
 	}
 
 	/**

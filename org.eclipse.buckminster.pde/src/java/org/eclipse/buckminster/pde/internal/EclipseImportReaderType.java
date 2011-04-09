@@ -241,7 +241,7 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 		try {
 			ArrayList<MapFileEntry> mapEntries = new ArrayList<MapFileEntry>();
 			input = DownloadManager.read(location, cctx);
-			MapFile.parse(input, location.toString(), mapEntries);
+			MapFile.parse(input, location.toString(), null, null, mapEntries);
 			ArrayList<MapFileEntry> binaryEntries = new ArrayList<MapFileEntry>();
 			for (MapFileEntry entry : mapEntries) {
 				if (!IReaderType.URL.equals(entry.getReaderType().getId()))

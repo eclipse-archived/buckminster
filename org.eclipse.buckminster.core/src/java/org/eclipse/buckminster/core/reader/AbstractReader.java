@@ -58,6 +58,11 @@ public abstract class AbstractReader implements IComponentReader {
 	}
 
 	@Override
+	public File getLocation() throws CoreException {
+		return null;
+	}
+
+	@Override
 	public NodeQuery getNodeQuery() {
 		return providerMatch.getNodeQuery();
 	}

@@ -127,15 +127,7 @@ public class Replace extends ValueHolderFilter {
 	@Override
 	public String checkedGetValue(Map<String, ? extends Object> props, int recursionGuard) {
 		String resolved = this.checkedGetSourceValue(props, recursionGuard);
-		if (resolved == null || NO_VALUE.equals(resolved))
-			return NO_VALUE;
-
-		for (Match match : matchers) {
-			String result = match.match(resolved);
-			if (result != null)
-				return result;
-		}
-		return resolved;
+		return (resolved == null || NO_VALUE.equals(resolved)) ? NO_VALUE : replace(resolved);
 	}
 
 	@Override
@@ -153,6 +145,15 @@ public class Replace extends ValueHolderFilter {
 		int hc = super.hashCode();
 		hc = 37 * hc + matchers.hashCode();
 		return hc;
+	}
+
+	public String replace(String value) {
+		for (Match match : matchers) {
+			String result = match.match(value);
+			if (result != null)
+				return result;
+		}
+		return value;
 	}
 
 	@Override

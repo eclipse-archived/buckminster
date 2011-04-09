@@ -124,6 +124,17 @@ public interface IReaderType extends IBuckminsterExtension {
 	URI getArtifactURL(Resolution resolution, RMContext context) throws CoreException;
 
 	/**
+	 * Set provider properties intended for the {@link Provider} that is created
+	 * when delegating from a PDE IFetchFactory based provider.
+	 * 
+	 * @param fetchFactoryLocator
+	 *            The locator properties as parsed by the IFetchFactory
+	 * @param delegee
+	 *            The provider that performs the delegation
+	 */
+	Map<String, String> getFetchFactoryProviderProps(Map<String, String> properties, Provider delegee);
+
+	/**
 	 * Some components, such as the ones present in the target platform, are not
 	 * materialized. Instead, they have a fixed location.
 	 * 

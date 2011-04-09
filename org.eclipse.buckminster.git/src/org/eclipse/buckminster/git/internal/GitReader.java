@@ -1,6 +1,7 @@
 package org.eclipse.buckminster.git.internal;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Map;
@@ -10,6 +11,7 @@ import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.reader.IStreamConsumer;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.ProviderMatch;
+import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -30,8 +32,15 @@ public class GitReader extends AbstractCatalogReader {
 	}
 
 	@Override
+	public File getLocation() throws CoreException {
+		return repoAccess.getLocation(getProviderMatch().getVersionMatch());
+	}
+
+	@Override
 	public void innerMaterialize(IPath destination, IProgressMonitor monitor) throws CoreException {
-		repoAccess.checkout(getProviderMatch().getVersionMatch(), destination.toFile(), monitor);
+		File location = getLocation();
+		if (!location.equals(destination.toFile()))
+			throw new UnsupportedOperationException(Messages.git_reader_can_not_materialize);
 	}
 
 	@Override
@@ -48,11 +57,12 @@ public class GitReader extends AbstractCatalogReader {
 
 	@Override
 	protected <T> T innerReadFile(String fileName, IStreamConsumer<T> consumer, IProgressMonitor monitor) throws CoreException, IOException {
-		TreeWalk walk = repoAccess.getTreeWalk(getProviderMatch().getVersionMatch(), fileName, monitor);
+		VersionMatch vm = getProviderMatch().getVersionMatch();
+		TreeWalk walk = repoAccess.getTreeWalk(vm, fileName, monitor);
 		try {
 			if (!walk.next())
 				throw new FileNotFoundException(fileName);
-			Repository repo = repoAccess.getRepository(monitor);
+			Repository repo = repoAccess.getRepository(vm, monitor);
 			ObjectLoader ol = repo.open(walk.getObjectId(0));
 			byte[] bytes = ol.getBytes();
 			return consumer.consumeStream(this, fileName, new ByteArrayInputStream(bytes), monitor);

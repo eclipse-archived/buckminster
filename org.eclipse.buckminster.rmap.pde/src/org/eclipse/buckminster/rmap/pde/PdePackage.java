@@ -10,6 +10,7 @@ import org.eclipse.buckminster.rmap.RmapPackage;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecore.EReference;
 
 /**
  * <!-- begin-user-doc --> The <b>Package</b> for the model. It contains
@@ -52,6 +53,13 @@ public interface PdePackage extends EPackage {
 		 * @generated
 		 */
 		EClass PDE_MAP_PROVIDER = eINSTANCE.getPDEMapProvider();
+		/**
+		 * The meta object literal for the '<em><b>Replace</b></em>' containment
+		 * reference feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EReference PDE_MAP_PROVIDER__REPLACE = eINSTANCE.getPDEMapProvider_Replace();
 
 	}
 
@@ -223,13 +231,22 @@ public interface PdePackage extends EPackage {
 	int PDE_MAP_PROVIDER__DOCUMENTATION = RmapPackage.PROVIDER__DOCUMENTATION;
 
 	/**
+	 * The feature id for the '<em><b>Replace</b></em>' containment reference.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int PDE_MAP_PROVIDER__REPLACE = RmapPackage.PROVIDER_FEATURE_COUNT + 0;
+
+	/**
 	 * The number of structural features of the '<em>PDE Map Provider</em>'
 	 * class. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int PDE_MAP_PROVIDER_FEATURE_COUNT = RmapPackage.PROVIDER_FEATURE_COUNT + 0;
+	int PDE_MAP_PROVIDER_FEATURE_COUNT = RmapPackage.PROVIDER_FEATURE_COUNT + 1;
 
 	/**
 	 * Returns the factory that creates the instances of the model. <!--
@@ -251,5 +268,17 @@ public interface PdePackage extends EPackage {
 	 * @generated
 	 */
 	EClass getPDEMapProvider();
+
+	/**
+	 * Returns the meta object for the containment reference '
+	 * {@link org.eclipse.buckminster.rmap.pde.PDEMapProvider#getReplace
+	 * <em>Replace</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the containment reference '<em>Replace</em>'.
+	 * @see org.eclipse.buckminster.rmap.pde.PDEMapProvider#getReplace()
+	 * @see #getPDEMapProvider()
+	 * @generated
+	 */
+	EReference getPDEMapProvider_Replace();
 
 } // PdePackage

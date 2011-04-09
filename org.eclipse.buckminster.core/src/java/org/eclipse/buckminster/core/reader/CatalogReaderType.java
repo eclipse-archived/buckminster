@@ -8,8 +8,13 @@
 
 package org.eclipse.buckminster.core.reader;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
+import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -18,6 +23,14 @@ import org.eclipse.core.runtime.Path;
  * @author Thomas Hallgren
  */
 public abstract class CatalogReaderType extends AbstractReaderType {
+	@Override
+	public Map<String, String> getFetchFactoryProviderProps(Map<String, String> properties, Provider delegee) {
+		Map<String, String> props = new HashMap<String, String>();
+		props.put(KeyConstants.IS_SOURCE, Boolean.TRUE.toString());
+		props.put(KeyConstants.IS_MUTABLE, Boolean.TRUE.toString());
+		return props;
+	}
+
 	@Override
 	public IPath getLeafArtifact(Resolution resolution, MaterializationContext context) throws CoreException {
 		IPath path = Path.fromPortableString(resolution.getComponentIdentifier().getName());

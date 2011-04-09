@@ -106,6 +106,8 @@ public class Messages extends NLS {
 
 	public static String PDEMapProvider_0_for_1_unable_to_find_2_in_map;
 
+	public static String PDEMapProvider_0_for_1_did_not_find_any_maps;
+
 	public static String Please_use_selfhost_vmargs;
 
 	public static String provider_0_for_1_score_below_treshold;
@@ -131,6 +133,8 @@ public class Messages extends NLS {
 	public static String Missing_exe_launcher_for_config_0;
 
 	public static String No_active_target_platform;
+
+	public static String Score_is_below_threshold;
 
 	public static String Suggest_install_launchers_feature;
 
@@ -159,6 +163,8 @@ public class Messages extends NLS {
 	public static String Found_no_baseline_named_0;
 
 	public static String No_baselines_found_in_workspace;
+
+	public static String Not_designated_by_0;
 
 	public static String target_0_has_no_containers;
 

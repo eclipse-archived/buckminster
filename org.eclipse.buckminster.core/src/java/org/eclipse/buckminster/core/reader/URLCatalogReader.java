@@ -47,6 +47,11 @@ public class URLCatalogReader extends AbstractCatalogReader {
 		uri = readerType.getURI(rInfo);
 	}
 
+	@Override
+	public File getLocation() throws CoreException {
+		return FileUtils.getFile(getURL());
+	}
+
 	public URL getURL() throws CoreException {
 		try {
 			return uri.toURL();
