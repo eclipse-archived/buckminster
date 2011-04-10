@@ -76,6 +76,22 @@
 		</sequential>
 	</macrodef>
 
+	<target name="apigeneration">
+		<extractBundleId file="${sp:manifest}" property="bundle.id"/>
+		<extractBundleVersion file="${sp:manifest}" property="bundle.version"/>
+		<dirname property="output.dir" file="${sp:action.output}"/>
+		<tempfile property="bin.tmp" destdir="${buckminster.temp}" prefix="apigen" suffix=".tmp"/>
+		<mkdir dir="${bin.tmp}"/>
+		<buckminster.copy todir="${bin.tmp}">
+			<buckminster.filesetgroup value="${fs:binary}"/>
+		</buckminster.copy>
+		<apitooling.apigeneration
+			projectName="${bundle.id}_${bundle.version}"
+			project="${buckminster.home}"
+			binary="${bin.tmp}"
+			target="${output.dir}"
+		/>
+	</target>
 
 	<target name="create.output.dir">
 		<dirname property="output.dir" file="${sp:action.output}"/>

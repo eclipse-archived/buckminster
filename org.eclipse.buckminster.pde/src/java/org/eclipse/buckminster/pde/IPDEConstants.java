@@ -15,6 +15,8 @@ public interface IPDEConstants {
 
 	static final String ACTION_ABOUT_MAPPINGS = ABOUT_MAPPINGS_FILE;
 
+	static final String ACTION_GENERATE_API_DESCRIPTION = "generate.api.description"; //$NON-NLS-1$
+
 	static final String ACTION_COPY_BINARIES = "copy.binaries"; //$NON-NLS-1$
 
 	static final String ACTION_COPY_FEATURES = "copy.features"; //$NON-NLS-1$
@@ -26,6 +28,10 @@ public interface IPDEConstants {
 	static final String ACTOR_COPY_TARGET_FRAGMENTS = "copyTargetFragments"; //$NON-NLS-1$
 
 	static final String ACTOR_P2_SITE_GENERATOR = "p2SiteGenerator"; //$NON-NLS-1$
+
+	static final String ALIAS_BINARY = "binary"; //$NON-NLS-1$
+
+	static final String ALIAS_SOURCE = "source"; //$NON-NLS-1$
 
 	static final String ALIAS_BUNDLES = "bundles"; //$NON-NLS-1$
 
@@ -341,6 +347,8 @@ public interface IPDEConstants {
 	static final String TASK_RECREATE_JAR = "recreate.jar"; //$NON-NLS-1$
 
 	static final String TASK_REPLACE_TOKEN = "replaceToken"; //$NON-NLS-1$
+
+	static final String TASK_API_GENERATION = "apigeneration"; //$NON-NLS-1$
 
 	static final String TASK_UNJAR_NAMED = "unjar.named"; //$NON-NLS-1$
 
