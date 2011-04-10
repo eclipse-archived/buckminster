@@ -37,11 +37,6 @@ public class PasswordFieldEditor extends StringFieldEditor {
 
 	private String keyRingRealm;
 
-	/**
-	 * Old text value.
-	 */
-	private String oldValue;
-
 	private Text textField;
 
 	/**
