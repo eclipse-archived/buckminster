@@ -544,6 +544,8 @@ public class CSpecFromSource extends CSpecGenerator {
 			buildPlugin.addLocalPrerequisite(manifest.getName(), ALIAS_MANIFEST);
 			buildPlugin.addLocalPrerequisite(jarContents.getName(), ALIAS_REQUIREMENTS);
 		}
+		addGenerateApiDescription(build);
+
 		buildPlugin.setProductAlias(ALIAS_OUTPUT);
 		buildPlugin.setProductBase(OUTPUT_DIR_JAR);
 		buildPlugin.setUpToDatePolicy(UpToDatePolicy.COUNT);
@@ -621,6 +623,34 @@ public class CSpecFromSource extends CSpecGenerator {
 		mappingAction.setProductBase(OUTPUT_DIR_TEMP);
 		mappingAction.addProductPath(Path.fromPortableString(ABOUT_MAPPINGS_FILE));
 		return mappingAction;
+	}
+
+	protected void addGenerateApiDescription(IBuild build) throws CoreException {
+		IBuildEntry apiDescription = build.getEntry("generateAPIDescription"); //$NON-NLS-1$
+		if (apiDescription == null)
+			return;
+
+		String[] tokens = apiDescription.getTokens();
+		if (tokens.length != 1 || !Boolean.parseBoolean(tokens[0]))
+			return;
+
+		CSpecBuilder cspec = getCSpec();
+		GroupBuilder jarContentsOld = getAttributeJarContents();
+		cspec.removeAttribute(ATTRIBUTE_JAR_CONTENTS);
+		jarContentsOld.setName(ATTRIBUTE_JAR_CONTENTS + ".wo_apidesc"); //$NON-NLS-1$
+		cspec.addAttribute(jarContentsOld);
+
+		ActionBuilder apiGeneration = addAntAction(ACTION_GENERATE_API_DESCRIPTION, TASK_API_GENERATION, true);
+		apiGeneration.addLocalPrerequisite(ATTRIBUTE_MANIFEST, ALIAS_MANIFEST);
+		apiGeneration.addLocalPrerequisite(jarContentsOld.getName(), ALIAS_BINARY);
+		apiGeneration.addLocalPrerequisite(ATTRIBUTE_ECLIPSE_BUILD_SOURCE, ALIAS_SOURCE);
+		apiGeneration.setProductAlias(ALIAS_OUTPUT);
+		apiGeneration.setProductBase(OUTPUT_DIR.append("api_description")); //$NON-NLS-1$
+		apiGeneration.addProductPath(Path.fromPortableString(".api_description")); //$NON-NLS-1$
+
+		GroupBuilder jarContents = getAttributeJarContents();
+		jarContents.addLocalPrerequisite(jarContentsOld);
+		jarContents.addLocalPrerequisite(apiGeneration);
 	}
 
 	protected void addImports() throws CoreException {
