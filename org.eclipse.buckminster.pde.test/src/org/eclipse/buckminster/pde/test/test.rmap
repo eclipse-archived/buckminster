@@ -4,7 +4,7 @@
 	xmlns:pmp="http://www.eclipse.org/buckminster/PDEMapProvider-1.0">
 
 	<rm:searchPath name="pdemap">
-		<rm:provider xsi:type="pmp:PDEMapProvider" readerType="cvs" componentType="eclipse.project" mutable="false" source="true">
+		<rm:provider xsi:type="pmp:PDEMapProvider" readerType="cvs" componentTypes="eclipse.project" mutable="false" source="true">
 			<rm:uri format=":pserver:anonymous@dev.eclipse.org:/cvsroot/eclipse,org.eclipse.releng/maps"/>
 		</rm:provider>
 	</rm:searchPath>
