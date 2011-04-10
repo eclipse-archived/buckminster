@@ -100,12 +100,12 @@ public class MapFile {
 			IFetchFactory ff = fetchTaskFactories.getFactory(fetchType);
 			if (ff == null) {
 				// Assume that the fetchType that we encountered is part of the
-				// fetchTypeSpecific string and use the CVS IFetchFactory
-				// to parse the string.
+				// fetchTypeSpecific string and that the real fetchType is CVS.
 				//
 				fetchTypeSpecific = fetchType + ',' + fetchTypeSpecific;
+				fetchType = "CVS"; //$NON-NLS-1$
 
-				ff = fetchTaskFactories.getFactory("CVS"); //$NON-NLS-1$
+				ff = fetchTaskFactories.getFactory(fetchType);
 				if (ff == null) {
 					logger.warning(NLS.bind(Messages.no_factory_found_for_0_in_PDEmap_1, fetchType, streamName));
 					continue;
