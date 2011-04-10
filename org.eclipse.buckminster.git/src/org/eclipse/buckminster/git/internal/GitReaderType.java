@@ -6,6 +6,7 @@ import java.net.URISyntaxException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.RMContext;
@@ -14,6 +15,7 @@ import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.reader.CatalogReaderType;
 import org.eclipse.buckminster.core.reader.IComponentReader;
+import org.eclipse.buckminster.core.reader.ITeamReaderType;
 import org.eclipse.buckminster.core.reader.IVersionFinder;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
@@ -27,10 +29,16 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.egit.core.GitProvider;
 import org.eclipse.egit.core.RepositoryUtil;
 import org.eclipse.egit.core.op.ConnectProviderOperation;
+import org.eclipse.egit.core.project.GitProjectData;
+import org.eclipse.egit.core.project.RepositoryMapping;
 import org.eclipse.jgit.lib.Constants;
+import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.lib.StoredConfig;
 import org.eclipse.jgit.transport.URIish;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.team.core.RepositoryProvider;
@@ -38,7 +46,7 @@ import org.eclipse.team.core.history.IFileHistory;
 import org.eclipse.team.core.history.IFileHistoryProvider;
 import org.eclipse.team.core.history.IFileRevision;
 
-public class GitReaderType extends CatalogReaderType {
+public class GitReaderType extends CatalogReaderType implements ITeamReaderType {
 	@Override
 	public String convertFetchFactoryLocator(Map<String, String> fetchFactoryLocator, String componentName) throws CoreException {
 		String repo = fetchFactoryLocator.get("repo"); //$NON-NLS-1$
@@ -132,6 +140,44 @@ public class GitReaderType extends CatalogReaderType {
 	}
 
 	@Override
+	public String getSourceReference(IResource resource, IProgressMonitor monitor) throws CoreException {
+		IProject project = resource.getProject();
+		if (project == null)
+			return null;
+
+		RepositoryProvider provider = RepositoryProvider.getProvider(project);
+		if (!(provider instanceof GitProvider))
+			return null;
+
+		GitProjectData projectData = ((GitProvider) provider).getData();
+		if (projectData == null)
+			return null;
+
+		RepositoryMapping mapping = projectData.getRepositoryMapping(resource);
+		if (mapping == null)
+			return null;
+
+		Repository repo = mapping.getRepository();
+		if (repo == null)
+			return null;
+
+		StoredConfig config = repo.getConfig();
+		String remoteConfig;
+		Set<String> configNames = config.getSubsections("remote"); //$NON-NLS-1$
+		if (configNames.size() == 1)
+			remoteConfig = configNames.iterator().next();
+		else if (configNames.contains(Constants.DEFAULT_REMOTE_NAME))
+			remoteConfig = Constants.DEFAULT_REMOTE_NAME;
+		else
+			return null;
+
+		String remoteLocation = config.getString("remote", remoteConfig, "url"); //$NON-NLS-1$//$NON-NLS-2$
+		if (remoteLocation == null)
+			return null;
+		return "scm:git:" + remoteLocation; //$NON-NLS-1$
+	}
+
+	@Override
 	public IVersionFinder getVersionFinder(Provider provider, IComponentType ctype, NodeQuery nodeQuery, IProgressMonitor monitor)
 			throws CoreException {
 		MonitorUtils.complete(monitor);
@@ -163,5 +209,12 @@ public class GitReaderType extends CatalogReaderType {
 		repoUtil.addConfiguredRepository(repoDir);
 
 		connectOp.execute(monitor);
+	}
+
+	@Override
+	public IStatus tag(RepositoryProvider provider, IResource[] resources, String tag, boolean recurse, IProgressMonitor monitor)
+			throws CoreException {
+		// Not yet implemented.
+		throw new UnsupportedOperationException();
 	}
 }
