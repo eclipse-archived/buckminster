@@ -513,7 +513,7 @@ public class CSpecFromSource extends CSpecGenerator {
 			String excludesStr = null;
 			IBuildEntry excludes = build.getEntry(PROPERTY_EXCLUDE_PREFIX + '.');
 			if (excludes != null)
-				excludesStr = TextUtils.concat(excludes.getTokens(), ",");
+				excludesStr = TextUtils.concat(excludes.getTokens(), ","); //$NON-NLS-1$
 
 			for (AttributeBuilder product : eclipseBuildProducts.values()) {
 				if (excludesStr == null)

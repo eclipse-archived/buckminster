@@ -278,7 +278,6 @@ public class PDEMapProviderImpl extends ProviderImpl implements PDEMapProvider {
 	 * 
 	 * @generated
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
