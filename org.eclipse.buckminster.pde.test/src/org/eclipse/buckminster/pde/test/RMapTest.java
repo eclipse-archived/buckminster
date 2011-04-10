@@ -22,30 +22,34 @@ import org.eclipse.buckminster.core.resolver.IResolver;
 import org.eclipse.buckminster.core.resolver.MainResolver;
 import org.eclipse.buckminster.core.resolver.ResolutionContext;
 import org.eclipse.buckminster.sax.Utils;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 
 /**
  * @author Thomas Hallgren
  */
-public class RMapTest extends PDETestCase
-{
-	public void testEclipseInstalled() throws Exception
-	{
-		this.getPlugin();
-		ComponentRequest request = new ComponentRequest("org.eclipse.pde", IComponentType.OSGI_BUNDLE, null); //$NON-NLS-1$
+public class RMapTest extends PDETestCase {
+	public void testEclipseInstalled() throws Exception {
+		try {
+			this.getPlugin();
+			ComponentRequest request = new ComponentRequest("org.eclipse.pde", IComponentType.OSGI_BUNDLE, null); //$NON-NLS-1$
 
-		ComponentQueryBuilder queryBld = new ComponentQueryBuilder();
-		queryBld.setRootRequest(request);
-		queryBld.setResourceMapURL(this.getClass().getResource("test.rmap").toString()); //$NON-NLS-1$
+			ComponentQueryBuilder queryBld = new ComponentQueryBuilder();
+			queryBld.setRootRequest(request);
+			queryBld.setResourceMapURL(this.getClass().getResource("test.rmap").toString()); //$NON-NLS-1$
 
-		AdvisorNodeBuilder nodeBld = queryBld.addAdvisorNode();
-		nodeBld.setNamePattern(Pattern.compile("org\\.eclipse")); //$NON-NLS-1$
-		nodeBld.setUseTargetPlatform(false);
-		ComponentQuery query = queryBld.createComponentQuery();
+			AdvisorNodeBuilder nodeBld = queryBld.addAdvisorNode();
+			nodeBld.setNamePattern(Pattern.compile("org\\.eclipse")); //$NON-NLS-1$
+			nodeBld.setUseTargetPlatform(false);
+			ComponentQuery query = queryBld.createComponentQuery();
 
-		IResolver resolver = new MainResolver(new ResolutionContext(query));
-		BillOfMaterials bom = resolver.resolve(new NullProgressMonitor());
-		assertTrue("Resolve failed", bom.isFullyResolved(resolver.getContext())); //$NON-NLS-1$
-		Utils.serialize(bom.getResolution(), System.out);
+			IResolver resolver = new MainResolver(new ResolutionContext(query));
+			BillOfMaterials bom = resolver.resolve(new NullProgressMonitor());
+			assertTrue("Resolve failed", bom.isFullyResolved(resolver.getContext())); //$NON-NLS-1$
+			Utils.serialize(bom.getResolution(), System.out);
+		} catch (CoreException e) {
+			e.printStackTrace();
+			fail("Resolve failed: " + e.getMessage());
+		}
 	}
 }
