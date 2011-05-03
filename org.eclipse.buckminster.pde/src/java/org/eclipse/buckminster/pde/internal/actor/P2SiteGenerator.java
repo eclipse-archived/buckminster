@@ -86,6 +86,7 @@ import org.eclipse.equinox.p2.repository.metadata.IMetadataRepository;
 import org.eclipse.equinox.spi.p2.publisher.LocalizationHelper;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.pde.internal.core.ifeature.IFeatureModel;
+import org.xml.sax.SAXException;
 
 @SuppressWarnings("restriction")
 public class P2SiteGenerator extends AbstractActor {
@@ -228,7 +229,7 @@ public class P2SiteGenerator extends AbstractActor {
 		try {
 			input = new BufferedInputStream(new FileInputStream(featureFile));
 			FeatureManifestParser parser = new FeatureManifestParser();
-			Feature feature = parser.parse(input);
+			Feature feature = parser.parse(input, sourceFolder.toURI().toURL());
 			if (feature == null)
 				throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_parse_feature_manifest_file_0, featureFile));
 
@@ -238,6 +239,8 @@ public class P2SiteGenerator extends AbstractActor {
 			feature.setLocation(sourceFolder.toString());
 			return feature;
 		} catch (IOException e) {
+			throw BuckminsterException.fromMessage(e, NLS.bind(Messages.unable_to_parse_feature_manifest_file_0, featureFile));
+		} catch (SAXException e) {
 			throw BuckminsterException.fromMessage(e, NLS.bind(Messages.unable_to_parse_feature_manifest_file_0, featureFile));
 		} finally {
 			IOUtils.close(input);
@@ -466,9 +469,9 @@ public class P2SiteGenerator extends AbstractActor {
 
 	private void collectBundles(CSpec cspec, Map<IVersionedId, CSpec> cspecs, Set<ComponentIdentifier> cis, IActionContext ctx) throws CoreException {
 		ComponentIdentifier ci = cspec.getComponentIdentifier();
-        if(!cis.add(ci))
-            return;
-        
+		if (!cis.add(ci))
+			return;
+
 		if (IComponentType.OSGI_BUNDLE.equals(ci.getComponentTypeID()))
 			if (cspecs.put(new VersionedId(ci.getName(), ci.getVersion()), cspec) != null)
 				return;
