@@ -32,6 +32,7 @@ Require-Bundle: org.eclipse.buckminster.ant,
  org.eclipse.equinox.p2.metadata,
  org.eclipse.equinox.p2.metadata.repository,
  org.eclipse.equinox.p2.publisher,
+ org.eclipse.equinox.p2.publisher.eclipse,
  org.eclipse.equinox.p2.repository,
  org.eclipse.equinox.p2.updatesite,
  org.eclipse.team.core
