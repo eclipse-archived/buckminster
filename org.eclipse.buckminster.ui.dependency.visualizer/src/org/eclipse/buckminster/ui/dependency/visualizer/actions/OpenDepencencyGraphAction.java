@@ -136,6 +136,7 @@ public class OpenDepencencyGraphAction extends AbstractCSpecAction {
 					final BOMEditorInput input = new BOMEditorInput(bom);
 					activePart.getSite().getShell().getDisplay().asyncExec(new Runnable() {
 
+						@Override
 						public void run() {
 							try {
 								IDE.openEditor(activePart.getSite().getPage(), input, DependencyVisualizer.ID);
