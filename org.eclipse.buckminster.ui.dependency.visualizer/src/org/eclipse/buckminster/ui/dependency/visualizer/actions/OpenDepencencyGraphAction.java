@@ -64,6 +64,57 @@ public class OpenDepencencyGraphAction extends AbstractCSpecAction {
 		super.run(action);
 	}
 
+	private BOMNode buildBOM(Resolution resolution, Map<UUID, BOMNode> bomCache, SubMonitor monitor) throws CoreException {
+		Collection<ComponentRequest> children = resolution.getCSpec().getDependencies();
+		monitor.beginTask(Messages.OpenDepencencyGraphAction_ProcessingGraphMainTaskLabel, 100 * children.size());
+		String subtask = Messages.OpenDepencencyGraphAction_ProcessingItemTaskLabel;
+		monitor.subTask(MessageFormat.format(subtask, resolution.getName()));
+
+		List<BOMNode> nodes = new ArrayList<BOMNode>(children.size());
+		for (ComponentRequest componentRequest : children) {
+			if (monitor.isCanceled())
+				return new UnresolvedNode(new QualifiedDependency(componentRequest, EMPTY_SET));
+			BOMNode child = null;
+			try {
+				Resolution childResolution = WorkspaceInfo.resolveLocal(componentRequest, true);
+				UUID resolutionID = childResolution.getId();
+				if (bomCache.containsKey(resolutionID)) {
+					child = bomCache.get(resolutionID);
+				} else {
+					/*
+					 * see Bug#344927 stack overflow with
+					 * "Open Dependency Graph" eclipse source bundles can
+					 * produce an endless recursion here the source bundle
+					 * requires the main bundle and the main bundle requires the
+					 * source bundle => cyclic dependency
+					 * 
+					 * to prevent the stack overflow we add a dummy node to the
+					 * cache before attempting to compute the children of that
+					 * node. If everything works correctly the dummy will be
+					 * replaced with the actual node once the resolution
+					 * finished. In worst case we might get an unresolved node
+					 * at the end which is still better than a StackOverflow
+					 */
+					BOMNode dummyNode = new UnresolvedNode(new QualifiedDependency(componentRequest, EMPTY_SET));
+					bomCache.put(resolutionID, dummyNode);
+					child = buildBOM(childResolution, bomCache, monitor.newChild(100));
+					bomCache.put(resolutionID, child);
+				}
+
+			} catch (MissingComponentException e) {
+				child = new UnresolvedNode(new QualifiedDependency(componentRequest, EMPTY_SET));
+				monitor.worked(100);
+			}
+
+			nodes.add(child);
+		}
+		monitor.done();
+		BOMNode thisBom = new ResolvedNode(resolution, nodes);
+		bomCache.put(resolution.getId(), thisBom);
+		return thisBom;
+
+	}
+
 	@Override
 	protected void run(CSpec cspec, Shell shell) {
 
@@ -85,7 +136,6 @@ public class OpenDepencencyGraphAction extends AbstractCSpecAction {
 					final BOMEditorInput input = new BOMEditorInput(bom);
 					activePart.getSite().getShell().getDisplay().asyncExec(new Runnable() {
 
-						@Override
 						public void run() {
 							try {
 								IDE.openEditor(activePart.getSite().getPage(), input, DependencyVisualizer.ID);
@@ -103,40 +153,6 @@ public class OpenDepencencyGraphAction extends AbstractCSpecAction {
 		};
 		computeResolution.setUser(true);
 		computeResolution.schedule();
-
-	}
-
-	private BOMNode buildBOM(Resolution resolution, Map<UUID, BOMNode> bomCache, SubMonitor monitor) throws CoreException {
-		Collection<ComponentRequest> children = resolution.getCSpec().getDependencies();
-		monitor.beginTask(Messages.OpenDepencencyGraphAction_ProcessingGraphMainTaskLabel, 100 * children.size());
-		String subtask = Messages.OpenDepencencyGraphAction_ProcessingItemTaskLabel;
-		monitor.subTask(MessageFormat.format(subtask, resolution.getName()));
-		List<BOMNode> nodes = new ArrayList<BOMNode>(children.size());
-		for (ComponentRequest componentRequest : children) {
-			if (monitor.isCanceled())
-				return new UnresolvedNode(new QualifiedDependency(componentRequest, EMPTY_SET));
-			BOMNode child = null;
-			try {
-				Resolution childResolution = WorkspaceInfo.resolveLocal(componentRequest, true);
-				UUID resolutionID = childResolution.getId();
-				if (bomCache.containsKey(resolutionID)) {
-					child = bomCache.get(resolutionID);
-				} else {
-					child = buildBOM(childResolution, bomCache, monitor.newChild(100));
-					bomCache.put(resolutionID, child);
-				}
-
-			} catch (MissingComponentException e) {
-				child = new UnresolvedNode(new QualifiedDependency(componentRequest, EMPTY_SET));
-				monitor.worked(100);
-			}
-
-			nodes.add(child);
-		}
-		monitor.done();
-		BOMNode thisBom = new ResolvedNode(resolution, nodes);
-		bomCache.put(resolution.getId(), thisBom);
-		return thisBom;
 
 	}
 
