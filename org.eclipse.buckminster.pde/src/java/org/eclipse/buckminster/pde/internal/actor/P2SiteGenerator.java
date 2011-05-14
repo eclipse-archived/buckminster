@@ -229,7 +229,7 @@ public class P2SiteGenerator extends AbstractActor {
 		try {
 			input = new BufferedInputStream(new FileInputStream(featureFile));
 			FeatureManifestParser parser = new FeatureManifestParser();
-			Feature feature = parser.parse(input, sourceFolder.toURI().toURL());
+			Feature feature = parser.parse(input, featureFile.toURI().toURL());
 			if (feature == null)
 				throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_parse_feature_manifest_file_0, featureFile));
 
