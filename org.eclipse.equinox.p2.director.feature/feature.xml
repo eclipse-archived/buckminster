@@ -55,6 +55,7 @@
       <import plugin="org.eclipse.equinox.p2.metadata"/>
       <import plugin="org.eclipse.equinox.p2.metadata.repository"/>
       <import plugin="org.eclipse.equinox.p2.publisher"/>
+      <import plugin="org.eclipse.equinox.p2.publisher.eclipse"/>
       <import plugin="org.eclipse.equinox.p2.repository"/>
       <import plugin="org.eclipse.equinox.p2.touchpoint.eclipse"/>
       <import plugin="org.eclipse.equinox.p2.touchpoint.natives"/>
