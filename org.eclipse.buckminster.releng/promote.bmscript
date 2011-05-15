@@ -1,3 +1,4 @@
+lscmds
 setpref -P ${build.props} targetPlatformPath=${build.root}/tp
 import -P ${build.props} ${checkout.root}/org.eclipse.buckminster.releng/build.cquery
 build -P ${build.props} --thorough
