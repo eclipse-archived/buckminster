@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.buckminster.ant.actor.CopyActor;
 import org.eclipse.buckminster.core.cspec.IComponentRequest;
 import org.eclipse.buckminster.core.cspec.builder.ActionArtifactBuilder;
 import org.eclipse.buckminster.core.cspec.builder.ActionBuilder;
@@ -85,7 +86,11 @@ public class CSpecFromSource extends CSpecFromFeature {
 			// We use the same content as the original feature (i.e. license,
 			// etc.).
 			//
-			featureJarBuilder.addLocalPrerequisite(ATTRIBUTE_BIN_INCLUDES);
+			ActionBuilder srcIncludes = cspec.addAction(ATTRIBUTE_SRC_INCLUDES, false, CopyActor.ID, false);
+			srcIncludes.addLocalPrerequisite(ATTRIBUTE_BIN_INCLUDES);
+			srcIncludes.addProperty(CopyActor.PROP_EXCLUDES, FEATURE_PROPERTIES, false);
+			srcIncludes.setProductBase(OUTPUT_DIR.append(ATTRIBUTE_SRC_INCLUDES));
+			featureJarBuilder.addLocalPrerequisite(srcIncludes);
 			featureJarBuilder.addLocalPrerequisite(ATTRIBUTE_SOURCE_LOCALIZATION, ATTRIBUTE_SOURCE_LOCALIZATION);
 		}
 

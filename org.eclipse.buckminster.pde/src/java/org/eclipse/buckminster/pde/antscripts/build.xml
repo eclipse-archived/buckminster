@@ -82,7 +82,7 @@
 		<dirname property="output.dir" file="${sp:action.output}"/>
 		<tempfile property="bin.tmp" destdir="${buckminster.temp}" prefix="apigen" suffix=".tmp"/>
 		<mkdir dir="${bin.tmp}"/>
-		<buckminster.copy todir="${bin.tmp}">
+		<buckminster.copy todir="${bin.tmp}" overwrite="true">
 			<buckminster.filesetgroup value="${fs:binary}"/>
 		</buckminster.copy>
 		<apitooling.apigeneration
@@ -105,7 +105,7 @@
 	</target>
 
 	<target name="recreate.jar" depends="create.output.dir">
-		<buckminster.copy todir="${buckminster.temp}">
+		<buckminster.copy todir="${buckminster.temp}" overwrite="true">
 			<buckminster.filesetgroup value="${fs:action.requirements}"/>
 		</buckminster.copy>
 		<zip zipfile="${sp:action.output}">
@@ -142,7 +142,7 @@
 		<extractFeatureVersion file="${sp:manifest}" property="feature.version"/>
 		<extractFeatureId file="${sp:manifest}" property="feature.id"/>
 		<mkdir dir="${sp:action.output}"/>
-		<buckminster.copy todir="${buckminster.temp}/${feature.id}_${feature.version}">
+		<buckminster.copy todir="${buckminster.temp}/${feature.id}_${feature.version}" overwrite="true">
 			<buckminster.filesetgroup value="${fs:action.requirements}"/>
 		</buckminster.copy>
 		<zip zipfile="${sp:action.output}/${feature.id}_${feature.version}.jar">
@@ -158,7 +158,7 @@
 	</target>
 
 	<target name="create.eclipse.jnlp.product" depends="create.output.dir">
-		<buckminster.copy todir="${sp:action.output}">
+		<buckminster.copy todir="${sp:action.output}" overwrite="true">
 			<buckminster.filesetgroup value="${fs:action.requirements}"/>
 		</buckminster.copy>
 		<buckminster.jnlpSiteGenerator sitedir="${sp:action.output}"/>
