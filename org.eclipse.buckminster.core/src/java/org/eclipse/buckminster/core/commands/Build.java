@@ -19,6 +19,7 @@ import org.eclipse.buckminster.cmdline.OptionValueType;
 import org.eclipse.buckminster.cmdline.UsageException;
 import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.TargetPlatform;
+import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
@@ -47,7 +48,7 @@ public class Build extends WorkspaceCommand {
 		IProject[] projs = wsRoot.getProjects();
 
 		try {
-			monitor.beginTask(null, projs.length * (clean ? 8 : 6));
+			monitor.beginTask(null, projs.length * (clean ? 9 : 7));
 
 			// Ensure that the workspace is in sync
 			//
@@ -63,6 +64,12 @@ public class Build extends WorkspaceCommand {
 				TargetPlatform.getInstance().refresh();
 
 			ws.build(IncrementalProjectBuilder.FULL_BUILD, MonitorUtils.subMonitor(monitor, projs.length * 5));
+
+			try {
+				WorkspaceInfo.forceRefreshOnAll(MonitorUtils.subMonitor(monitor, projs.length));
+			} catch (Exception e) {
+				// ignore
+			}
 
 			// Some errors are caused by circular dependencies in the build
 			// hierarchy. They might be
