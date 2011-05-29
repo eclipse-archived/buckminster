@@ -65,12 +65,6 @@ public class Build extends WorkspaceCommand {
 
 			ws.build(IncrementalProjectBuilder.FULL_BUILD, MonitorUtils.subMonitor(monitor, projs.length * 5));
 
-			try {
-				WorkspaceInfo.forceRefreshOnAll(MonitorUtils.subMonitor(monitor, projs.length));
-			} catch (Exception e) {
-				// ignore
-			}
-
 			// Some errors are caused by circular dependencies in the build
 			// hierarchy. They might be
 			// fixed by additional incremental builds so we make
@@ -118,6 +112,16 @@ public class Build extends WorkspaceCommand {
 					}
 				}
 			});
+
+			try {
+				// Refresh workspace info since the build might have affected
+				// cspec generation. When executing with a script, the next
+				// perform will run with the same generated meta-data.
+				WorkspaceInfo.forceRefreshOnAll(MonitorUtils.subMonitor(monitor, projs.length));
+			} catch (Exception e) {
+				// ignore
+			}
+
 			return markers;
 		} finally {
 			monitor.done();
