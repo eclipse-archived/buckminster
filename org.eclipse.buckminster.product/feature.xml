@@ -1,21 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.eclipse.buckminster.product"
-      label="Buckminster Product"
+      label="%featureName"
       version="1.4.0.qualifier"
-      provider-name="Eclipse Buckminster Project">
+      provider-name="%providerName"
+      license-feature="org.eclipse.buckminster.license.feature"
+      license-feature-version="1.0.0.qualifier">
 
-   <description url="http://www.eclipse.org/buckminster">
-      This feature includes all features needed for the product. The product then includes only this feature and nothing else.
+   <description>
+      %description
    </description>
 
-   <copyright url="http://www.eclipse.org/buckminster/COPYRIGHT">
-      Copyright (c) 2006-2008, Cloudsmith Inc.
-The code, documentation and other materials contained herein have been
-licensed under the Eclipse Public License - v 1.0 by the copyright holder
-listed above, as the Initial Contributor under such license. The text of
-such license is available at www.eclipse.org.
+   <copyright>
+      %copyright
    </copyright>
+
+   <license url="%licenseURL">
+      %license
+   </license>
+
 
    <includes
          id="org.eclipse.equinox.p2.director.feature"
