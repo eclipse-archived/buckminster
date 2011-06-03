@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.eclipse.buckminster.license.feature"
+      label="Buckminster License Feature"
+      version="1.0.0.qualifier"
+      provider-name="%providerName">
+
+   <description url="http://www.example.com/description">
+      License shared by all Buckminster projects
+   </description>
+
+   <copyright>
+      %copyright
+   </copyright>
+
+   <license url="%licenseURL">
+      %license
+   </license>
+
+</feature>
