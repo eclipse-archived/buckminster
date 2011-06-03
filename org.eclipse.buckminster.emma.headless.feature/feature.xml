@@ -12,9 +12,11 @@
  -->
 <feature
       id="org.eclipse.buckminster.emma.headless.feature"
-      version="0.9.0.qualifier"
       label="%featureName"
-      provider-name="%providerName">
+      version="0.9.0.qualifier"
+      provider-name="%providerName"
+      license-feature="org.eclipse.buckminster.license.feature"
+      license-feature-version="1.0.0.qualifier">
 
    <description>
       %description
