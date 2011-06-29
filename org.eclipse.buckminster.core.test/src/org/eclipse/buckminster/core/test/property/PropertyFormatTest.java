@@ -97,10 +97,10 @@ public class PropertyFormatTest extends TestCase {
 
 	public void testExpandingEnvVarProperties() {
 		IProperties<String> props = new ExpandingProperties<String>(BMProperties.getSystemProperties());
-		props.put("env.salut", "Hello ${env_var:USERNAME}!");
+		props.put("env.salut", "Hello ${env_var:LOGNAME}!");
 		props.put("env.salut.home", "${env.salut} Your $${env_var:PATH} is ${env_var:PATH}");
 		String result = props.get("env.salut.home"); //$NON-NLS-1$
-		String expected = "Hello " + System.getenv("USERNAME") + "! Your ${env_var:PATH} is " //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		String expected = "Hello " + System.getenv("LOGNAME") + "! Your ${env_var:PATH} is " //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 				+ System.getenv("PATH"); //$NON-NLS-1$
 		log(result);
 		assertEquals(expected, result);
