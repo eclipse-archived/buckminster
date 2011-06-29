@@ -4,7 +4,7 @@
   <rm:property key="eclipse.svn.prefix" value="http://dev.eclipse.org/svnroot"/>
   <rm:property key="build.type" value="R"/>
   <rm:property key="git.clone.dir" value="${checkout.root}"/>
-  <rm:property key="checkout.root" value="${user.home}/git"/>
+  <rm:property key="checkout.root" value="${user.home}/git/buckminster"/>
   <rm:locator pattern="^org\.eclipse\.buckminster(\..+)?" searchPathRef="buckminster"/>
   <rm:locator pattern="^org\.slf4j\.extendable$" searchPathRef="buckminster"/>
   <rm:locator pattern="^org\.eclipse\.equinox\.p2\.director\.(product|feature)$" searchPathRef="buckminster"/>
@@ -23,7 +23,7 @@
   <rm:searchPath name="buckminster">
     <rm:provider componentTypes="osgi.bundle,eclipse.feature,buckminster" readerType="git">
       <rm:property key="git.remote.uri" value="git://git.eclipse.org/gitroot/buckminster/buckminster.git"/>
-      <rm:uri format="{0}/buckminster,{1}">
+      <rm:uri format="{0},{1}">
         <bc:propertyRef key="git.clone.dir"/>
         <bc:propertyRef key="buckminster.component"/>
       </rm:uri>
