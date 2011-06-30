@@ -533,8 +533,6 @@ public class Messages extends NLS {
 
 	public static String The_0_character_is_illegal_in_branch_tag_qualifier;
 
-	public static String The_slash_character_only_legal_at_first_position_of_branch_tag_qualifier;
-
 	public static String Syntax_error_in_version_string_0_at_position_1_2;
 
 	public static String Unexpected_name_0;

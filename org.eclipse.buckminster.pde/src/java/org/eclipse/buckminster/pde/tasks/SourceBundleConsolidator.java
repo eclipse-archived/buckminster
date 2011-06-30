@@ -19,6 +19,7 @@ import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.equinox.p2.metadata.Version;
 import org.osgi.framework.Constants;
 
@@ -50,18 +51,23 @@ public class SourceBundleConsolidator extends BundleConsolidator {
 		String bundleLocalization = attributes.getValue(Constants.BUNDLE_LOCALIZATION);
 
 		Map<String, String> translations = Collections.emptyMap();
-		if ("plugin".equals(bundleLocalization)) { //$NON-NLS-1$
-			InputStream inStream = null;
-			try {
-				// We need to get hold of the feature.properties from the
-				// original source
-				inStream = new BufferedInputStream(new FileInputStream(new File(ctx.getComponentLocation().toFile(), "plugin.properties"))); //$NON-NLS-1$
-				translations = new BMProperties(inStream);
-			} catch (CoreException e) {
-			} catch (FileNotFoundException e) {
-			} finally {
-				IOUtils.close(inStream);
-			}
+
+		InputStream inStream = null;
+		try {
+			// We need to get hold of the feature.properties from the
+			// original source
+			IPath srcDir = ctx.getComponentLocation();
+			IPath translationsFile = null;
+			if (bundleLocalization == null)
+				translationsFile = srcDir.append("OSGI-INF/l10n/bundle.properties"); //$NON-NLS-1$
+			else
+				translationsFile = srcDir.append(bundleLocalization + ".properties"); //$NON-NLS-1$
+			inStream = new BufferedInputStream(new FileInputStream(translationsFile.toFile()));
+			translations = new BMProperties(inStream);
+		} catch (CoreException e) {
+		} catch (FileNotFoundException e) {
+		} finally {
+			IOUtils.close(inStream);
 		}
 
 		if (bundleName != null) {
