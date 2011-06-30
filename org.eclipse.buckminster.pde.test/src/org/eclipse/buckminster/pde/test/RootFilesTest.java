@@ -59,6 +59,9 @@ public class RootFilesTest extends PDETestCase {
 		// The buckminster.properties will redirect the build result to this
 		// location
 		IProject result = wsRoot.getProject("result");
+		if (result.exists())
+			result.delete(true, true, monitor);
+
 		result.create(monitor);
 		result.open(monitor);
 
@@ -112,8 +115,9 @@ public class RootFilesTest extends PDETestCase {
 				allRoots.add(ze.getName());
 		zi.close();
 		System.out.println(allRoots);
-		assertEquals("Unexpected number of root files", 3, allRoots.size());
+		assertEquals("Unexpected number of root files", 4, allRoots.size());
 		assertTrue("Root file mycfg1/test.txt is missing", allRoots.contains("mycfg1/test.txt"));
+		assertTrue("Root file mycfg1/test/launcher is missing", allRoots.contains("mycfg1/test/launcher"));
 		assertTrue("Root file mycfg1/test/test2.txt is missing", allRoots.contains("mycfg1/test/test2.txt"));
 		assertTrue("Root file jvm/java is missing", allRoots.contains("jvm/java"));
 	}

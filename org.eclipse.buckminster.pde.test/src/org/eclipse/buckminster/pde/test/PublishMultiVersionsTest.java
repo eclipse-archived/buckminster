@@ -66,6 +66,9 @@ public class PublishMultiVersionsTest extends PDETestCase {
 		// The buckminster.properties will redirect the build result to this
 		// location
 		IProject result = wsRoot.getProject("output");
+		if (result.exists())
+			result.delete(true, true, monitor);
+
 		result.create(monitor);
 		result.open(monitor);
 

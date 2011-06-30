@@ -14,6 +14,8 @@ public class AllTests {
 		suite.addTestSuite(PDEBuilderTest.class);
 		suite.addTestSuite(PublishMultiVersionsTest.class);
 		suite.addTestSuite(MultiSourceFolderTest.class);
+		// suite.addTestSuite(RootFilesTest.class);
+		suite.addTestSuite(SourceBundleTest.class);
 		// $JUnit-END$
 		return suite;
 	}

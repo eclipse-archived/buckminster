@@ -248,6 +248,8 @@ public class CSpecFromSource extends CSpecFromFeature {
 			manifest.setProductAlias(ALIAS_OUTPUT);
 			manifest.setProductBase(productCommonPath);
 			manifest.addProductPath(new Path(FEATURE_MANIFEST));
+			getCSpec().addGroup("empty.translations", false); //$NON-NLS-1$
+			manifest.addLocalPrerequisite("empty.translations", ALIAS_TRANSLATIONS); //$NON-NLS-1$
 		}
 		manifest.addLocalPrerequisite(ATTRIBUTE_MANIFEST, ALIAS_MANIFEST);
 		manifest.addLocalPrerequisite(ATTRIBUTE_SOURCE_BUNDLE_JARS, ALIAS_BUNDLES);
