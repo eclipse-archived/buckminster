@@ -43,7 +43,6 @@ import org.eclipse.jgit.transport.URIish;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.team.core.RepositoryProvider;
 import org.eclipse.team.core.history.IFileHistory;
-import org.eclipse.team.core.history.IFileHistoryProvider;
 import org.eclipse.team.core.history.IFileRevision;
 
 public class GitReaderType extends CatalogReaderType implements ITeamReaderType {
@@ -114,9 +113,14 @@ public class GitReaderType extends CatalogReaderType implements ITeamReaderType 
 		if (provider == null)
 			return null;
 
-		IFileHistory history = provider.getFileHistoryProvider().getFileHistoryFor(resource, IFileHistoryProvider.SINGLE_REVISION, monitor);
-		IFileRevision[] revisions = history.getFileRevisions();
-		return revisions.length == 0 ? null : new Date(revisions[0].getTimestamp());
+		IFileHistory history = provider.getFileHistoryProvider().getFileHistoryFor(resource, 0, monitor);
+		long lastTimestamp = 0;
+		for (IFileRevision revision : history.getFileRevisions()) {
+			long ts = revision.getTimestamp();
+			if (ts > lastTimestamp)
+				lastTimestamp = ts;
+		}
+		return lastTimestamp == 0 ? null : new Date(lastTimestamp);
 	}
 
 	@Override
@@ -194,14 +198,29 @@ public class GitReaderType extends CatalogReaderType implements ITeamReaderType 
 
 	@Override
 	public void shareProject(IProject project, Resolution cr, RMContext context, IProgressMonitor monitor) throws CoreException {
+		File repoDir = null;
+		if (cr.getReaderTypeId().equals("git")) { //$NON-NLS-1$
+			String fmt = cr.getRepository();
+			int comma = fmt.lastIndexOf(',');
+			if (comma >= 0)
+				fmt = fmt.substring(0, comma);
+			repoDir = Path.fromPortableString(fmt).append(Constants.DOT_GIT).toFile();
+		} else {
+			IPath location = project.getLocation();
+			while (location.segmentCount() > 0) {
+				File dotGit = location.append(Constants.DOT_GIT).toFile();
+				if (dotGit.exists()) {
+					repoDir = dotGit;
+					break;
+				}
+				location = location.removeLastSegments(1);
+			}
+			if (repoDir == null)
+				return;
+		}
+
 		// Register the project with the GitTeamProvider.
 		//
-		String fmt = cr.getRepository();
-		int comma = fmt.lastIndexOf(',');
-		if (comma >= 0)
-			fmt = fmt.substring(0, comma);
-
-		File repoDir = Path.fromPortableString(fmt).append(Constants.DOT_GIT).toFile();
 		ConnectProviderOperation connectOp = new ConnectProviderOperation(project, repoDir);
 
 		// Add repository if it's not already addded

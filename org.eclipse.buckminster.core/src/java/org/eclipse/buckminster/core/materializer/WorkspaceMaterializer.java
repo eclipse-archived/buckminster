@@ -492,6 +492,19 @@ public class WorkspaceMaterializer extends FileSystemMaterializer {
 						readerType = CorePlugin.getDefault().getReaderType("cvs"); //$NON-NLS-1$
 					} catch (CoreException e) {
 					}
+				} else {
+					try {
+						IPath location = project.getLocation();
+						while (location.segmentCount() > 0) {
+							location = location.removeLastSegments(1);
+							IPath dotGit = location.append(".git"); //$NON-NLS-1$
+							if (dotGit.toFile().exists()) {
+								readerType = CorePlugin.getDefault().getReaderType("git"); //$NON-NLS-1$
+								break;
+							}
+						}
+					} catch (CoreException e) {
+					}
 				}
 			}
 			readerType.shareProject(project, cr, context, MonitorUtils.subMonitor(monitor, 50));
