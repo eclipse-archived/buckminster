@@ -415,7 +415,7 @@ public class SubversiveSession extends GenericSession<IRepositoryLocation, SVNEn
 	@Override
 	protected SVNEntry[] innerListFolder(URI url, IProgressMonitor monitor) throws Exception {
 		ISVNProgressMonitor svnMon = SimpleMonitorWrapper.beginTask(monitor, 100);
-		return SVNUtility.list(proxy, new SVNEntryRevisionReference(url.toString(), null, getRevision()), ISVNConnector.Depth.IMMEDIATES,
+		return SVNUtility.list(proxy, new SVNEntryRevisionReference(url.toString(), getRevision(), getRevision()), ISVNConnector.Depth.IMMEDIATES,
 				SVNEntry.Fields.ALL, ISVNConnector.Options.NONE, svnMon);
 
 	}

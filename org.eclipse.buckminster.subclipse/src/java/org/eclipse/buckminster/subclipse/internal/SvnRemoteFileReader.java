@@ -142,7 +142,7 @@ public class SvnRemoteFileReader extends GenericRemoteReader<ISVNDirEntry, SVNRe
 		InputStream input = null;
 		byte[] buf = new byte[0x1000];
 		final ISVNClientAdapter clientAdapter = getSession().getClientAdapter();
-		input = clientAdapter.getContent(TypeTranslator.from(url), revision);
+		input = clientAdapter.getContent(TypeTranslator.from(url), revision, revision);
 		int bytesRead = input.read(buf);
 
 		while (bytesRead > 0) {

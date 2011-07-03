@@ -456,7 +456,7 @@ public class SvnSession extends GenericSession<ISVNRepositoryLocation, ISVNDirEn
 	protected ISVNDirEntry[] innerListFolder(URI url, IProgressMonitor monitor) throws CoreException {
 		monitor.beginTask(null, 1);
 		try {
-			return clientAdapter.getList(TypeTranslator.from(url), getRevision(), false);
+			return clientAdapter.getList(TypeTranslator.from(url), getRevision(), getRevision(), false);
 		} catch (SVNClientException e) {
 			throw BuckminsterException.wrap(e);
 		} finally {

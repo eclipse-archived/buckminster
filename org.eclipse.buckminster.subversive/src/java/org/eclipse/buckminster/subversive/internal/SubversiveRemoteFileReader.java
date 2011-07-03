@@ -81,8 +81,9 @@ public class SubversiveRemoteFileReader extends GenericRemoteReader<SVNEntry, SV
 
 		ISVNProgressMonitor svnMon = SimpleMonitorWrapper.beginTask(monitor, 12);
 		try {
-			getSession().getSVNProxy().checkout(new SVNEntryRevisionReference(session.getSVNUrl().toString(), null, session.getRevision()),
-					destDir.toString(), ISVNConnector.Depth.INFINITY, ISVNConnector.Options.FORCE, svnMon);
+			getSession().getSVNProxy().checkout(
+					new SVNEntryRevisionReference(session.getSVNUrl().toString(), session.getRevision(), session.getRevision()), destDir.toString(),
+					ISVNConnector.Depth.INFINITY, ISVNConnector.Options.FORCE, svnMon);
 			success = true;
 		} catch (SVNConnectorException e) {
 			throw BuckminsterException.wrap(e);
@@ -102,7 +103,7 @@ public class SubversiveRemoteFileReader extends GenericRemoteReader<SVNEntry, SV
 	protected void fetchRemoteFile(URI url, SVNRevision revision, OutputStream output, IProgressMonitor subMonitor) throws Exception {
 		final ISVNProgressMonitor svnMon = SimpleMonitorWrapper.beginTask(subMonitor, 100);
 		final ISVNConnector proxy = getSession().getSVNProxy();
-		final SVNEntryRevisionReference entry = new SVNEntryRevisionReference(url.toString(), null, revision);
+		final SVNEntryRevisionReference entry = new SVNEntryRevisionReference(url.toString(), revision, revision);
 		proxy.streamFileContent(entry, GetFileContentOperation.DEFAULT_BUFFER_SIZE, output, svnMon);
 	}
 
