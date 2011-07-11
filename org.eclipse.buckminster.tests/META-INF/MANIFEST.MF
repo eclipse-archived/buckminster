@@ -15,5 +15,5 @@ Require-Bundle: org.eclipse.buckminster.core.test,
  org.eclipse.buckminster.maven.test,
  org.eclipse.buckminster.osgi.filter.test,
  org.eclipse.buckminster.pde.test,
- org.junit
+ org.junit;bundle-version="4.8.2"
 Export-Package: org.eclipse.buckminster.tests

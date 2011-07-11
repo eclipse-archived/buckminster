@@ -9,5 +9,5 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6,
 Require-Bundle: org.eclipse.buckminster.executor,
  org.eclipse.buckminster.core,
  org.eclipse.core.runtime,
- org.junit
+ org.junit;bundle-version="4.8.2"
 Export-Package: org.eclipse.buckminster.executor.test
