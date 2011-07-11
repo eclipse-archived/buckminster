@@ -350,7 +350,7 @@ public abstract class AbstractSCCSVersionFinder extends AbstractVersionFinder {
 				logDecision(ResolverDecisionType.VERSION_REJECTED, version, NLS.bind(Messages.Not_designated_by_0, versionDesignator));
 				return null;
 			}
-			return new VersionMatch(version, null, query.getRevision(), query.getTimestamp(), null);
+			return new VersionMatch(version, null, entry.getRevision(), entry.getTimestamp(), null);
 		} finally {
 			monitor.done();
 		}
