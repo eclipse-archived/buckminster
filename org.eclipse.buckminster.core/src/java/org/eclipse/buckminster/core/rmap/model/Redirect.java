@@ -16,6 +16,7 @@ import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.resolver.ResolverDecisionType;
 import org.eclipse.buckminster.core.resolver.ResourceMapResolverFactory;
+import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
@@ -32,8 +33,8 @@ public class Redirect extends Matcher {
 
 	private final String url;
 
-	public Redirect(ResourceMap owner, String pattern, String url) {
-		super(owner, pattern);
+	public Redirect(ResourceMap owner, String pattern, Filter resolutionFilter, String url) {
+		super(owner, pattern, resolutionFilter);
 		this.url = url;
 	}
 

@@ -12,11 +12,16 @@ package org.eclipse.buckminster.core.rmap.parser;
 
 import org.eclipse.buckminster.core.parser.ExtensionAwareHandler;
 import org.eclipse.buckminster.core.rmap.model.Locator;
+import org.eclipse.buckminster.core.rmap.model.Matcher;
 import org.eclipse.buckminster.core.rmap.model.Redirect;
 import org.eclipse.buckminster.core.rmap.model.ResourceMap;
+import org.eclipse.buckminster.osgi.filter.Filter;
+import org.eclipse.buckminster.osgi.filter.FilterFactory;
 import org.eclipse.buckminster.sax.AbstractHandler;
+import org.osgi.framework.InvalidSyntaxException;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 /**
  * @author Thomas Hallgren
@@ -33,8 +38,8 @@ abstract class MatcherHandler extends ExtensionAwareHandler {
 		public void handleAttributes(Attributes attrs) throws SAXException {
 			super.handleAttributes(attrs);
 			ResourceMap rmap = getResourceMap();
-			rmap.addMatcher(new Locator(rmap, getPattern(), getStringValue(attrs, Locator.ATTR_SEARCH_PATH_REF), getOptionalBooleanValue(attrs,
-					Locator.ATTR_FAIL_ON_ERROR, true)));
+			rmap.addMatcher(new Locator(rmap, getPattern(), getStringValue(attrs, Locator.ATTR_SEARCH_PATH_REF), resolutionFilter,
+					getOptionalBooleanValue(attrs, Locator.ATTR_FAIL_ON_ERROR, true)));
 		}
 	}
 
@@ -50,11 +55,13 @@ abstract class MatcherHandler extends ExtensionAwareHandler {
 			super.handleAttributes(attrs);
 			ResourceMap rmap = getResourceMap();
 			String href = getStringValue(attrs, Redirect.ATTR_HREF);
-			rmap.addMatcher(new Redirect(rmap, getPattern(), href));
+			rmap.addMatcher(new Redirect(rmap, getPattern(), resolutionFilter, href));
 		}
 	}
 
 	private String pattern;
+
+	Filter resolutionFilter;
 
 	public MatcherHandler(AbstractHandler parent) {
 		super(parent);
@@ -63,6 +70,15 @@ abstract class MatcherHandler extends ExtensionAwareHandler {
 	@Override
 	public void handleAttributes(Attributes attrs) throws SAXException {
 		pattern = getOptionalStringValue(attrs, "pattern"); //$NON-NLS-1$
+		String resFilter = getOptionalStringValue(attrs, Matcher.ATTR_RESOLUTION_FILTER);
+		if (resFilter != null) {
+			try {
+				resolutionFilter = FilterFactory.newInstance(resFilter);
+			} catch (InvalidSyntaxException e) {
+				throw new SAXParseException(e.getMessage(), getDocumentLocator(), e);
+			}
+		} else
+			resolutionFilter = null;
 	}
 
 	final String getPattern() {

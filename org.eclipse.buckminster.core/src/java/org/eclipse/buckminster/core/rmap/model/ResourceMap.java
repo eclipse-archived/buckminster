@@ -197,7 +197,8 @@ public class ResourceMap extends AbstractSaxableElement implements ISaxable {
 
 		String componentName = request.getName();
 		for (Matcher matcher : matchers) {
-			if (!matcher.matches(componentName))
+			Filter[] filterHandle = new Filter[1];
+			if (!(matcher.isFilterMatchFor(query, filterHandle) && matcher.matches(componentName)))
 				continue;
 
 			if (matcher instanceof Redirect)

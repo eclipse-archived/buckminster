@@ -10,6 +10,7 @@
 
 package org.eclipse.buckminster.core.rmap.model;
 
+import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.sax.Utils;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -29,11 +30,15 @@ public class Locator extends Matcher {
 	private final boolean failOnError;
 
 	public Locator(ResourceMap owner, String pattern, String searchPath) {
-		this(owner, pattern, searchPath, true);
+		this(owner, pattern, searchPath, null, true);
 	}
 
-	public Locator(ResourceMap owner, String pattern, String searchPath, boolean failOnError) {
-		super(owner, pattern);
+	public Locator(ResourceMap owner, String pattern, String searchPath, Filter resolutionFilter) {
+		this(owner, pattern, searchPath, resolutionFilter, true);
+	}
+
+	public Locator(ResourceMap owner, String pattern, String searchPath, Filter resolutionFilter, boolean failOnError) {
+		super(owner, pattern, resolutionFilter);
 		this.searchPath = searchPath;
 		this.failOnError = failOnError;
 	}

@@ -33,6 +33,7 @@
 	</complexType>
 	<complexType abstract="true" name="Matcher">
 		<attribute name="pattern" type="string" use="optional"/>
+		<attribute name="resolutionFilter" type="string" use="optional"/>
 	</complexType>
 	<complexType name="Locator">
 		<complexContent>
