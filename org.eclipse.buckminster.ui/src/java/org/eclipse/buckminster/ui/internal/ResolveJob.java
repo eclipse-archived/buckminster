@@ -113,7 +113,9 @@ public class ResolveJob extends Job {
 				monitor.done();
 			}
 		} catch (Exception e) {
-			return BuckminsterException.wrap(e).getStatus();
+			IStatus status = BuckminsterException.wrap(e).getStatus();
+			CorePlugin.logWarningsAndErrors(status);
+			return status;
 		}
 	}
 }

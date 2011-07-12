@@ -32,7 +32,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.egit.core.GitProvider;
-import org.eclipse.egit.core.RepositoryUtil;
 import org.eclipse.egit.core.op.ConnectProviderOperation;
 import org.eclipse.egit.core.project.GitProjectData;
 import org.eclipse.egit.core.project.RepositoryMapping;
@@ -222,11 +221,6 @@ public class GitReaderType extends CatalogReaderType implements ITeamReaderType 
 		// Register the project with the GitTeamProvider.
 		//
 		ConnectProviderOperation connectOp = new ConnectProviderOperation(project, repoDir);
-
-		// Add repository if it's not already addded
-		RepositoryUtil repoUtil = org.eclipse.egit.core.Activator.getDefault().getRepositoryUtil();
-		repoUtil.addConfiguredRepository(repoDir);
-
 		connectOp.execute(monitor);
 	}
 
