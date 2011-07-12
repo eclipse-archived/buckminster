@@ -32,26 +32,6 @@ public class MapUnion<K, V> extends AbstractMap<K, V> implements IExpandingMap<K
 
 		private boolean phase1 = true;
 
-		@Override
-		public boolean hasNext() {
-			currentKey = this.getValidKey(currentKey);
-			return currentKey != null;
-		}
-
-		@Override
-		public void remove() {
-			throw new UnsupportedOperationException();
-		}
-
-		K nextKey() {
-			K key = this.getValidKey(currentKey);
-			if (key == null)
-				throw new NoSuchElementException();
-
-			currentKey = null; // Force retrieval of next key
-			return key;
-		}
-
 		private K getValidKey(K key) {
 			if (phase1) {
 				// All keys are valid during phase 1 since they stem from
@@ -81,6 +61,26 @@ public class MapUnion<K, V> extends AbstractMap<K, V> implements IExpandingMap<K
 					return key;
 			}
 			return null;
+		}
+
+		@Override
+		public boolean hasNext() {
+			currentKey = this.getValidKey(currentKey);
+			return currentKey != null;
+		}
+
+		K nextKey() {
+			K key = this.getValidKey(currentKey);
+			if (key == null)
+				throw new NoSuchElementException();
+
+			currentKey = null; // Force retrieval of next key
+			return key;
+		}
+
+		@Override
+		public void remove() {
+			throw new UnsupportedOperationException();
 		}
 	}
 
@@ -145,11 +145,6 @@ public class MapUnion<K, V> extends AbstractMap<K, V> implements IExpandingMap<K
 	private MapUnion(Map<K, V> mutable, Map<K, V> immutable, HashMap<K, K> antiMap) {
 		this.overlay = mutable;
 		this.immutable = immutable;
-
-		int shadowCount = 0;
-		for (K key : overlay.keySet())
-			if (immutable.containsKey(key))
-				++shadowCount;
 		this.antiMap = antiMap;
 	}
 

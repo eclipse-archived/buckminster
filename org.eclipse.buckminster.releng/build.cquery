@@ -7,7 +7,6 @@
     <cq:advisorNode namePattern="^com\.mountainminds\.eclemma\.core$" useMaterialization="false" useTargetPlatform="false" versionOverride="[1.4.2,1.4.3)">
         <cq:documentation xmlns="http://www.w3.org/1999/xhtml">Limiting eclemma to 1.4.2 due to Eclipse IP</cq:documentation>
     </cq:advisorNode>
-    <cq:advisorNode namePattern="^org\.eclipse\.buckminster" useMaterialization="false" useTargetPlatform="false" branchTagPath="helios-maintenance"/>
-    <cq:advisorNode namePattern="^org\.eclipse\.equinox.p2\.director\.feature" useMaterialization="false" useTargetPlatform="false" branchTagPath="helios-maintenance"/>
+    <cq:advisorNode namePattern="^org\.eclipse\.(buckminster.*|equinox\.p2\.director\.(product|feature))$" useMaterialization="false" useTargetPlatform="false" branchTagPath="helios-maintenance"/>
     <cq:advisorNode namePattern=".*" useMaterialization="false" useTargetPlatform="false"/>
 </cq:componentQuery>

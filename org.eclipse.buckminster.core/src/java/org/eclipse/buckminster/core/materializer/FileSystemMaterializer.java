@@ -48,6 +48,10 @@ import org.eclipse.osgi.util.NLS;
  * @author Thomas Hallgren
  */
 public class FileSystemMaterializer extends AbstractMaterializer {
+	protected IPath getArtifactLocation(MaterializationContext context, Resolution resolution) throws CoreException {
+		return context.getArtifactLocation(resolution);
+	}
+
 	@Override
 	public String getMaterializerRootDir() {
 		return "downloads"; //$NON-NLS-1$
@@ -71,7 +75,6 @@ public class FileSystemMaterializer extends AbstractMaterializer {
 			// for all materializations. They need to be initialized using all
 			// entries.
 			//
-			int totCount = 0;
 			Map<String, List<Materialization>> perReader = new TreeMap<String, List<Materialization>>();
 			MaterializationSpec mspec = context.getMaterializationSpec();
 
@@ -205,7 +208,6 @@ public class FileSystemMaterializer extends AbstractMaterializer {
 							perReader.put(readerType.getId(), readerGroup);
 						}
 						readerGroup.add(mat);
-						totCount++;
 					}
 				} catch (CoreException e) {
 					if (ci != null)
@@ -283,9 +285,5 @@ public class FileSystemMaterializer extends AbstractMaterializer {
 
 			monitor.done();
 		}
-	}
-
-	protected IPath getArtifactLocation(MaterializationContext context, Resolution resolution) throws CoreException {
-		return context.getArtifactLocation(resolution);
 	}
 }
