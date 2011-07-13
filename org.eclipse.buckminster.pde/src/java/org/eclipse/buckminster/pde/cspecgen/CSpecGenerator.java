@@ -71,6 +71,7 @@ import org.eclipse.equinox.p2.metadata.VersionRange;
 import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.osgi.service.resolver.BundleSpecification;
 import org.eclipse.osgi.util.ManifestElement;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.pde.core.build.IBuild;
 import org.eclipse.pde.core.build.IBuildEntry;
 import org.eclipse.pde.core.plugin.IFragment;
@@ -697,7 +698,13 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 			}
 
 			CSpecBuilder cspec = getCSpec();
-			ArtifactBuilder productConfigArtifact = cspec.addArtifact(productDescriptor.getId(), false, null);
+			String productId = productDescriptor.getId();
+			if (productId == null || productId.length() == 0) {
+				PDEPlugin.getLogger().warning(NLS.bind(Messages.No_productId_found_in_0, productConfigFile.getAbsolutePath()));
+				productId = "<undefined product ID>"; //$NON-NLS-1$
+			}
+
+			ArtifactBuilder productConfigArtifact = cspec.addArtifact(productId, false, null);
 			productConfigArtifact.addPath(Path.fromOSString(productConfigFile.getName()));
 			GroupBuilder productConfigs = cspec.getGroup(ATTRIBUTE_PRODUCT_CONFIGS);
 			if (productConfigs == null) {

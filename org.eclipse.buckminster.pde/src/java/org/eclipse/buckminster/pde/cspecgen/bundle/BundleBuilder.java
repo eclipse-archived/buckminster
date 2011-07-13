@@ -34,6 +34,7 @@ import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.buckminster.pde.Messages;
+import org.eclipse.buckminster.pde.PDEPlugin;
 import org.eclipse.buckminster.pde.cspecgen.CSpecGenerator;
 import org.eclipse.buckminster.pde.cspecgen.PDEBuilder;
 import org.eclipse.buckminster.pde.internal.EclipseImportReader;
@@ -50,6 +51,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.equinox.internal.p2.metadata.OSGiVersion;
 import org.eclipse.equinox.p2.metadata.Version;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.pde.core.IModel;
 import org.eclipse.pde.core.build.IBuildModel;
 import org.eclipse.pde.core.plugin.IPluginBase;
@@ -174,12 +176,21 @@ public class BundleBuilder extends PDEBuilder implements IBuildPropertiesConstan
 				if (bundle.getHeader(Constants.BUNDLE_SYMBOLICNAME) == null) {
 					ProviderMatch pm = reader.getProviderMatch();
 					String cName = pm.getComponentName();
-					if (!cName.endsWith(".source")) //$NON-NLS-1$
-						throw new FileNotFoundException(Messages.not_an_OSGi_manifest);
-					bundle.setHeader(Constants.BUNDLE_SYMBOLICNAME, cName);
+					if (!cName.endsWith(".source")) { //$NON-NLS-1$
+						String bundleManifestVersion = bundle.getHeader(Constants.BUNDLE_MANIFESTVERSION);
+						if (bundleManifestVersion == null)
+							throw new FileNotFoundException(Messages.not_an_OSGi_manifest);
+
+						PDEPlugin.getLogger().warning(
+								NLS.bind(Messages.No_bundle_id_found_in_0, new File(reader.getLocation(), BUNDLE_FILE).getAbsolutePath()));
+						bundle.setHeader(Constants.BUNDLE_SYMBOLICNAME, "<undefined bundle id>"); //$NON-NLS-1$
+					} else
+						bundle.setHeader(Constants.BUNDLE_SYMBOLICNAME, cName);
 					Version v = pm.getVersionMatch().getVersion();
 					String vstr;
-					if (v instanceof OSGiVersion)
+					if (v == null)
+						vstr = null;
+					else if (v instanceof OSGiVersion)
 						vstr = v.toString();
 					else
 						vstr = v.getOriginal();

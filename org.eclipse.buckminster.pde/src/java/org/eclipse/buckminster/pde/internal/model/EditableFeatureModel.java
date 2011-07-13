@@ -95,6 +95,10 @@ public class EditableFeatureModel extends ExternalFeatureModel implements IEdita
 
 	private static final Pattern ctxQualLenPattern = Pattern.compile("\\scontextQualifierLength\\s*=\\s*(\\d+)\\s"); //$NON-NLS-1$
 
+	public EditableFeatureModel() {
+		this.externalFile = null;
+	}
+
 	public EditableFeatureModel(File externalFile) {
 		this.externalFile = externalFile;
 	}
@@ -172,6 +176,11 @@ public class EditableFeatureModel extends ExternalFeatureModel implements IEdita
 
 	@Override
 	public void save() {
+		if (externalFile == null) {
+			PDEPlugin.getLogger().error(Messages.unable_to_save_feature_model);
+			return;
+		}
+
 		try {
 			save(externalFile);
 		} catch (FileNotFoundException e) {

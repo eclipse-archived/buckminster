@@ -165,8 +165,12 @@ public class PrerequisiteBuilder extends CSpecElementBuilder implements IPrerequ
 
 	@Override
 	public String toString() {
+		String name = getName();
+		if (name == null)
+			name = ""; //$NON-NLS-1$
+
 		if (component == null)
-			return getName();
+			return name;
 
 		StringBuilder bld = new StringBuilder();
 		bld.append(component);
@@ -175,7 +179,7 @@ public class PrerequisiteBuilder extends CSpecElementBuilder implements IPrerequ
 			bld.append(componentType);
 		}
 		bld.append('#');
-		bld.append(getName());
+		bld.append(name);
 		if (versionRange != null) {
 			bld.append('/');
 			bld.append(VersionHelper.getHumanReadable(versionRange));

@@ -101,7 +101,7 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted, ICSpecData {
 		@Override
 		public int compare(Attribute o1, Attribute o2) {
 			if (o1.isPublic() == o2.isPublic())
-				return o1.getName().compareTo(o2.getName());
+				return Trivial.compareAllowNull(o1.getName(), o2.getName());
 			return o1.isPublic() ? -1 : 1;
 		}
 	};

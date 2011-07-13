@@ -19,7 +19,6 @@ import org.eclipse.buckminster.pde.internal.model.EditableFeatureModel;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.pde.internal.core.feature.ExternalFeatureModel;
 import org.eclipse.pde.internal.core.ifeature.IFeatureModel;
 
 /**
@@ -36,7 +35,7 @@ public class FeatureModelReader implements IStreamConsumer<IFeatureModel> {
 	}
 
 	public static IFeatureModel readFeatureModel(InputStream stream) throws CoreException {
-		ExternalFeatureModel featureModel = new ExternalFeatureModel();
+		EditableFeatureModel featureModel = new EditableFeatureModel();
 		featureModel.load(stream, true);
 		return featureModel;
 	}

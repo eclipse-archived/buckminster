@@ -164,6 +164,12 @@ public class Messages extends NLS {
 
 	public static String No_baselines_found_in_workspace;
 
+	public static String No_bundle_id_found_in_0;
+
+	public static String No_feature_id_found_in_0;
+
+	public static String No_productId_found_in_0;
+
 	public static String Not_designated_by_0;
 
 	public static String target_0_has_no_containers;

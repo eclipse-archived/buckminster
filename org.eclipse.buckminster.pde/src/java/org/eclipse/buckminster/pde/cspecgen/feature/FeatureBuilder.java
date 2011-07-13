@@ -8,6 +8,7 @@
 
 package org.eclipse.buckminster.pde.cspecgen.feature;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
@@ -21,6 +22,8 @@ import org.eclipse.buckminster.core.helpers.PropertiesParser;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.core.reader.URLFileReader;
 import org.eclipse.buckminster.core.reader.ZipArchiveReader;
+import org.eclipse.buckminster.pde.Messages;
+import org.eclipse.buckminster.pde.PDEPlugin;
 import org.eclipse.buckminster.pde.cspecgen.CSpecGenerator;
 import org.eclipse.buckminster.pde.cspecgen.PDEBuilder;
 import org.eclipse.buckminster.pde.internal.EclipsePlatformReader;
@@ -30,6 +33,7 @@ import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.pde.internal.core.ifeature.IFeature;
 import org.eclipse.pde.internal.core.ifeature.IFeatureModel;
 
@@ -74,6 +78,13 @@ public class FeatureBuilder extends PDEBuilder {
 			feature = model.getFeature();
 		} catch (IOException e) {
 			throw BuckminsterException.wrap(e);
+		}
+
+		String featureId = feature.getId();
+		if (featureId == null || featureId.length() == 0) {
+			PDEPlugin.getLogger().warning(
+					NLS.bind(Messages.No_feature_id_found_in_0, new File(reader.getLocation(), "feature.xml").getAbsolutePath()));
+			feature.setId("<undefined feature id>"); //$NON-NLS-1$
 		}
 
 		CSpecGenerator generator;
