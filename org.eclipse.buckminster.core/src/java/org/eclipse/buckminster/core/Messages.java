@@ -299,6 +299,8 @@ public class Messages extends NLS {
 
 	public static String Unable_to_load_parser_extensions;
 
+	public static String Unable_to_load_reference_repo_0;
+
 	public static String CSpec_0_attribute_1_already_defines_the_path_2;
 
 	public static String Base_cannot_be_null;

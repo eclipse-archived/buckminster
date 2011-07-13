@@ -13,6 +13,7 @@ import java.util.Map;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.KeyConstants;
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.actor.AbstractActor;
 import org.eclipse.buckminster.core.actor.IActionContext;
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
@@ -24,11 +25,13 @@ import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.equinox.p2.core.IProvisioningAgent;
+import org.eclipse.equinox.p2.core.ProvisionException;
 import org.eclipse.equinox.p2.metadata.IInstallableUnit;
 import org.eclipse.equinox.p2.metadata.VersionRange;
 import org.eclipse.equinox.p2.query.QueryUtil;
 import org.eclipse.equinox.p2.repository.metadata.IMetadataRepository;
 import org.eclipse.equinox.p2.repository.metadata.IMetadataRepositoryManager;
+import org.eclipse.osgi.util.NLS;
 
 public abstract class AbstractQualifierGenerator extends AbstractExtension implements IQualifierGenerator {
 	protected IInstallableUnit obtainFromReferenceRepo(IComponentIdentifier identifier, IProgressMonitor monitor) throws CoreException {
@@ -71,6 +74,11 @@ public abstract class AbstractQualifierGenerator extends AbstractExtension imple
 		URI refURI = URLUtils.normalizeToURI(expanded, true);
 		IProvisioningAgent p2Agent = CorePlugin.getDefault().getResolverAgent();
 		IMetadataRepositoryManager mdrManager = (IMetadataRepositoryManager) p2Agent.getService(IMetadataRepositoryManager.SERVICE_NAME);
-		return mdrManager.loadRepository(refURI, monitor);
+		try {
+			return mdrManager.loadRepository(refURI, monitor);
+		} catch (ProvisionException e) {
+			CorePlugin.getLogger().warning(NLS.bind(Messages.Unable_to_load_reference_repo_0, refURI.toString()));
+			return null;
+		}
 	}
 }
