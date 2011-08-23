@@ -13,6 +13,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.buckminster.core.TargetPlatform;
+import org.eclipse.buckminster.core.actor.IActionContext;
 import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.runtime.Buckminster;
@@ -47,8 +48,8 @@ import org.eclipse.pde.internal.build.IPDEBuildConstants;
  */
 @SuppressWarnings("restriction")
 public class ProductAction extends org.eclipse.equinox.p2.publisher.eclipse.ProductAction implements IPDEBuildConstants {
-	public ProductAction(String src, IProductDescriptor productDesc, String flvor, File exeFeatureLocation) {
-		super(src, new ProductVersionPatcher(productDesc), flvor, exeFeatureLocation);
+	public ProductAction(IActionContext actionContext, String src, IProductDescriptor productDesc, String flvor, File exeFeatureLocation) {
+		super(src, new ProductVersionPatcher(productDesc, actionContext), flvor, exeFeatureLocation);
 	}
 
 	@Override

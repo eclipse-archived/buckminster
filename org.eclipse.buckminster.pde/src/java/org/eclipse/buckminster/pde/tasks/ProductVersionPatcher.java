@@ -2,10 +2,13 @@ package org.eclipse.buckminster.pde.tasks;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.buckminster.core.KeyConstants;
+import org.eclipse.buckminster.core.actor.IActionContext;
 import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.equinox.frameworkadmin.BundleInfo;
@@ -24,10 +27,17 @@ import org.eclipse.equinox.p2.query.QueryUtil;
 public class ProductVersionPatcher implements IProductDescriptor {
 	private final IProductDescriptor product;
 
+	private final IActionContext context;
+
 	private IQueryable<IInstallableUnit> mdr;
 
-	public ProductVersionPatcher(IProductDescriptor product) {
+	private static final String BUILD_ID_KEY = "eclipse.buildId";//$NON-NLS-1$
+
+	private static final String BUILD_ID_TAG = "@qualifier@"; //$NON-NLS-1$
+
+	public ProductVersionPatcher(IProductDescriptor product, IActionContext context) {
 		this.product = product;
+		this.context = context;
 	}
 
 	@Override
@@ -72,7 +82,16 @@ public class ProductVersionPatcher implements IProductDescriptor {
 
 	@Override
 	public Map<String, String> getConfigurationProperties() {
-		return product.getConfigurationProperties();
+		Map<String, String> cprops = product.getConfigurationProperties();
+		String buildId = cprops.get(BUILD_ID_KEY);
+		if (buildId != null && buildId.contains(BUILD_ID_TAG)) {
+			String realBuildId = (String) context.getProperties().get(KeyConstants.BUILD_ID);
+			if (realBuildId != null) {
+				cprops = new HashMap<String, String>(cprops);
+				cprops.put(BUILD_ID_KEY, buildId.replace(BUILD_ID_TAG, realBuildId));
+			}
+		}
+		return cprops;
 	}
 
 	@Override
