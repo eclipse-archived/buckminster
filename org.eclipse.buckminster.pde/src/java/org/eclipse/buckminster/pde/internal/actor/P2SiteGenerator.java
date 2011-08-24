@@ -185,7 +185,7 @@ public class P2SiteGenerator extends AbstractActor {
 	}
 
 	private static void addProductAction(IActionContext ctx, File sourceFolder, List<IPublisherAction> actions, IProductDescriptor product,
-			Map<String, String> buildProperties) throws CoreException {
+			Map<String, String> buildProperties, boolean asSiteDefiner) throws CoreException {
 		String flavor = buildProperties.get("org.eclipse.p2.flavor"); //$NON-NLS-1$
 		if (flavor == null)
 			flavor = "tooling"; //$NON-NLS-1$
@@ -202,7 +202,7 @@ public class P2SiteGenerator extends AbstractActor {
 		if (launcherFeature != null)
 			exeFeature = new File(launcherFeature.getInstallLocation());
 
-		if (product.useFeatures()) {
+		if (asSiteDefiner && product.useFeatures()) {
 			List<IVersionedId> features = product.getFeatures();
 			actions.add(new CategoriesAction(sourceFolder, buildProperties, features));
 		}
@@ -545,12 +545,13 @@ public class P2SiteGenerator extends AbstractActor {
 			actions.add(new CategoriesAction(sourceFolder, buildProperties, featureList));
 		} else {
 			IProductDescriptor product = (IProductDescriptor) siteDescriptor;
-			addProductAction(ctx, sourceFolder, actions, product, buildProperties);
+			addProductAction(ctx, sourceFolder, actions, product, buildProperties, true);
 		}
 
 		for (File productConfigFile : productConfigs) {
 			File productSourceFolder = productConfigFile.getParentFile();
-			addProductAction(ctx, productSourceFolder, actions, getProductDescriptor(productConfigFile), readBuildProperties(productSourceFolder));
+			addProductAction(ctx, productSourceFolder, actions, getProductDescriptor(productConfigFile), readBuildProperties(productSourceFolder),
+					false);
 		}
 		if (!VersionConsolidator.getBooleanProperty(ctx.getProperties(), "site.retain.unpacked", false)) //$NON-NLS-1$
 			actions.add(new RemoveUnpackedSiblingsAction());
