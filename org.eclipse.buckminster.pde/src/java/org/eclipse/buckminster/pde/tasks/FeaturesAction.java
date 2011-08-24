@@ -311,6 +311,14 @@ public class FeaturesAction extends org.eclipse.equinox.p2.publisher.eclipse.Fea
 		return ius;
 	}
 
+	@Override
+	protected void generateSiteReferences(Feature feature, IPublisherResult result, IPublisherInfo publisherInfo) {
+		// We rely on the SiteReferencesAction for this and simply skip the
+		// update sites and discovery sites
+		// that are provided in other features.
+		return;
+	}
+
 	private void addCapabilityAdvice(Feature feature) {
 		Version v = Version.parseVersion(feature.getVersion());
 		IVersionedId vn = new VersionedId(feature.getId(), VersionHelper.replaceQualifier(v, null));
