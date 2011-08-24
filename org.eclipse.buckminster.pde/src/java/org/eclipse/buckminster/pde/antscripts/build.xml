@@ -76,6 +76,51 @@
 		</sequential>
 	</macrodef>
 
+	<macrodef name="extractProductId">
+		<attribute name="file"/>
+		<attribute name="property"/>
+		<sequential>
+			<loadfile property="@{property}" srcfile="@{file}">
+				<filterchain>
+					<striplinebreaks/>
+					<replaceregex
+						pattern="^.*&lt;product[^&gt;]*\sid=&quot;([^&quot;]*)&quot;.*$"
+						replace="\1"/>
+				</filterchain>
+			</loadfile>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="extractProductName">
+		<attribute name="file"/>
+		<attribute name="property"/>
+		<sequential>
+			<loadfile property="@{property}" srcfile="@{file}">
+				<filterchain>
+					<striplinebreaks/>
+					<replaceregex
+						pattern="^.*&lt;product[^&gt;]*\sname=&quot;([^&quot;]*)&quot;.*$"
+						replace="\1"/>
+				</filterchain>
+			</loadfile>
+		</sequential>
+	</macrodef>
+
+	<scriptdef language="javascript" name="lower">
+	    <attribute name="string" /> 
+	    <attribute name="to" />
+	    project.setProperty( attributes.get( "to" ),
+	                         attributes.get( "string" ).toLowerCase() );
+	</scriptdef>
+
+	<scriptdef language="javascript" name="upper">
+	    <attribute name="string" /> 
+	    <attribute name="to" />
+
+	    project.setProperty( attributes.get( "to" ),
+	                         attributes.get( "string" ).toUpperCase() );
+	</scriptdef>
+
 	<target name="apigeneration">
 		<extractBundleId file="${sp:manifest}" property="bundle.id"/>
 		<extractBundleVersion file="${sp:manifest}" property="bundle.version"/>
