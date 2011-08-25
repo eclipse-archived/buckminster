@@ -486,37 +486,39 @@ public class WorkspaceMaterializer extends FileSystemMaterializer {
 				// the project. Look for known SCM metadata. This should of
 				// course be done in a nicer way using extension points.
 				//
-				if (project.getFolder(".git").exists()) { //$NON-NLS-1$
-					try {
-						readerType = CorePlugin.getDefault().getReaderType("git"); //$NON-NLS-1$
-					} catch (CoreException e) {
-					}
-				} else if (project.getFolder(".svn").exists()) { //$NON-NLS-1$
-					try {
-						readerType = CorePlugin.getDefault().getReaderType("svn"); //$NON-NLS-1$
-					} catch (CoreException e) {
-					}
-				} else if (project.getFolder("CVS").exists()) { //$NON-NLS-1$
-					try {
-						readerType = CorePlugin.getDefault().getReaderType("cvs"); //$NON-NLS-1$
-					} catch (CoreException e) {
-					}
-				} else {
-					try {
-						IPath location = project.getLocation();
-						while (location.segmentCount() > 0) {
-							location = location.removeLastSegments(1);
-							IPath dotGit = location.append(".git"); //$NON-NLS-1$
-							if (dotGit.toFile().exists()) {
-								readerType = CorePlugin.getDefault().getReaderType("git"); //$NON-NLS-1$
-								break;
-							}
+				IReaderType scmReaderType = null;
+				try {
+					// Try to find a .git folder, either directly in the project
+					// folder or in a folder somewhere in the parent chain of
+					// directories
+					IPath location = project.getLocation();
+					while (location.segmentCount() > 0) {
+						IPath dotGit = location.append(".git"); //$NON-NLS-1$
+						if (dotGit.toFile().isDirectory()) {
+							Buckminster.getLogger().debug("Project %s has a git repository at %s", project.getName(), location.toPortableString()); //$NON-NLS-1$
+							scmReaderType = CorePlugin.getDefault().getReaderType("git"); //$NON-NLS-1$
+							break;
 						}
+						location = location.removeLastSegments(1);
+					}
+				} catch (CoreException e) {
+				}
+				if (scmReaderType == null && project.getFolder(".svn").exists()) { //$NON-NLS-1$
+					try {
+						scmReaderType = CorePlugin.getDefault().getReaderType("svn"); //$NON-NLS-1$
 					} catch (CoreException e) {
 					}
 				}
-				if (readerType instanceof LocalReaderType)
+				if (scmReaderType == null && project.getFolder("CVS").exists()) { //$NON-NLS-1$
+					try {
+						scmReaderType = CorePlugin.getDefault().getReaderType("cvs"); //$NON-NLS-1$
+					} catch (CoreException e) {
+					}
+				}
+				if (scmReaderType == null)
 					Buckminster.getLogger().debug("Unable to determine readerType for project %s. Assuming \"local\"", project.getName()); //$NON-NLS-1$
+				else
+					readerType = scmReaderType;
 			}
 			readerType.shareProject(project, cr, context, MonitorUtils.subMonitor(monitor, 50));
 			WorkspaceInfo.setComponentIdentifier(project, cr.getCSpec().getComponentIdentifier());
