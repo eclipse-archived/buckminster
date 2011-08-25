@@ -39,7 +39,16 @@ public class GitReader extends AbstractCatalogReader {
 	@Override
 	public void innerMaterialize(IPath destination, IProgressMonitor monitor) throws CoreException {
 		File location = getLocation();
-		if (!location.equals(destination.toFile()))
+		try {
+			location = location.getCanonicalFile();
+		} catch (IOException e) {
+		}
+		File destFile = destination.toFile();
+		try {
+			destFile = destFile.getCanonicalFile();
+		} catch (IOException e) {
+		}
+		if (!location.equals(destFile))
 			throw new UnsupportedOperationException(Messages.git_reader_can_not_materialize);
 	}
 

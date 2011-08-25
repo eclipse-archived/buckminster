@@ -236,14 +236,22 @@ class RepositoryAccess {
 	}
 
 	Repository getRepository() throws IOException {
-		synchronized (localRepo.getAbsolutePath().intern()) {
+		File canonicalLocalRepo;
+		try {
+			canonicalLocalRepo = localRepo.getCanonicalFile();
+		} catch (IOException e) {
+			canonicalLocalRepo = localRepo;
+		}
+		String repoPath = canonicalLocalRepo.getAbsolutePath().intern();
+
+		synchronized (repoPath) {
 			if (repository != null)
 				return repository;
 
-			boolean infant = !localRepo.exists();
+			boolean infant = !canonicalLocalRepo.exists();
 
 			if (infant) {
-				File localDir = localRepo.getParentFile();
+				File localDir = canonicalLocalRepo.getParentFile();
 				logger.info("Cloning remote repository %s into %s", repoURI.toString(), localDir.getAbsolutePath()); //$NON-NLS-1$
 				CloneCommand cc = Git.cloneRepository();
 				cc.setBare(false);
@@ -252,11 +260,12 @@ class RepositoryAccess {
 				cc.setURI(repoURI.toPrivateString());
 				cc.call();
 			}
-			repository = new FileRepository(localRepo);
+			repository = new FileRepository(canonicalLocalRepo);
 
 			// Add repository if it's not already addded
 			RepositoryUtil repoUtil = org.eclipse.egit.core.Activator.getDefault().getRepositoryUtil();
-			repoUtil.addConfiguredRepository(localRepo);
+			if (repoUtil.addConfiguredRepository(canonicalLocalRepo))
+				logger.info("Added Git repository at %s to the set of known repositories", repoPath); //$NON-NLS-1$
 			return repository;
 		}
 	}

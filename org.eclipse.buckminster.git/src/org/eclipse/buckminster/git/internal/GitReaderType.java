@@ -1,6 +1,7 @@
 package org.eclipse.buckminster.git.internal;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Date;
@@ -34,6 +35,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.egit.core.GitProvider;
+import org.eclipse.egit.core.RepositoryUtil;
 import org.eclipse.egit.core.op.ConnectProviderOperation;
 import org.eclipse.egit.core.project.GitProjectData;
 import org.eclipse.egit.core.project.RepositoryMapping;
@@ -107,13 +109,26 @@ public class GitReaderType extends CatalogReaderType implements ITeamReaderType 
 		String workingCopyStr = workingCopy.getAbsolutePath();
 		IPath workingCopyPath = Path.fromOSString(workingCopyStr);
 		IResource resource = wsRoot.getContainerForLocation(workingCopyPath);
-		if (resource == null) {
+		if (resource == null)
 			resource = wsRoot.getFileForLocation(workingCopyPath);
-			if (resource == null) {
-				logger.debug("getLastModification: Failed get resource for path %s", workingCopyStr); //$NON-NLS-1$
-				return null;
+
+		if (resource == null) {
+			// Try canonical path too before we give up
+			try {
+				workingCopyStr = workingCopy.getCanonicalPath();
+				workingCopyPath = Path.fromOSString(workingCopyStr);
+				resource = wsRoot.getContainerForLocation(workingCopyPath);
+				if (resource == null)
+					resource = wsRoot.getFileForLocation(workingCopyPath);
+			} catch (IOException e) {
 			}
 		}
+
+		if (resource == null) {
+			logger.debug("getLastModification: Failed get resource for path %s", workingCopy.getAbsolutePath()); //$NON-NLS-1$
+			return null;
+		}
+
 		RepositoryProvider provider = RepositoryProvider.getProvider(resource.getProject());
 		if (provider == null) {
 			logger.debug("getLastModification: Unable to get repository provider for project %s", resource.getProject().getName()); //$NON-NLS-1$
@@ -230,10 +245,30 @@ public class GitReaderType extends CatalogReaderType implements ITeamReaderType 
 				return;
 		}
 
-		// Register the project with the GitTeamProvider.
-		//
-		ConnectProviderOperation connectOp = new ConnectProviderOperation(project, repoDir);
-		connectOp.execute(monitor);
+		// Add repository if it's not already added
+		try {
+			repoDir = repoDir.getCanonicalFile();
+		} catch (IOException e) {
+		}
+		String absPath = repoDir.getAbsolutePath().intern();
+
+		synchronized (absPath) {
+			Logger logger = Buckminster.getLogger();
+			RepositoryUtil repoUtil = org.eclipse.egit.core.Activator.getDefault().getRepositoryUtil();
+			if (repoUtil.addConfiguredRepository(repoDir))
+				logger.info("Added Git repository at %s to the set of known repositories", absPath); //$NON-NLS-1$
+
+			ConnectProviderOperation connectOp = new ConnectProviderOperation(project, repoDir);
+			connectOp.execute(monitor);
+
+			// Once connected, we should be able to get the provider for this
+			// repository
+			RepositoryProvider provider = RepositoryProvider.getProvider(project);
+			if (provider == null)
+				logger.warning("Failed to get team provider after connecting project %s to Git repository at %s", project.getName(), absPath); //$NON-NLS-1$
+			else
+				logger.info("Connected project %s to Git repository at %s", project.getName(), absPath); //$NON-NLS-1$
+		}
 	}
 
 	@Override
