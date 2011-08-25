@@ -76,7 +76,7 @@ public class TimestampQualifierGenerator extends AbstractQualifierGenerator {
 	private static Date getLastModification(ComponentIdentifier cid, IActionContext context) throws CoreException {
 		IPath location = WorkspaceInfo.getComponentLocation(cid);
 		IProject project = WorkspaceInfo.getProject(cid);
-		if (project == null) {
+		if(project == null) {
 			Buckminster.getLogger().debug("getLastModification: Failed determine project for component %s", cid); //$NON-NLS-1$
 			return null;
 		}

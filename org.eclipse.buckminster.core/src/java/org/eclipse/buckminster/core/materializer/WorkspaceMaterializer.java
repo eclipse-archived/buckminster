@@ -51,6 +51,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.team.core.RepositoryProvider;
 
 public class WorkspaceMaterializer extends FileSystemMaterializer {
 	private static Materialization getMaterialization(Resolution resolution) throws CoreException {
@@ -440,36 +441,44 @@ public class WorkspaceMaterializer extends FileSystemMaterializer {
 			}
 
 			IProject project = wsRoot.getProject(suggestedProjectName);
-			if (project.isOpen())
-				return;
-
-			if (!project.exists()) {
-				IProject describedProject = wsRoot.getProject(description.getName());
-				if (describedProject.exists()) {
-					URI describedLocation = describedProject.getLocationURI();
-					if (describedLocation.equals(description.getLocationURI())) {
-						Buckminster.getLogger().warning(
-								NLS.bind("Name of project {0} conflicts with previously bound name {1}", suggestedProjectName, //$NON-NLS-1$
-										description.getName()));
-						project = describedProject;
-						MonitorUtils.worked(monitor, 50);
-					} else {
-						// This is probably a feature that is named in a way
-						// that conflicts with a bundle (or something similar).
-						// In any case, we need to bind both so we must alter
-						// the description here.
-						//
-						Buckminster.getLogger().warning(
-								NLS.bind("Name of project {0} conflicts with name {1} found in .project file.", suggestedProjectName, //$NON-NLS-1$
-										description.getName()));
-						description.setName(suggestedProjectName);
+			if (!project.isOpen()) {
+				if (!project.exists()) {
+					IProject describedProject = wsRoot.getProject(description.getName());
+					if (describedProject.exists()) {
+						URI describedLocation = describedProject.getLocationURI();
+						if (describedLocation.equals(description.getLocationURI())) {
+							Buckminster.getLogger().warning(
+									NLS.bind("Name of project {0} conflicts with previously bound name {1}", suggestedProjectName, //$NON-NLS-1$
+											description.getName()));
+							project = describedProject;
+							MonitorUtils.worked(monitor, 50);
+						} else {
+							// This is probably a feature that is named in a way
+							// that conflicts with a bundle (or something
+							// similar).
+							// In any case, we need to bind both so we must
+							// alter
+							// the description here.
+							//
+							Buckminster.getLogger().warning(
+									NLS.bind("Name of project {0} conflicts with name {1} found in .project file.", suggestedProjectName, //$NON-NLS-1$
+											description.getName()));
+							description.setName(suggestedProjectName);
+							project.create(description, MonitorUtils.subMonitor(monitor, 50));
+						}
+					} else
 						project.create(description, MonitorUtils.subMonitor(monitor, 50));
-					}
-				} else
-					project.create(description, MonitorUtils.subMonitor(monitor, 50));
+				}
+
+				project.open(0, MonitorUtils.subMonitor(monitor, 20));
 			}
 
-			project.open(0, MonitorUtils.subMonitor(monitor, 20));
+			// Make sure the project is shared
+			RepositoryProvider provider = RepositoryProvider.getProvider(project);
+			if (provider != null)
+				// It's shared all right. We have a team provider
+				return;
+
 			Resolution cr = wb.getResolution(StorageManager.getDefault());
 			IReaderType readerType = getMaterializationReaderType(cr);
 			if (readerType instanceof LocalReaderType) {
@@ -506,6 +515,8 @@ public class WorkspaceMaterializer extends FileSystemMaterializer {
 					} catch (CoreException e) {
 					}
 				}
+				if (readerType instanceof LocalReaderType)
+					Buckminster.getLogger().debug("Unable to determine readerType for project %s. Assuming \"local\"", project.getName()); //$NON-NLS-1$
 			}
 			readerType.shareProject(project, cr, context, MonitorUtils.subMonitor(monitor, 50));
 			WorkspaceInfo.setComponentIdentifier(project, cr.getCSpec().getComponentIdentifier());
