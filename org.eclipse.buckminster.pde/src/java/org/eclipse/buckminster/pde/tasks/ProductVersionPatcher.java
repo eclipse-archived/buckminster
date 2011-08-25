@@ -7,7 +7,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.actor.IActionContext;
 import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.pde.IPDEConstants;
@@ -85,7 +84,7 @@ public class ProductVersionPatcher implements IProductDescriptor {
 		Map<String, String> cprops = product.getConfigurationProperties();
 		String buildId = cprops.get(BUILD_ID_KEY);
 		if (buildId != null && buildId.contains(BUILD_ID_TAG)) {
-			String realBuildId = (String) context.getProperties().get(KeyConstants.BUILD_ID);
+			String realBuildId = (String) context.getProperties().get("build.id"); //$NON-NLS-1$
 			if (realBuildId != null) {
 				cprops = new HashMap<String, String>(cprops);
 				cprops.put(BUILD_ID_KEY, buildId.replace(BUILD_ID_TAG, realBuildId));

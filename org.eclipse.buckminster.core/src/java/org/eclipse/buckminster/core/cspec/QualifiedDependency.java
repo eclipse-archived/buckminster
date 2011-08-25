@@ -10,6 +10,7 @@ package org.eclipse.buckminster.core.cspec;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
@@ -123,5 +124,22 @@ public class QualifiedDependency {
 			allAttrs.addAll(attrs);
 		}
 		return new QualifiedDependency(newRequest, allAttrs);
+	}
+
+	@Override
+	public String toString() {
+		if (attributes.isEmpty())
+			return request.toString();
+
+		StringBuilder bld = new StringBuilder(request.toString());
+		bld.append('[');
+		Iterator<String> attrs = attributes.iterator();
+		bld.append(attrs.next());
+		while (attrs.hasNext()) {
+			bld.append(',');
+			bld.append(attrs.next());
+		}
+		bld.append(']');
+		return bld.toString();
 	}
 }

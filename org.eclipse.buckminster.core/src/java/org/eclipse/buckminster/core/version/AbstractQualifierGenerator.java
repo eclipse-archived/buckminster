@@ -77,8 +77,8 @@ public abstract class AbstractQualifierGenerator extends AbstractExtension imple
 		try {
 			return mdrManager.loadRepository(refURI, monitor);
 		} catch (ProvisionException e) {
-			CorePlugin.getLogger().warning(NLS.bind(Messages.Unable_to_load_reference_repo_0, refURI.toString()));
-			return null;
+			CorePlugin.getLogger().error(NLS.bind(Messages.Unable_to_load_reference_repo_0, refURI.toString()));
+			throw e;
 		}
 	}
 }

@@ -20,7 +20,9 @@ import org.eclipse.buckminster.core.reader.IVersionFinder;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.ProviderMatch;
+import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.BuckminsterException;
+import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -100,17 +102,23 @@ public class GitReaderType extends CatalogReaderType implements ITeamReaderType 
 
 	@Override
 	public Date getLastModification(File workingCopy, IProgressMonitor monitor) throws CoreException {
+		Logger logger = Buckminster.getLogger();
 		IWorkspaceRoot wsRoot = ResourcesPlugin.getWorkspace().getRoot();
-		IPath workingCopyPath = Path.fromOSString(workingCopy.getAbsolutePath());
+		String workingCopyStr = workingCopy.getAbsolutePath();
+		IPath workingCopyPath = Path.fromOSString(workingCopyStr);
 		IResource resource = wsRoot.getContainerForLocation(workingCopyPath);
 		if (resource == null) {
 			resource = wsRoot.getFileForLocation(workingCopyPath);
-			if (resource == null)
+			if (resource == null) {
+				logger.debug("getLastModification: Failed get resource for path %s", workingCopyStr); //$NON-NLS-1$
 				return null;
+			}
 		}
 		RepositoryProvider provider = RepositoryProvider.getProvider(resource.getProject());
-		if (provider == null)
+		if (provider == null) {
+			logger.debug("getLastModification: Unable to get repository provider for project %s", resource.getProject().getName()); //$NON-NLS-1$
 			return null;
+		}
 
 		IFileHistory history = provider.getFileHistoryProvider().getFileHistoryFor(resource, 0, monitor);
 		long lastTimestamp = 0;
@@ -119,7 +127,11 @@ public class GitReaderType extends CatalogReaderType implements ITeamReaderType 
 			if (ts > lastTimestamp)
 				lastTimestamp = ts;
 		}
-		return lastTimestamp == 0 ? null : new Date(lastTimestamp);
+		if (lastTimestamp == 0) {
+			logger.debug("getLastModification: Unable to find any file revisions in project %s", resource.getProject().getName()); //$NON-NLS-1$
+			return null;
+		}
+		return new Date(lastTimestamp);
 	}
 
 	@Override

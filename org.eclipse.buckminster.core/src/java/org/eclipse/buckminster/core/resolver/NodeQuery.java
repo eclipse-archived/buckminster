@@ -475,6 +475,11 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 		return getComponentQuery().skipComponent(getComponentRequest(), context);
 	}
 
+	@Override
+	public String toString() {
+		return "Query for: " + qDep; //$NON-NLS-1$
+	}
+
 	/**
 	 * When the resolver finds a materialized component that is not bound to the
 	 * workspace it will call this method to decide wether to use that

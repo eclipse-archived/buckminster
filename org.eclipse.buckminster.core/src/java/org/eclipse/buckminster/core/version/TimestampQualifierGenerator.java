@@ -23,6 +23,8 @@ import org.eclipse.buckminster.core.metadata.MissingComponentException;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.core.reader.AbstractReaderType;
 import org.eclipse.buckminster.core.reader.IReaderType;
+import org.eclipse.buckminster.runtime.Buckminster;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.equinox.p2.metadata.IInstallableUnit;
@@ -73,10 +75,16 @@ public class TimestampQualifierGenerator extends AbstractQualifierGenerator {
 
 	private static Date getLastModification(ComponentIdentifier cid, IActionContext context) throws CoreException {
 		IPath location = WorkspaceInfo.getComponentLocation(cid);
-		IReaderType readerType = AbstractReaderType.getTypeForResource(WorkspaceInfo.getProject(cid));
-		if (readerType == null)
+		IProject project = WorkspaceInfo.getProject(cid);
+		if (project == null) {
+			Buckminster.getLogger().debug("getLastModification: Failed determine project for component %s", cid); //$NON-NLS-1$
 			return null;
-
+		}
+		IReaderType readerType = AbstractReaderType.getTypeForResource(project);
+		if (readerType == null) {
+			Buckminster.getLogger().debug("getLastModification: Failed determine reader type for component %s", cid); //$NON-NLS-1$
+			return null;
+		}
 		return readerType.getLastModification(location.toFile(), context.getCancellationMonitor());
 	}
 
