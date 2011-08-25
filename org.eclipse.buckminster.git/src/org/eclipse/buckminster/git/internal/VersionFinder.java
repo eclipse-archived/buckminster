@@ -115,47 +115,25 @@ public class VersionFinder extends AbstractSCCSVersionFinder {
 
 	@Override
 	protected RevisionEntry getTrunk(IProgressMonitor monitor) throws CoreException {
+		// In git, this means get the current HEAD
 		Repository repo = repoAccess.getRepository(null, monitor);
 		RevWalk revWalk = new RevWalk(repo);
 		try {
 			String component = repoAccess.getComponent();
-			for (Ref ref : repo.getAllRefs().values()) {
+			Ref head = repo.getRef(Constants.HEAD);
+			if (head == null)
+				return null;
+			RevCommit c = revWalk.parseCommit(head.getObjectId());
+			if (component != null && TreeWalk.forPath(repo, component, c.getTree()) == null)
+				return null;
 
-				String name = ref.getName();
-				int lastSlash = name.lastIndexOf('/');
-				if (lastSlash < 0)
-					continue;
-
-				RevObject obj = revWalk.parseAny(ref.getObjectId());
-				if (!(obj instanceof RevCommit))
-					continue;
-
-				// Last part of name is the branch
-				String branch = name.substring(lastSlash + 1);
-				if (!Constants.MASTER.equals(branch))
-					continue;
-
-				RevCommit c = (RevCommit) obj;
-				if (!(component == null || TreeWalk.forPath(repo, component, c.getTree()) != null))
-					continue;
-
-				// repoAccess.inspectRef(ref);
-
-				// TODO: RevisionEntry should hold abbreviated object id instead
-				// of long revision
-				return new RevisionEntry(component, c.getAuthorIdent().getWhen(), 0L);
-			}
-			return null;
+			// TODO: RevisionEntry should hold abbreviated object id instead
+			// of long revision
+			return new RevisionEntry(component, c.getAuthorIdent().getWhen(), 0L);
 		} catch (Exception e) {
 			throw BuckminsterException.wrap(e);
 		} finally {
 			revWalk.release();
 		}
-	}
-
-	String getGitBranch(String branchName) {
-		if (branchName == null)
-			return Constants.R_HEADS + Constants.MASTER;
-		return Constants.R_HEADS + branchName;
 	}
 }

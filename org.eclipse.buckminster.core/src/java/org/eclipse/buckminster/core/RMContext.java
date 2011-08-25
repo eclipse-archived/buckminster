@@ -306,12 +306,7 @@ public class RMContext extends ExpandingProperties<Object> {
 		}
 	}
 
-	/**
-	 * Clears the status so that next call to {@link #getStatus()} returns
-	 * {@link IStatus#OK_STATUS}.
-	 */
-	public synchronized void clearStatus() {
-		status = null;
+	public void clearStatus() {
 	}
 
 	/**

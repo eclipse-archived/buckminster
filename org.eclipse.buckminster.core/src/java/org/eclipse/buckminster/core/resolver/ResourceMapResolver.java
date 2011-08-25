@@ -86,8 +86,8 @@ public class ResourceMapResolver extends LocalResolver implements IJobChangeList
 		try {
 			ResolutionContext ctx = getContext();
 			ComponentQuery query = ctx.getComponentQuery();
-			ResolverNodeWithJob topNode = (ResolverNodeWithJob) getResolverNode(ctx, new QualifiedDependency(request, query.getAttributes(request,
-					ctx)), null);
+			ResolverNodeWithJob topNode = (ResolverNodeWithJob) getResolverNode(ctx,
+					new QualifiedDependency(request, query.getAttributes(request, ctx)), null);
 
 			if (singleThreaded) {
 				beginTopMonitor(monitor);
@@ -359,7 +359,6 @@ public class ResourceMapResolver extends LocalResolver implements IJobChangeList
 			}
 
 			if (status.getSeverity() == IStatus.ERROR && !context.isContinueOnError()) {
-				context.clearStatus();
 				throw new CoreException(status);
 			}
 		} finally {

@@ -79,14 +79,6 @@ public class ResolutionContext extends RMContext implements IResolverBackchannel
 	}
 
 	@Override
-	public synchronized void clearStatus() {
-		if (parentContext != null)
-			parentContext.clearStatus();
-		else
-			super.clearStatus();
-	}
-
-	@Override
 	public synchronized Map<String, String> getBindingProperties() {
 		return (parentContext != null) ? parentContext.getBindingProperties() : super.getBindingProperties();
 	}

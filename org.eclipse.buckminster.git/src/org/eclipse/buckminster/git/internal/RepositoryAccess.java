@@ -137,7 +137,7 @@ class RepositoryAccess {
 		}
 	}
 
-	RevCommit getBranchOrTagId(Repository repo, VersionMatch versionMatch, boolean nullIfMaster, IProgressMonitor monitor) throws CoreException {
+	RevCommit getBranchOrTagId(Repository repo, VersionMatch versionMatch, IProgressMonitor monitor) throws CoreException {
 		try {
 			RevCommit objId = null;
 			String revstr = getGitTag(versionMatch);
@@ -182,15 +182,15 @@ class RepositoryAccess {
 				return objId;
 			}
 
-			revstr = getGitBranch(versionMatch, nullIfMaster);
+			revstr = getGitBranch(versionMatch);
 			if (revstr == null)
-				return null;
+				revstr = Constants.HEAD;
 
 			objId = parseCommit(repo.getRef(revstr));
 			if (objId != null)
 				return objId;
 
-			String remoteBranch = getGitRemoteBranch(versionMatch);
+			String remoteBranch = getGitRemoteBranch(versionMatch, repo.getBranch());
 			objId = parseCommit(repo.getRef(remoteBranch));
 			if (objId == null)
 				throw BuckminsterException.fromMessage("Unable to obtain ObjectID for branch %s", remoteBranch); //$NON-NLS-1$
@@ -264,12 +264,12 @@ class RepositoryAccess {
 	Repository getRepository(VersionMatch vm, IProgressMonitor monitor) throws CoreException {
 		String refStr = getGitTag(vm);
 		if (refStr == null)
-			refStr = getGitBranch(vm, false);
+			refStr = getGitBranch(vm);
 		try {
 			Repository repo = getRepository();
-			RevCommit wantedId = getBranchOrTagId(repo, vm, false, monitor);
+			RevCommit wantedId = getBranchOrTagId(repo, vm, monitor);
 			RevCommit currentId = parseCommit(repo.getRef(Constants.HEAD));
-			if (wantedId.equals(currentId))
+			if (refStr == null || wantedId.equals(currentId))
 				return repo;
 
 			IndexDiff diff = new IndexDiff(repo, refStr, new FileTreeIterator(repo));
@@ -321,7 +321,7 @@ class RepositoryAccess {
 	}
 
 	TreeWalk getTreeWalk(VersionMatch versionMatch, String path, IProgressMonitor monitor) throws CoreException {
-		ObjectId id = getBranchOrTagId(getRepository(versionMatch, monitor), versionMatch, false, monitor);
+		ObjectId id = getBranchOrTagId(getRepository(versionMatch, monitor), versionMatch, monitor);
 		Repository repo = getRepository(versionMatch, monitor);
 		return getTreeWalk(repo, id, path, monitor);
 	}
@@ -359,21 +359,16 @@ class RepositoryAccess {
 		return null;
 	}
 
-	private String getGitBranch(VersionMatch versionMatch, boolean nullIfMaster) {
+	private String getGitBranch(VersionMatch versionMatch) {
 		String branchName = getBranchName(versionMatch);
-		if (branchName == null) {
-			if (nullIfMaster)
-				return null;
-			branchName = Constants.MASTER;
-		}
-		return Constants.R_HEADS + branchName;
+		return branchName == null ? null : Constants.R_HEADS + branchName;
 	}
 
-	private String getGitRemoteBranch(VersionMatch versionMatch) {
+	private String getGitRemoteBranch(VersionMatch versionMatch, String currentBranch) {
 		String branchName = getBranchName(versionMatch);
 		String remoteBase = remoteName + '/';
 		if (branchName == null)
-			return remoteBase + Constants.MASTER;
+			branchName = currentBranch;
 		return remoteBase + branchName;
 	}
 

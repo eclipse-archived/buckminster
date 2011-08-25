@@ -136,12 +136,9 @@ public class MainResolver implements IResolver {
 						break;
 				}
 
-				if (bom.isFullyResolved(context))
-					context.clearStatus();
-				else if (!continueOnError) {
+				if (!(continueOnError || bom.isFullyResolved(context))) {
 					IStatus status = context.getStatus();
 					if (status.getSeverity() == IStatus.ERROR) {
-						context.clearStatus();
 						List<ComponentRequest> unresolvedList = bom.getUnresolvedList();
 						int top = unresolvedList.size();
 						if (top == 0)
