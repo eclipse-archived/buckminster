@@ -89,11 +89,17 @@ public class EquinoxExecutableAction extends org.eclipse.equinox.p2.publisher.ec
 			iron.setIcons(icons);
 
 		String name = advice.getExecutableName();
-		if (name == null) {
-			boolean isMacOS = Constants.OS_MACOSX.equals(advice.getOS());
-			name = isMacOS ? "Eclipse" //$NON-NLS-1$
-					: "eclipse"; //$NON-NLS-1$
+		if (name == null)
+			name = "eclipse"; //$NON-NLS-1$
+
+		if (Constants.OS_MACOSX.equals(advice.getOS())) {
+			// First character of the name should be in upper case.
+			StringBuilder appNameBld = new StringBuilder();
+			appNameBld.append(Character.toUpperCase(name.charAt(0)));
+			appNameBld.append(name, 1, name.length());
+			name = appNameBld.toString();
 		}
+
 		iron.setName(name);
 		iron.setOS(advice.getOS());
 		try {

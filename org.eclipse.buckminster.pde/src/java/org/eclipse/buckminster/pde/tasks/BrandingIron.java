@@ -159,15 +159,9 @@ public class BrandingIron implements IXMLConstants {
 		// copied.
 
 		// Initialize the target folders
-		String appName = name;
-		if (appName.equals("eclipse")) //$NON-NLS-1$
-			appName = "Eclipse"; //$NON-NLS-1$
-		else if (appName.equals("launcher")) //$NON-NLS-1$
-			appName = "Launcher"; //$NON-NLS-1$
-
 		File root = descriptor.getLocation();
 
-		File target = new File(root, appName + ".app/Contents"); //$NON-NLS-1$
+		File target = new File(root, name + ".app/Contents"); //$NON-NLS-1$
 		target.mkdirs();
 		new File(target, "MacOS").mkdirs(); //$NON-NLS-1$
 		new File(target, "Resources").mkdirs(); //$NON-NLS-1$
