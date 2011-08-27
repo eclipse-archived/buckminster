@@ -9,8 +9,10 @@ package org.eclipse.buckminster.pde.tasks;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.buckminster.core.TargetPlatform;
 import org.eclipse.buckminster.core.actor.IActionContext;
@@ -27,19 +29,30 @@ import org.eclipse.equinox.frameworkadmin.BundleInfo;
 import org.eclipse.equinox.internal.p2.publisher.eclipse.IProductDescriptor;
 import org.eclipse.equinox.internal.provisional.frameworkadmin.ConfigData;
 import org.eclipse.equinox.p2.metadata.IInstallableUnit;
+import org.eclipse.equinox.p2.metadata.ITouchpointData;
+import org.eclipse.equinox.p2.metadata.ITouchpointInstruction;
 import org.eclipse.equinox.p2.metadata.IVersionedId;
+import org.eclipse.equinox.p2.metadata.MetadataFactory;
+import org.eclipse.equinox.p2.metadata.MetadataFactory.InstallableUnitDescription;
 import org.eclipse.equinox.p2.metadata.Version;
 import org.eclipse.equinox.p2.metadata.VersionRange;
+import org.eclipse.equinox.p2.publisher.AbstractAdvice;
+import org.eclipse.equinox.p2.publisher.AbstractPublisherAction;
 import org.eclipse.equinox.p2.publisher.IPublisherAction;
+import org.eclipse.equinox.p2.publisher.IPublisherAdvice;
 import org.eclipse.equinox.p2.publisher.IPublisherInfo;
 import org.eclipse.equinox.p2.publisher.IPublisherResult;
 import org.eclipse.equinox.p2.publisher.PublisherInfo;
 import org.eclipse.equinox.p2.publisher.PublisherResult;
+import org.eclipse.equinox.p2.publisher.actions.IAdditionalInstallableUnitAdvice;
+import org.eclipse.equinox.p2.publisher.actions.ITouchpointAdvice;
 import org.eclipse.equinox.p2.publisher.eclipse.ConfigAdvice;
 import org.eclipse.equinox.p2.publisher.eclipse.EquinoxLauncherCUAction;
+import org.eclipse.equinox.p2.publisher.eclipse.IConfigAdvice;
 import org.eclipse.equinox.p2.query.IQuery;
 import org.eclipse.equinox.p2.query.IQueryable;
 import org.eclipse.equinox.p2.query.QueryUtil;
+import org.eclipse.osgi.service.environment.Constants;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.pde.internal.build.IPDEBuildConstants;
 
@@ -48,6 +61,40 @@ import org.eclipse.pde.internal.build.IPDEBuildConstants;
  */
 @SuppressWarnings("restriction")
 public class ProductAction extends org.eclipse.equinox.p2.publisher.eclipse.ProductAction implements IPDEBuildConstants {
+
+	/**
+	 * Special advice that sets the osgi.instance.area.default in case it hasn't
+	 * bee set by other means.
+	 */
+	static class InstanceAreaAdvice extends AbstractAdvice implements IConfigAdvice {
+		private final String configSpec;
+		private final String instanceArea;
+
+		private static final BundleInfo[] noBundles = new BundleInfo[0];
+
+		InstanceAreaAdvice(String configSpec, String instanceArea) {
+			this.configSpec = configSpec;
+			this.instanceArea = instanceArea;
+		}
+
+		@Override
+		public BundleInfo[] getBundles() {
+			return noBundles;
+		}
+
+		@Override
+		public String getConfigSpec() {
+			return configSpec;
+		}
+
+		@Override
+		public Map<String, String> getProperties() {
+			return Collections.singletonMap(PROP_OSGI_INSTANCE_AREA_DEFAULT, instanceArea);
+		}
+	}
+
+	private static final String PROP_OSGI_INSTANCE_AREA_DEFAULT = "osgi.instance.area.default"; //$NON-NLS-1$
+
 	public ProductAction(IActionContext actionContext, String src, IProductDescriptor productDesc, String flvor, File exeFeatureLocation) {
 		super(src, new ProductVersionPatcher(productDesc, actionContext), flvor, exeFeatureLocation);
 	}
@@ -146,9 +193,18 @@ public class ProductAction extends org.eclipse.equinox.p2.publisher.eclipse.Prod
 			}
 		}
 
-		if (dfltStartInfos.getBundles().length > 0)
-			for (String configSpec : innerInfo.getConfigurations())
+		int dfltSICount = dfltStartInfos.getBundles().length;
+		for (String configSpec : innerInfo.getConfigurations()) {
+			if (dfltSICount > 0)
 				innerInfo.addAdvice(new ConfigAdvice(dfltStartInfos, configSpec));
+
+			String os = AbstractPublisherAction.parseConfigSpec(configSpec)[1];
+			if (Constants.OS_MACOSX.equals(os)) {
+				innerInfo.addAdvice(new InstanceAreaAdvice(configSpec, "@user.home/Documents/workspace")); //$NON-NLS-1$
+			} else {
+				innerInfo.addAdvice(new InstanceAreaAdvice(configSpec, "@user.home/workspace")); //$NON-NLS-1$				
+			}
+		}
 
 		IStatus status = super.perform(innerInfo, innerResult, monitor);
 		if (status.getSeverity() != IStatus.ERROR)
@@ -159,6 +215,16 @@ public class ProductAction extends org.eclipse.equinox.p2.publisher.eclipse.Prod
 	@Override
 	protected IPublisherAction[] createActions(IPublisherResult results) {
 		IPublisherAction[] actions = super.createActions(results);
+		if (hasOtherInstanceAreaAdvice()) {
+			List<IPublisherAdvice> adviceList = ((PublisherInfo) info).getAdvice();
+			int idx = adviceList.size();
+			while (--idx >= 0) {
+				IPublisherAdvice advice = adviceList.get(idx);
+				if (advice instanceof InstanceAreaAdvice)
+					adviceList.remove(idx);
+			}
+		}
+
 		if (getExecutablesLocation() == null) {
 			IPublisherAction[] newActions = new IPublisherAction[actions.length + 1];
 			System.arraycopy(actions, 0, newActions, 1, actions.length);
@@ -171,6 +237,48 @@ public class ProductAction extends org.eclipse.equinox.p2.publisher.eclipse.Prod
 	@Override
 	protected IPublisherAction createApplicationExecutableAction(String[] configSpecs) {
 		return new ApplicationLauncherAction(id, version, flavor, executableName, getExecutablesLocation(), configSpecs);
+	}
+
+	protected boolean hasOtherInstanceAreaAdvice() {
+		List<IPublisherAdvice> adviceList = ((PublisherInfo) info).getAdvice();
+
+		int idx = adviceList.size();
+		while (--idx >= 0) {
+			IPublisherAdvice advice = adviceList.get(idx);
+			if (advice instanceof IConfigAdvice && !(advice instanceof InstanceAreaAdvice)) {
+				IConfigAdvice pfAdvice = (IConfigAdvice) advice;
+				if (pfAdvice.getProperties().containsKey(PROP_OSGI_INSTANCE_AREA_DEFAULT))
+					return true;
+			}
+			if (advice instanceof ITouchpointAdvice) {
+				ITouchpointData tpData = MetadataFactory.createTouchpointData(Collections.<String, Object> emptyMap());
+				ITouchpointAdvice tpAdvice = (ITouchpointAdvice) advice;
+				tpData = tpAdvice.getTouchpointData(tpData);
+				Object configure = tpData.getInstruction("configure"); //$NON-NLS-1$
+				if (configure instanceof ITouchpointInstruction) {
+					String configString = ((ITouchpointInstruction) configure).getBody();
+					if (configString.startsWith("setProgramProperty") && configString.contains(PROP_OSGI_INSTANCE_AREA_DEFAULT)) //$NON-NLS-1$
+						return true;
+				}
+			}
+			if (advice instanceof IAdditionalInstallableUnitAdvice) {
+				IAdditionalInstallableUnitAdvice iuAdvice = (IAdditionalInstallableUnitAdvice) advice;
+				InstallableUnitDescription[] descs = iuAdvice.getAdditionalInstallableUnitDescriptions(null);
+				if (descs != null) {
+					for (InstallableUnitDescription desc : descs) {
+						for (ITouchpointData tpData : desc.getTouchpointData()) {
+							Object configure = tpData.getInstruction("configure"); //$NON-NLS-1$
+							if (configure instanceof ITouchpointInstruction) {
+								String configString = ((ITouchpointInstruction) configure).getBody();
+								if (configString.startsWith("setProgramProperty") && configString.contains(PROP_OSGI_INSTANCE_AREA_DEFAULT)) //$NON-NLS-1$
+									return true;
+							}
+						}
+					}
+				}
+			}
+		}
+		return false;
 	}
 
 	IQueryable<IInstallableUnit> getTransitiveBundleScope(IPublisherResult results) {
