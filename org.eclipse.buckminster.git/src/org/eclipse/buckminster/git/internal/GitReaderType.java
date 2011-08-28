@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,16 +40,22 @@ import org.eclipse.egit.core.RepositoryUtil;
 import org.eclipse.egit.core.op.ConnectProviderOperation;
 import org.eclipse.egit.core.project.GitProjectData;
 import org.eclipse.egit.core.project.RepositoryMapping;
+import org.eclipse.jgit.lib.AnyObjectId;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.StoredConfig;
+import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.transport.URIish;
+import org.eclipse.jgit.treewalk.filter.AndTreeFilter;
+import org.eclipse.jgit.treewalk.filter.PathFilterGroup;
+import org.eclipse.jgit.treewalk.filter.TreeFilter;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.team.core.RepositoryProvider;
-import org.eclipse.team.core.history.IFileHistory;
-import org.eclipse.team.core.history.IFileRevision;
 
 public class GitReaderType extends CatalogReaderType implements ITeamReaderType {
+	private static final int BATCH_SIZE = 256;
+
 	@Override
 	public String convertFetchFactoryLocator(Map<String, String> fetchFactoryLocator, String componentName) throws CoreException {
 		String repo = fetchFactoryLocator.get("repo"); //$NON-NLS-1$
@@ -135,18 +142,49 @@ public class GitReaderType extends CatalogReaderType implements ITeamReaderType 
 			return null;
 		}
 
-		IFileHistory history = provider.getFileHistoryProvider().getFileHistoryFor(resource, 0, monitor);
-		long lastTimestamp = 0;
-		for (IFileRevision revision : history.getFileRevisions()) {
-			long ts = revision.getTimestamp();
-			if (ts > lastTimestamp)
-				lastTimestamp = ts;
-		}
-		if (lastTimestamp == 0) {
-			logger.debug("getLastModification: Unable to find any file revisions in project %s", resource.getProject().getName()); //$NON-NLS-1$
+		RepositoryMapping rm = RepositoryMapping.getMapping(resource);
+		if (rm == null) {
+			logger.debug("getLastModification: Unable to get repository mapping for project %s", resource.getProject().getName()); //$NON-NLS-1$
 			return null;
 		}
-		return new Date(lastTimestamp);
+
+		Repository repository = rm.getRepository();
+
+		RevWalk walk = new RevWalk(repository);
+		try {
+			String gitPath = rm.getRepoRelativePath(resource);
+
+			if (gitPath == null || gitPath.length() == 0) {
+				walk.setTreeFilter(TreeFilter.ANY_DIFF);
+			} else {
+				walk.setTreeFilter(AndTreeFilter.create(PathFilterGroup.createFromStrings(Collections.singleton(gitPath)), TreeFilter.ANY_DIFF));
+			}
+
+			final AnyObjectId headId = repository.resolve(Constants.HEAD);
+			if (headId == null) {
+				logger.debug("getLastModification: Unable to find head revision in repository %s", repository.getDirectory().getAbsolutePath()); //$NON-NLS-1$
+				return null;
+			}
+
+			walk.markStart(walk.parseCommit(headId));
+			RevCommit rc;
+			long lastTimestamp = 0;
+			while ((rc = walk.next()) != null) {
+				long secondsSinceEpoch = rc.getCommitTime();
+				long commitTimestamp = secondsSinceEpoch * 1000L;
+				if (commitTimestamp > lastTimestamp)
+					lastTimestamp = commitTimestamp;
+			}
+			if (lastTimestamp == 0) {
+				logger.debug("getLastModification: Unable to find any file revisions in project %s", resource.getProject().getName()); //$NON-NLS-1$
+				return null;
+			}
+			return new Date(lastTimestamp);
+		} catch (IOException ex) {
+			throw BuckminsterException.wrap(ex);
+		} finally {
+			walk.release();
+		}
 	}
 
 	@Override

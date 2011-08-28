@@ -24,6 +24,7 @@ import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.core.reader.AbstractReaderType;
 import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.runtime.Buckminster;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -76,7 +77,7 @@ public class TimestampQualifierGenerator extends AbstractQualifierGenerator {
 	private static Date getLastModification(ComponentIdentifier cid, IActionContext context) throws CoreException {
 		IPath location = WorkspaceInfo.getComponentLocation(cid);
 		IProject project = WorkspaceInfo.getProject(cid);
-		if(project == null) {
+		if (project == null) {
 			Buckminster.getLogger().debug("getLastModification: Failed determine project for component %s", cid); //$NON-NLS-1$
 			return null;
 		}
@@ -85,7 +86,11 @@ public class TimestampQualifierGenerator extends AbstractQualifierGenerator {
 			Buckminster.getLogger().debug("getLastModification: Failed determine reader type for component %s", cid); //$NON-NLS-1$
 			return null;
 		}
-		return readerType.getLastModification(location.toFile(), context.getCancellationMonitor());
+		try {
+			return readerType.getLastModification(location.toFile(), context.getCancellationMonitor());
+		} catch (RuntimeException e) {
+			throw BuckminsterException.wrap(e);
+		}
 	}
 
 	private static Date parseSaneDate(DateFormat mf, String str) throws ParseException {

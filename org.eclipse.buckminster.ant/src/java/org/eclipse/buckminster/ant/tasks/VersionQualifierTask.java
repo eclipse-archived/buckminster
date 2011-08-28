@@ -117,7 +117,7 @@ public class VersionQualifierTask {
 				IQualifierGenerator generator = CorePlugin.getDefault().getQualifierGenerator(generatorId);
 				version = generator.generateQualifier(AbstractActor.getActiveContext(), ci, deps);
 			} catch (CoreException e) {
-				CorePlugin.getLogger().warning(e, Messages.VersionQualifierTask_Unable_to_qualify_version);
+				CorePlugin.getLogger().error(e, Messages.VersionQualifierTask_Unable_to_qualify_version);
 			}
 		} else {
 			newQualifier = vq.replaceFirst(QUALIFIER_SUFFIX, newQualifier);
