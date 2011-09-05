@@ -54,29 +54,33 @@ public class GitReader extends AbstractCatalogReader {
 
 	@Override
 	protected boolean innerExists(String fileName, IProgressMonitor monitor) throws CoreException {
-		TreeWalk walk = repoAccess.getTreeWalk(getProviderMatch().getVersionMatch(), fileName, monitor);
-		try {
-			return walk.next();
-		} catch (IOException e) {
-			throw BuckminsterException.wrap(e);
-		} finally {
-			walk.release();
+		synchronized (repoAccess.getRepositoryPath()) {
+			TreeWalk walk = repoAccess.getTreeWalk(getProviderMatch().getVersionMatch(), fileName, monitor);
+			try {
+				return walk.next();
+			} catch (IOException e) {
+				throw BuckminsterException.wrap(e);
+			} finally {
+				walk.release();
+			}
 		}
 	}
 
 	@Override
 	protected <T> T innerReadFile(String fileName, IStreamConsumer<T> consumer, IProgressMonitor monitor) throws CoreException, IOException {
-		VersionMatch vm = getProviderMatch().getVersionMatch();
-		TreeWalk walk = repoAccess.getTreeWalk(vm, fileName, monitor);
-		try {
-			if (!walk.next())
-				throw new FileNotFoundException(fileName);
-			Repository repo = repoAccess.getRepository(vm, monitor);
-			ObjectLoader ol = repo.open(walk.getObjectId(0));
-			byte[] bytes = ol.getBytes();
-			return consumer.consumeStream(this, fileName, new ByteArrayInputStream(bytes), monitor);
-		} finally {
-			walk.release();
+		synchronized (repoAccess.getRepositoryPath()) {
+			VersionMatch vm = getProviderMatch().getVersionMatch();
+			TreeWalk walk = repoAccess.getTreeWalk(vm, fileName, monitor);
+			try {
+				if (!walk.next())
+					throw new FileNotFoundException(fileName);
+				Repository repo = repoAccess.getRepository(vm, monitor);
+				ObjectLoader ol = repo.open(walk.getObjectId(0));
+				byte[] bytes = ol.getBytes();
+				return consumer.consumeStream(this, fileName, new ByteArrayInputStream(bytes), monitor);
+			} finally {
+				walk.release();
+			}
 		}
 	}
 }

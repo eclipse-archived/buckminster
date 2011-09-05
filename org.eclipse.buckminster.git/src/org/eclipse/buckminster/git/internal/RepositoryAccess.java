@@ -276,20 +276,22 @@ class RepositoryAccess {
 			refStr = getGitBranch(vm);
 		try {
 			Repository repo = getRepository();
-			RevCommit wantedId = getBranchOrTagId(repo, vm, monitor);
-			RevCommit currentId = parseCommit(repo.getRef(Constants.HEAD));
-			if (refStr == null || wantedId.equals(currentId))
-				return repo;
-
-			IndexDiff diff = new IndexDiff(repo, refStr, new FileTreeIterator(repo));
-			if (!diff.diff())
-				return repo;
-
-			if (component != null) {
-				// We don't signal a conflict unless we find one beneath our
-				// own component
-				if (!(scanFiles(diff.getMissing()) || scanFiles(diff.getModified()) || scanFiles(diff.getUntracked())))
+			synchronized (getRepositoryPath()) {
+				RevCommit wantedId = getBranchOrTagId(repo, vm, monitor);
+				RevCommit currentId = parseCommit(repo.getRef(Constants.HEAD));
+				if (refStr == null || wantedId.equals(currentId))
 					return repo;
+
+				IndexDiff diff = new IndexDiff(repo, refStr, new FileTreeIterator(repo));
+				if (!diff.diff())
+					return repo;
+
+				if (component != null) {
+					// We don't signal a conflict unless we find one beneath our
+					// own component
+					if (!(scanFiles(diff.getMissing()) || scanFiles(diff.getModified()) || scanFiles(diff.getUntracked())))
+						return repo;
+				}
 			}
 
 			throw BuckminsterException.fromMessage(NLS.bind(Messages.git_reader_0_cannot_switch_to_1_without_causing_conflict_beneath_2,
@@ -297,6 +299,16 @@ class RepositoryAccess {
 		} catch (IOException e) {
 			throw BuckminsterException.wrap(e);
 		}
+	}
+
+	String getRepositoryPath() {
+		File canonicalLocalRepo;
+		try {
+			canonicalLocalRepo = localRepo.getCanonicalFile();
+		} catch (IOException e) {
+			canonicalLocalRepo = localRepo;
+		}
+		return canonicalLocalRepo.getAbsolutePath().intern();
 	}
 
 	TreeWalk getTreeWalk(Repository repo, ObjectId id, String path, IProgressMonitor monitor) throws CoreException {

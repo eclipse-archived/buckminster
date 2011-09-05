@@ -655,6 +655,11 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted, ICSpecData {
 		receiver.endDocument();
 	}
 
+	@Override
+	public String toString() {
+		return getComponentIdentifier().toString();
+	}
+
 	/**
 	 * Verify that the specification is consistent. This method checks that all
 	 * dependencies and attributes that are referenced from all prerequisites
@@ -775,6 +780,8 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted, ICSpecData {
 				attrs.add(prereq.getAttribute());
 			} else {
 				IAttribute localGroup = getAttribute(prereq.getAttribute());
+				if (localGroup == null)
+					continue;
 				if (localGroup instanceof IActionArtifact)
 					localGroup = ((ActionArtifact) localGroup).getAction();
 				addDependencyBundle(deps, localGroup);
@@ -830,11 +837,29 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted, ICSpecData {
 					filters = new Stack<IAttributeFilter>();
 				filters.push(pq);
 			}
-			if (!dependenciesFulfilled(getRequiredAttribute(pq.getAttribute()), bld, filters))
-				return false;
+
+			Attribute pqAttr;
+			try {
+				pqAttr = getRequiredAttribute(pq.getAttribute());
+			} catch (MissingAttributeException e) {
+				// Attribute stems from artifact that isn't present during
+				// simple resolution. We consider this as OK here.
+				continue;
+			}
+
+			if (pq.isPatternFilter()) {
+				if (filters == null)
+					filters = new Stack<IAttributeFilter>();
+				filters.push(pq);
+			}
+
+			boolean depsFulfilled = dependenciesFulfilled(pqAttr, bld, filters);
 
 			if (pq.isPatternFilter())
 				filters.pop();
+
+			if (!depsFulfilled)
+				return false;
 		}
 		return true;
 	}

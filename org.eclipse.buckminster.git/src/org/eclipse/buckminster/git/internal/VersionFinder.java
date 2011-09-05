@@ -42,13 +42,15 @@ public class VersionFinder extends AbstractSCCSVersionFinder {
 
 	@Override
 	protected boolean checkComponentExistence(VersionMatch versionMatch, IProgressMonitor monitor) throws CoreException {
-		TreeWalk walk = repoAccess.getTreeWalk(versionMatch, null, monitor);
-		try {
-			return walk.next();
-		} catch (Exception e) {
-			throw BuckminsterException.wrap(e);
-		} finally {
-			walk.release();
+		synchronized (repoAccess.getRepositoryPath()) {
+			TreeWalk walk = repoAccess.getTreeWalk(versionMatch, null, monitor);
+			try {
+				return walk.next();
+			} catch (Exception e) {
+				throw BuckminsterException.wrap(e);
+			} finally {
+				walk.release();
+			}
 		}
 	}
 
@@ -56,57 +58,61 @@ public class VersionFinder extends AbstractSCCSVersionFinder {
 	protected List<RevisionEntry> getBranchesOrTags(boolean branches, IProgressMonitor monitor) throws CoreException {
 		try {
 			Repository repo = repoAccess.getRepository();
-			RevWalk revWalk = new RevWalk(repo);
-			try {
-				ArrayList<RevisionEntry> branchesOrTags = new ArrayList<RevisionEntry>();
-				String component = repoAccess.getComponent();
-				for (Ref ref : repo.getAllRefs().values()) {
+			synchronized (repoAccess.getRepositoryPath()) {
+				RevWalk revWalk = new RevWalk(repo);
+				try {
+					ArrayList<RevisionEntry> branchesOrTags = new ArrayList<RevisionEntry>();
+					String component = repoAccess.getComponent();
+					for (Ref ref : repo.getAllRefs().values()) {
 
-					String name = ref.getName();
-					int lastSlash = name.lastIndexOf('/');
-					if (lastSlash < 0)
-						continue;
-
-					RevObject obj = revWalk.parseAny(ref.getObjectId());
-					if (branches) {
-						if (!(obj instanceof RevCommit))
+						String name = ref.getName();
+						int lastSlash = name.lastIndexOf('/');
+						if (lastSlash < 0)
 							continue;
 
-						// Last part of name is the branch
-						String branch = name.substring(lastSlash + 1);
-						if (Constants.MASTER.equals(branch))
-							continue;
-
-						RevCommit c = (RevCommit) obj;
-						if (!(component == null || TreeWalk.forPath(repo, component, c.getTree()) != null))
-							continue;
-
-						// repoAccess.inspectRef(ref);
-
-						// TODO: RevisionEntry should hold abbreviated object id
-						// instead of long revision
-						branchesOrTags.add(new RevisionEntry(branch, c.getAuthorIdent().getWhen(), 0L));
-					} else {
-						if (!(obj instanceof RevTag))
-							continue;
-
-						RevTag tag = (RevTag) obj;
-						if (component != null) {
-							// Check that the component exists in the associated
-							// Commit
-							do {
-								obj = ((RevTag) obj).getObject();
-							} while (obj instanceof RevTag);
-
-							if (!(obj instanceof RevCommit && TreeWalk.forPath(repo, component, ((RevCommit) obj).getTree()) != null))
+						RevObject obj = revWalk.parseAny(ref.getObjectId());
+						if (branches) {
+							if (!(obj instanceof RevCommit))
 								continue;
+
+							// Last part of name is the branch
+							String branch = name.substring(lastSlash + 1);
+							if (Constants.MASTER.equals(branch))
+								continue;
+
+							RevCommit c = (RevCommit) obj;
+							if (!(component == null || TreeWalk.forPath(repo, component, c.getTree()) != null))
+								continue;
+
+							// repoAccess.inspectRef(ref);
+
+							// TODO: RevisionEntry should hold abbreviated
+							// object id
+							// instead of long revision
+							branchesOrTags.add(new RevisionEntry(branch, c.getAuthorIdent().getWhen(), 0L));
+						} else {
+							if (!(obj instanceof RevTag))
+								continue;
+
+							RevTag tag = (RevTag) obj;
+							if (component != null) {
+								// Check that the component exists in the
+								// associated
+								// Commit
+								do {
+									obj = ((RevTag) obj).getObject();
+								} while (obj instanceof RevTag);
+
+								if (!(obj instanceof RevCommit && TreeWalk.forPath(repo, component, ((RevCommit) obj).getTree()) != null))
+									continue;
+							}
+							branchesOrTags.add(new RevisionEntry(tag.getTagName(), tag.getTaggerIdent().getWhen(), 0L));
 						}
-						branchesOrTags.add(new RevisionEntry(tag.getTagName(), tag.getTaggerIdent().getWhen(), 0L));
 					}
+					return branchesOrTags;
+				} finally {
+					revWalk.release();
 				}
-				return branchesOrTags;
-			} finally {
-				revWalk.release();
 			}
 		} catch (IOException e) {
 			throw BuckminsterException.wrap(e);
