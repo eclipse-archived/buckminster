@@ -240,7 +240,7 @@ public class ComponentRequest extends ComponentName implements IComponentRequest
 		boolean thatOptional = that.isOptional();
 		Filter mergedFilter = null;
 		if (!Trivial.equalsAllowNull(thisFilter, thatFilter)) {
-			if (thisOptional != thatOptional && cmp != 0)
+			if (thisOptional != thatOptional)
 				// Filters can only be merged if both are required or
 				// both are optional or if the version ranges are
 				// exactly the same.
@@ -255,13 +255,6 @@ public class ComponentRequest extends ComponentName implements IComponentRequest
 				mergedFilter = thisFilter.addFilterWithOr(thatFilter);
 		} else
 			mergedFilter = thisFilter;
-
-		if (mergedFilter != null && thisOptional != thatOptional) {
-			// Result must not contain optional or synthetic filters
-			mergedFilter = mergedFilter.stripFilter(P2_OPTIONAL_FILTER);
-			if (mergedFilter != null)
-				mergedFilter = mergedFilter.stripFilter(SOURCE_BUNDLE_FILTER);
-		}
 
 		// Never allow an optional request to qualify one that is not
 		// optional. The opposite is OK though.
