@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- 
 	Copyright (c) 2004, 2005
 	Thomas Hallgren, Kenneth Olwing, Mitch Sonies
@@ -8,11 +8,7 @@
 	copyright holders listed above, as Initial Contributors under such license.
 	The text of such license is available at www.eclipse.org.
 -->
-<schema xmlns="http://www.w3.org/2001/XMLSchema"
-	xmlns:cs="http://www.eclipse.org/buckminster/CSpec-1.0"
-	xmlns:com="http://www.eclipse.org/buckminster/Common-1.0"
-	attributeFormDefault="unqualified" elementFormDefault="qualified"
-	targetNamespace="http://www.eclipse.org/buckminster/CSpec-1.0">
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:com="http://www.eclipse.org/buckminster/Common-1.0" xmlns:cs="http://www.eclipse.org/buckminster/CSpec-1.0" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://www.eclipse.org/buckminster/CSpec-1.0">
 	<import namespace="http://www.eclipse.org/buckminster/Common-1.0" schemaLocation="platform:/plugin/org.eclipse.buckminster.core/common-1.0.xsd"/>
 	<!-- References between elements in the document -->
 	<annotation>
@@ -28,107 +24,74 @@
 			_groups_
 		</documentation>
 	</annotation>
-	<element name="cspec" type="cs:ComponentSpec">
-		<key name="dependencyKey">
-			<annotation>
-				<documentation>
-					The key of the dependencies
-				</documentation>
-			</annotation>
-			<selector xpath="./cs:dependencies/cs:dependency" />
-			<field xpath="@name" />
-		</key>
-		<keyref name="dependencyRef" refer="cs:dependencyKey">
-			<annotation>
-				<documentation>
-					The foreign key between an external action or group
-					prerequisite and a dependency.
-				</documentation>
-			</annotation>
-			<selector xpath=".//cs:attribute" />
-			<field xpath="@component" />
-		</keyref>
-		<keyref name="generatorRef" refer="cs:dependencyKey">
-			<annotation>
-				<documentation>
-					The foreign key between the dependency obtainedFrom
-					and another dependency.
-				</documentation>
-			</annotation>
-			<selector xpath=".//cs:generator" />
-			<field xpath="@component" />
-		</keyref>
-	</element>
-	<element name="cspecExtension" type="cs:CSpecExtension" />
+	<element name="cspec" type="cs:ComponentSpec"/>
+	<element name="cspecExtension" type="cs:CSpecExtension"/>
 	<complexType name="ComponentSpecBase">
 		<sequence>
-			<element name="documentation" type="com:Documentation"
-				minOccurs="0" maxOccurs="1" />
+			<element maxOccurs="1" minOccurs="0" name="documentation" type="com:Documentation"/>
 			<choice maxOccurs="unbounded" minOccurs="0">
 				<element name="dependencies">
 					<complexType>
 						<sequence>
-							<element maxOccurs="unbounded" minOccurs="0"
-								name="dependency" type="cs:ComponentRequest" />
+							<element maxOccurs="unbounded" minOccurs="0" name="dependency" type="cs:ComponentRequest"/>
 						</sequence>
 					</complexType>
 				</element>
 				<element name="generators">
 					<complexType>
 						<sequence>
-							<element maxOccurs="unbounded" minOccurs="0"
-								name="generator" type="cs:Generator" />
+							<element maxOccurs="unbounded" minOccurs="0" name="generator" type="cs:Generator"/>
 						</sequence>
 					</complexType>
 				</element>
 				<element name="artifacts">
 					<complexType>
 						<choice maxOccurs="unbounded" minOccurs="0">
-							<element name="public" type="cs:Artifact" />
-							<element name="private" type="cs:Artifact" />
+							<element name="public" type="cs:Artifact"/>
+							<element name="private" type="cs:Artifact"/>
 						</choice>
 					</complexType>
 				</element>
 				<element name="groups">
 					<complexType>
-						<choice minOccurs="0" maxOccurs="unbounded">
-							<element name="public" type="cs:Group" />
-							<element name="private" type="cs:Group" />
+						<choice maxOccurs="unbounded" minOccurs="0">
+							<element name="public" type="cs:Group"/>
+							<element name="private" type="cs:Group"/>
 						</choice>
 					</complexType>
 				</element>
 				<element name="actions">
 					<complexType>
 						<choice maxOccurs="unbounded" minOccurs="0">
-							<element name="public" type="cs:Action" />
-							<element name="private" type="cs:Action" />
+							<element name="public" type="cs:Action"/>
+							<element name="private" type="cs:Action"/>
 						</choice>
 					</complexType>
 				</element>
 			</choice>
 		</sequence>
-		<attribute name="componentType" type="string" use="optional" />
-		<attribute name="version" type="string" use="optional" />
-		<attribute name="versionType" type="string" use="optional" />
-		<attribute name="filter" type="string" use="optional" />
-		<attribute name="shortDesc" type="string" use="optional" />
-		<attribute name="projectInfo" type="com:URL" use="optional" />
+		<attribute name="componentType" type="string" use="optional"/>
+		<attribute name="version" type="string" use="optional"/>
+		<attribute name="versionType" type="string" use="optional"/>
+		<attribute name="filter" type="string" use="optional"/>
+		<attribute name="shortDesc" type="string" use="optional"/>
+		<attribute name="projectInfo" type="com:URL" use="optional"/>
 		<!-- Deprecated -->
-		<attribute name="category" type="string" use="optional" />
+		<attribute name="category" type="string" use="optional"/>
 	</complexType>
 	<complexType name="ComponentSpec">
 		<complexContent>
 			<extension base="cs:ComponentSpecBase">
-				<attribute name="name" type="string" use="required" />
+				<attribute name="name" type="string" use="required"/>
 			</extension>
 		</complexContent>
 	</complexType>
 	<complexType name="Generator">
-		<attribute name="attribute" type="string" use="required" />
-		<attribute name="component" type="string" use="optional" />
-		<attribute name="generates" type="string" use="required" />
-		<attribute name="generatesType" type="string" use="optional" />
-		<attribute name="generatesVersion" type="string" use="optional" />
+		<attribute name="attribute" type="string" use="required"/>
+		<attribute name="component" type="string" use="optional"/>
+		<attribute name="generates" type="string" use="required"/>
+		<attribute name="generatesType" type="string" use="optional"/>
+		<attribute name="generatesVersion" type="string" use="optional"/>
 	</complexType>
 	<complexType name="ComponentRequest">
 		<annotation>
@@ -137,8 +100,7 @@
 			</documentation>
 		</annotation>
 		<sequence>
-			<element name="import" type="cs:Import" minOccurs="0"
-				maxOccurs="unbounded" />
+			<element maxOccurs="unbounded" minOccurs="0" name="import" type="cs:Import"/>
 		</sequence>
 		<attribute name="name" type="string" use="optional">
 			<annotation>
@@ -156,8 +118,7 @@
 				</documentation>
 			</annotation>
 		</attribute>
-		<attribute name="versionDesignator" type="string"
-			use="optional">
+		<attribute name="versionDesignator" type="string" use="optional">
 			<annotation>
 				<documentation>
 					The version designator, if any, of the required
@@ -172,7 +133,7 @@
 				</documentation>
 			</annotation>
 		</attribute>
-		<attribute name="filter" type="string" use="optional" />
+		<attribute name="filter" type="string" use="optional"/>
 	</complexType>
 	<complexType name="Import">
 		<attribute name="attribute" type="string" use="required">
@@ -182,8 +143,7 @@
 				</documentation>
 			</annotation>
 		</attribute>
-		<attribute name="versionDesignator" type="string"
-			use="optional">
+		<attribute name="versionDesignator" type="string" use="optional">
 			<annotation>
 				<documentation>
 					The version designator, if any, of the required
@@ -191,32 +151,28 @@
 				</documentation>
 			</annotation>
 		</attribute>
-		<attribute name="filter" type="string" use="optional" />
+		<attribute name="filter" type="string" use="optional"/>
 	</complexType>
 	<complexType name="Action">
 		<complexContent>
 			<extension base="cs:Attribute">
 				<sequence>
-					<choice minOccurs="0" maxOccurs="unbounded">
-						<element name="definitions" type="cs:Definitions" />
-						<element name="installerHints" type="cs:Properties" />
-						<element name="actorProperties" type="cs:Properties" />
-						<element name="properties" type="cs:Properties" />
-						<element name="prerequisites" type="cs:Prerequisites" />
+					<choice maxOccurs="unbounded" minOccurs="0">
+						<element name="definitions" type="cs:Definitions"/>
+						<element name="installerHints" type="cs:Properties"/>
+						<element name="actorProperties" type="cs:Properties"/>
+						<element name="properties" type="cs:Properties"/>
+						<element name="prerequisites" type="cs:Prerequisites"/>
 						<element name="products">
 							<complexType>
 								<sequence>
-									<choice minOccurs="0"
-										maxOccurs="unbounded">
-										<element name="path" type="cs:Path" />
-										<element name="public"
-											type="cs:ActionArtifact" />
-										<element name="private"
-											type="cs:ActionArtifact" />
+									<choice maxOccurs="unbounded" minOccurs="0">
+										<element name="path" type="cs:Path"/>
+										<element name="public" type="cs:ActionArtifact"/>
+										<element name="private" type="cs:ActionArtifact"/>
 									</choice>
 								</sequence>
-								<attribute name="alias" type="string"
-									use="optional">
+								<attribute name="alias" type="string" use="optional">
 									<annotation>
 										<documentation>
 											The name to use for properties and
@@ -224,8 +180,7 @@
 										</documentation>
 									</annotation>
 								</attribute>
-								<attribute name="base" type="string"
-									use="optional">
+								<attribute name="base" type="string" use="optional">
 									<annotation>
 										<documentation>
 											Base of all paths, relative to
@@ -233,14 +188,10 @@
 										</documentation>
 									</annotation>
 								</attribute>
-								<attribute name="upToDatePolicy"
-									type="cs:UpToDatePolicy" />
-								<attribute name="fileCount" type="integer"
-									use="optional" />
-								<attribute name="pattern" type="string"
-									use="optional" />
-								<attribute name="replacement" type="string"
-									use="optional" />
+								<attribute name="upToDatePolicy" type="cs:UpToDatePolicy"/>
+								<attribute name="fileCount" type="integer" use="optional"/>
+								<attribute name="pattern" type="string" use="optional"/>
+								<attribute name="replacement" type="string" use="optional"/>
 							</complexType>
 						</element>
 					</choice>
@@ -253,8 +204,7 @@
 						</documentation>
 					</annotation>
 				</attribute>
-				<attribute name="always" type="boolean" use="optional"
-					default="false">
+				<attribute default="false" name="always" type="boolean" use="optional">
 					<annotation>
 						<documentation>
 							Used to turn on/off the timestamp dependent
@@ -262,8 +212,7 @@
 						</documentation>
 					</annotation>
 				</attribute>
-				<attribute name="assignConsoleSupport" type="boolean"
-					use="optional" default="true">
+				<attribute default="true" name="assignConsoleSupport" type="boolean" use="optional">
 					<annotation>
 						<documentation>
 							Used to tell the framework if it should assign the
@@ -279,8 +228,7 @@
 						</documentation>
 					</annotation>
 				</attribute>
-				<attribute name="enabled" type="boolean" use="optional"
-					default="true">
+				<attribute default="true" name="enabled" type="boolean" use="optional">
 					<annotation>
 						<documentation>Deprecated and ignored</documentation>
 					</annotation>
@@ -291,12 +239,12 @@
 
 	<complexType name="Attribute">
 		<sequence>
-			<element name="documentation" type="com:Documentation" minOccurs="0" maxOccurs="1" />
-			<element name="parameter" minOccurs="0" maxOccurs="unbounded">
+			<element maxOccurs="1" minOccurs="0" name="documentation" type="com:Documentation"/>
+			<element maxOccurs="unbounded" minOccurs="0" name="parameter">
 				<complexType>
 					<attribute name="name" type="string" use="required"/>
 					<attribute name="value" type="string" use="required"/>
-					<attribute name="mandatory" type="boolean" use="optional" default="false"/>
+					<attribute default="false" name="mandatory" type="boolean" use="optional"/>
 				</complexType>
 			</element>
 		</sequence>
@@ -314,7 +262,7 @@
 			</documentation>
 		</annotation>
 		<sequence>
-			<element name="define" type="cs:Attribute" minOccurs="1" maxOccurs="unbounded"/>
+			<element maxOccurs="unbounded" minOccurs="1" name="define" type="cs:Attribute"/>
 		</sequence>
 	</complexType>
 
@@ -322,10 +270,10 @@
 		<complexContent>
 			<extension base="cs:Attribute">
 				<sequence>
-					<choice minOccurs="0" maxOccurs="unbounded">
-						<element name="definitions" type="cs:Definitions" />
-						<element name="installerHints" type="cs:Properties" />
-						<element name="path" type="cs:Path" />
+					<choice maxOccurs="unbounded" minOccurs="0">
+						<element name="definitions" type="cs:Definitions"/>
+						<element name="installerHints" type="cs:Properties"/>
+						<element name="path" type="cs:Path"/>
 					</choice>
 				</sequence>
 				<attribute name="base" type="string" use="optional">
@@ -343,7 +291,7 @@
 						</documentation>
 					</annotation>
 				</attribute>
-				<attribute name="path" type="string" use="optional" />
+				<attribute name="path" type="string" use="optional"/>
 				<attribute name="type" type="string" use="optional">
 					<annotation>
 						<documentation>
@@ -360,9 +308,9 @@
 			<extension base="cs:Attribute">
 				<sequence>
 					<choice maxOccurs="unbounded" minOccurs="0">
-						<element name="definitions" type="cs:Definitions" />
-						<element name="installerHints" type="cs:Properties" />
-						<element name="attribute" type="cs:Prerequisite" />
+						<element name="definitions" type="cs:Definitions"/>
+						<element name="installerHints" type="cs:Properties"/>
+						<element name="attribute" type="cs:Prerequisite"/>
 					</choice>
 				</sequence>
 				<attribute name="filter" type="string" use="optional">
@@ -377,8 +325,8 @@
 					<annotation>
 						<documentation>
 							New base to use on all local paths where possible.
-							Paths not parented by this base are left &quot;as
-							is&quot;, i.e. the path group they belong to will
+							Paths not parented by this base are left "as
+							is", i.e. the path group they belong to will
 							not change.
 						</documentation>
 					</annotation>
@@ -397,19 +345,18 @@
 
 	<complexType name="Prerequisites">
 		<sequence>
-			<element name="documentation" type="com:Documentation"
-				minOccurs="0" maxOccurs="1" />
+			<element maxOccurs="1" minOccurs="0" name="documentation" type="com:Documentation"/>
 			<choice maxOccurs="unbounded" minOccurs="0">
-				<element name="installerHints" type="cs:Properties" />
-				<element name="attribute" type="cs:Prerequisite" />
+				<element name="installerHints" type="cs:Properties"/>
+				<element name="attribute" type="cs:Prerequisite"/>
 			</choice>
 		</sequence>
 		<attribute name="rebase" type="string" use="optional">
 			<annotation>
 				<documentation>
 					New base to use on all local paths where possible.
-					Paths not parented by this base are left &quot;as
-					is&quot;, i.e. the path group they belong to will
+					Paths not parented by this base are left "as
+					is", i.e. the path group they belong to will
 					not change.
 				</documentation>
 			</annotation>
@@ -424,7 +371,7 @@
 	</complexType>
 
 	<complexType name="Path">
-		<attribute name="path" type="string" use="required" />
+		<attribute name="path" type="string" use="required"/>
 	</complexType>
 
 	<complexType name="Prerequisite">
@@ -501,60 +448,48 @@
 	</complexType>
 	<complexType name="Properties">
 		<sequence>
-			<element maxOccurs="unbounded" minOccurs="0" name="property"
-				type="com:PropertyConstant" />
+			<element maxOccurs="unbounded" minOccurs="0" name="property" type="com:PropertyConstant"/>
 		</sequence>
 	</complexType>
 	<complexType name="CSpecExtension">
 		<complexContent>
 			<extension base="cs:ComponentSpecBase">
-				<choice minOccurs="0" maxOccurs="unbounded">
+				<choice maxOccurs="unbounded" minOccurs="0">
 					<element name="alterActions">
 						<complexType>
-							<choice minOccurs="0"
-								maxOccurs="unbounded">
-								<element name="public"
-									type="cs:AlterAction" />
-								<element name="private"
-									type="cs:AlterAction" />
-								<element name="remove" type="cs:Remove" />
-								<element name="rename" type="cs:Rename" />
+							<choice maxOccurs="unbounded" minOccurs="0">
+								<element name="public" type="cs:AlterAction"/>
+								<element name="private" type="cs:AlterAction"/>
+								<element name="remove" type="cs:Remove"/>
+								<element name="rename" type="cs:Rename"/>
 							</choice>
 						</complexType>
 					</element>
 					<element name="alterArtifacts">
 						<complexType>
-							<choice minOccurs="0"
-								maxOccurs="unbounded">
-								<element name="public"
-									type="cs:AlterArtifact" />
-								<element name="private"
-									type="cs:AlterArtifact" />
-								<element name="remove" type="cs:Remove" />
-								<element name="rename" type="cs:Rename" />
+							<choice maxOccurs="unbounded" minOccurs="0">
+								<element name="public" type="cs:AlterArtifact"/>
+								<element name="private" type="cs:AlterArtifact"/>
+								<element name="remove" type="cs:Remove"/>
+								<element name="rename" type="cs:Rename"/>
 							</choice>
 						</complexType>
 					</element>
 					<element name="alterDependencies">
 						<complexType>
-							<choice minOccurs="0"
-								maxOccurs="unbounded">
-								<element name="dependency"
-									type="cs:ComponentRequest" />
-								<element name="remove" type="cs:Remove" />
+							<choice maxOccurs="unbounded" minOccurs="0">
+								<element name="dependency" type="cs:ComponentRequest"/>
+								<element name="remove" type="cs:Remove"/>
 							</choice>
 						</complexType>
 					</element>
 					<element name="alterGroups">
 						<complexType>
-							<choice minOccurs="0"
-								maxOccurs="unbounded">
-								<element name="public"
-									type="cs:AlterGroup" />
-								<element name="private"
-									type="cs:AlterGroup" />
-								<element name="remove" type="cs:Remove" />
-								<element name="rename" type="cs:Rename" />
+							<choice maxOccurs="unbounded" minOccurs="0">
+								<element name="public" type="cs:AlterGroup"/>
+								<element name="private" type="cs:AlterGroup"/>
+								<element name="remove" type="cs:Remove"/>
+								<element name="rename" type="cs:Rename"/>
 							</choice>
 						</complexType>
 					</element>
@@ -566,27 +501,18 @@
 	<complexType name="AlterAction">
 		<complexContent>
 			<extension base="cs:Action">
-				<choice minOccurs="0" maxOccurs="unbounded">
-					<element name="alterInstallerHints"
-						type="cs:AlterProperties" />
-					<element name="alterPrerequisites"
-						type="cs:AlterPrerequisites" />
-					<element name="alterActorProperties"
-						type="cs:AlterProperties" />
-					<element name="alterProperties"
-						type="cs:AlterProperties" />
+				<choice maxOccurs="unbounded" minOccurs="0">
+					<element name="alterInstallerHints" type="cs:AlterProperties"/>
+					<element name="alterPrerequisites" type="cs:AlterPrerequisites"/>
+					<element name="alterActorProperties" type="cs:AlterProperties"/>
+					<element name="alterProperties" type="cs:AlterProperties"/>
 					<element name="alterProducts">
 						<complexType>
-							<choice minOccurs="0"
-								maxOccurs="unbounded">
-								<element name="public"
-									type="cs:AlterGroup" />
-								<element name="private"
-									type="cs:AlterGroup" />
-								<element name="removeProduct"
-									type="cs:Remove" />
-								<element name="removePath"
-									type="cs:RemovePath" />
+							<choice maxOccurs="unbounded" minOccurs="0">
+								<element name="public" type="cs:AlterGroup"/>
+								<element name="private" type="cs:AlterGroup"/>
+								<element name="removeProduct" type="cs:Remove"/>
+								<element name="removePath" type="cs:RemovePath"/>
 							</choice>
 						</complexType>
 					</element>
@@ -597,10 +523,9 @@
 	<complexType name="AlterArtifact">
 		<complexContent>
 			<extension base="cs:Artifact">
-				<choice minOccurs="0" maxOccurs="unbounded">
-					<element name="alterInstallerHints"
-						type="cs:AlterProperties" />
-					<element name="removePath" type="cs:RemovePath" />
+				<choice maxOccurs="unbounded" minOccurs="0">
+					<element name="alterInstallerHints" type="cs:AlterProperties"/>
+					<element name="removePath" type="cs:RemovePath"/>
 				</choice>
 			</extension>
 		</complexContent>
@@ -608,12 +533,10 @@
 	<complexType name="AlterGroup">
 		<complexContent>
 			<extension base="cs:Group">
-				<choice minOccurs="0" maxOccurs="unbounded">
-					<element name="alterInstallerHints"
-						type="cs:AlterProperties" />
-					<element name="alterAttribute"
-						type="cs:Prerequisite" />
-					<element name="remove" type="cs:Remove" />
+				<choice maxOccurs="unbounded" minOccurs="0">
+					<element name="alterInstallerHints" type="cs:AlterProperties"/>
+					<element name="alterAttribute" type="cs:Prerequisite"/>
+					<element name="remove" type="cs:Remove"/>
 				</choice>
 			</extension>
 		</complexContent>
@@ -621,32 +544,31 @@
 	<complexType name="AlterPrerequisites">
 		<complexContent>
 			<extension base="cs:Prerequisites">
-				<choice minOccurs="0" maxOccurs="unbounded">
-					<element name="alterAttribute"
-						type="cs:Prerequisite" />
-					<element name="remove" type="cs:Remove" />
+				<choice maxOccurs="unbounded" minOccurs="0">
+					<element name="alterAttribute" type="cs:Prerequisite"/>
+					<element name="remove" type="cs:Remove"/>
 				</choice>
 			</extension>
 		</complexContent>
 	</complexType>
 	<complexType name="AlterProperties">
 		<choice maxOccurs="unbounded" minOccurs="0">
-			<element name="property" type="com:PropertyConstant" />
-			<element name="remove" type="cs:RemoveProperty" />
+			<element name="property" type="com:PropertyConstant"/>
+			<element name="remove" type="cs:RemoveProperty"/>
 		</choice>
 	</complexType>
 	<complexType name="Remove">
-		<attribute name="name" type="string" use="required" />
+		<attribute name="name" type="string" use="required"/>
 	</complexType>
 	<complexType name="Rename">
-		<attribute name="oldName" type="string" use="required" />
-		<attribute name="newName" type="string" use="required" />
+		<attribute name="oldName" type="string" use="required"/>
+		<attribute name="newName" type="string" use="required"/>
 	</complexType>
 	<complexType name="RemovePath">
-		<attribute name="path" type="string" use="required" />
+		<attribute name="path" type="string" use="required"/>
 	</complexType>
 	<complexType name="RemoveProperty">
-		<attribute name="key" type="string" use="required" />
+		<attribute name="key" type="string" use="required"/>
 	</complexType>
 	<simpleType name="UpToDatePolicy">
 		<restriction base="string">

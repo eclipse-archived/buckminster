@@ -27,7 +27,6 @@ import org.eclipse.buckminster.core.common.model.Format;
 import org.eclipse.buckminster.core.common.model.PropertyRef;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
-import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequestConflictException;
 import org.eclipse.buckminster.core.ctype.AbstractComponentType;
@@ -374,8 +373,8 @@ public class LocalResolver extends HashMap<String, ResolverNode[]> implements IR
 		monitor.beginTask(null, IProgressMonitor.UNKNOWN);
 		try {
 			NodeQuery query = context.getNodeQuery(request);
-			ResolverNode node = deepResolve(context, new HashMap<ComponentName, ResolverNode>(), new UnresolvedNode(query.getQualifiedDependency()),
-					null, monitor);
+			ResolverNode node = deepResolve(context, new HashMap<ComponentRequest, ResolverNode>(),
+					new UnresolvedNode(query.getQualifiedDependency()), null, monitor);
 			return createBillOfMaterials(node);
 		} finally {
 			monitor.done();
@@ -398,7 +397,7 @@ public class LocalResolver extends HashMap<String, ResolverNode[]> implements IR
 		try {
 			ComponentQuery cquery = bom.getQuery();
 			ResolutionContext ctx = (cquery == null || cquery.equals(context.getComponentQuery())) ? context : new ResolutionContext(cquery, context);
-			BillOfMaterials newBom = createBillOfMaterials(deepResolve(ctx, new HashMap<ComponentName, ResolverNode>(), bom, bom.getTagInfo(),
+			BillOfMaterials newBom = createBillOfMaterials(deepResolve(ctx, new HashMap<ComponentRequest, ResolverNode>(), bom, bom.getTagInfo(),
 					monitor));
 			if (!newBom.contentEqual(bom))
 				bom = newBom;
@@ -464,25 +463,26 @@ public class LocalResolver extends HashMap<String, ResolverNode[]> implements IR
 				continue;
 
 			if (newRqOptional != oldRq.isOptional()) {
-				// We don't want a version conflict if one of the ranges are
-				// optional.
+				// We don't want a version conflict if one of the requirements
+				// are optional.
 				//
 				try {
 					request.mergeDesignator(oldRq);
 				} catch (ComponentRequestConflictException e) {
-					if (oldRq.isOptional()) {
-						// Previous request now in conflict and must be
-						// discarded.
-						//
-						nr.forceUnresolved();
-						continue;
-					}
+					if (!(request.isSyntheticSource() || oldRq.isSyntheticSource())) {
+						if (oldRq.isOptional()) {
+							// Previous request now in conflict and must be
+							// discarded.
+							nr.forceUnresolved();
+							continue;
+						}
 
-					// New request is optional and in conflict. Invalidate the
-					// new infant.
-					//
-					invalidateInfant = true;
-					break;
+						// New request is optional and in conflict.
+						// Invalidate the new infant.
+						//
+						invalidateInfant = true;
+						break;
+					}
 				}
 			}
 
@@ -493,8 +493,10 @@ public class LocalResolver extends HashMap<String, ResolverNode[]> implements IR
 				// We have a conflict. Two components with the same
 				// name but incompatible versions or filters.
 				//
-				IStatus err = e.getStatus();
-				context.addRequestStatus(nr.getQuery().getComponentRequest(), new Status(IStatus.WARNING, err.getPlugin(), err.getMessage()));
+				if (!(request.isSyntheticSource() || oldRq.isSyntheticSource())) {
+					IStatus err = e.getStatus();
+					context.addRequestStatus(nr.getQuery().getComponentRequest(), new Status(IStatus.WARNING, err.getPlugin(), err.getMessage()));
+				}
 			}
 		}
 
@@ -528,10 +530,10 @@ public class LocalResolver extends HashMap<String, ResolverNode[]> implements IR
 		return nr;
 	}
 
-	private ResolverNode deepResolve(ResolutionContext ctx, Map<ComponentName, ResolverNode> visited, BOMNode depNode, String tagInfo,
+	private ResolverNode deepResolve(ResolutionContext ctx, Map<ComponentRequest, ResolverNode> visited, BOMNode depNode, String tagInfo,
 			IProgressMonitor monitor) throws CoreException {
 		QualifiedDependency qDep = depNode.getQualifiedDependency();
-		ComponentName key = qDep.getRequest().toPureComponentName();
+		ComponentRequest key = qDep.getRequest();
 
 		// The visited map is to prevent endless recursion. The LocalResolver
 		// needs this since the query is often

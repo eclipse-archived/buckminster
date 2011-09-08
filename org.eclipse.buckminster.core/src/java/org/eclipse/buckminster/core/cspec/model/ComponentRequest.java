@@ -48,6 +48,8 @@ public class ComponentRequest extends ComponentName implements IComponentRequest
 
 	public static final Filter P2_OPTIONAL_FILTER;
 
+	public static final Filter SOURCE_BUNDLE_FILTER;
+
 	public static final String FILTER_ECLIPSE_P2_OPTIONAL = "(!(eclipse.p2.optional=false))"; //$NON-NLS-1$
 
 	public static final String FILTER_SOURCE_BUNDLE = "(buckminster.download.source=true)"; //$NON-NLS-1$
@@ -57,6 +59,7 @@ public class ComponentRequest extends ComponentName implements IComponentRequest
 	static {
 		try {
 			P2_OPTIONAL_FILTER = FilterFactory.newInstance(ComponentRequest.FILTER_ECLIPSE_P2_OPTIONAL);
+			SOURCE_BUNDLE_FILTER = FilterFactory.newInstance(ComponentRequest.FILTER_SOURCE_BUNDLE);
 		} catch (InvalidSyntaxException e) {
 			throw new ExceptionInInitializerError(e);
 		}
@@ -173,6 +176,10 @@ public class ComponentRequest extends ComponentName implements IComponentRequest
 		return filter != null && filter.toString().contains(FILTER_ECLIPSE_P2_OPTIONAL);
 	}
 
+	public boolean isSyntheticSource() {
+		return filter != null && filter.toString().contains(FILTER_SOURCE_BUNDLE);
+	}
+
 	public ComponentRequest mergeDesignator(ComponentRequest that) throws CoreException {
 		if (!Trivial.equalsAllowNull(getName(), that.getName()))
 			throw new ComponentRequestConflictException(this, that);
@@ -233,16 +240,28 @@ public class ComponentRequest extends ComponentName implements IComponentRequest
 		boolean thatOptional = that.isOptional();
 		Filter mergedFilter = null;
 		if (!Trivial.equalsAllowNull(thisFilter, thatFilter)) {
-			if (thisOptional != thatOptional)
+			if (thisOptional != thatOptional && cmp != 0)
 				// Filters can only be merged if both are required or
-				// both are optional
+				// both are optional or if the version ranges are
+				// exactly the same.
 				//
 				throw new ComponentRequestConflictException(this, that);
 
-			if (thisFilter != null && thatFilter != null)
+			if (thisFilter == null)
+				mergedFilter = thatFilter;
+			else if (thatFilter == null)
+				mergedFilter = thisFilter;
+			else
 				mergedFilter = thisFilter.addFilterWithOr(thatFilter);
 		} else
 			mergedFilter = thisFilter;
+
+		if (mergedFilter != null && thisOptional != thatOptional) {
+			// Result must not contain optional or synthetic filters
+			mergedFilter = mergedFilter.stripFilter(P2_OPTIONAL_FILTER);
+			if (mergedFilter != null)
+				mergedFilter = mergedFilter.stripFilter(SOURCE_BUNDLE_FILTER);
+		}
 
 		// Never allow an optional request to qualify one that is not
 		// optional. The opposite is OK though.
