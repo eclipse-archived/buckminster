@@ -261,78 +261,92 @@ public abstract class CSpecFromFeature extends CSpecGenerator {
 	}
 
 	void addPlugins() throws CoreException {
+		String brandingPluginName = feature.getPlugin();
 		IFeaturePlugin[] plugins = feature.getPlugins();
-		if (plugins == null || plugins.length == 0)
-			return;
+		if (plugins != null && plugins.length > 0) {
+			Map<String, ? extends Object> props = getReader().getNodeQuery().getProperties();
+			Object os = props.get(org.eclipse.buckminster.core.TargetPlatform.TARGET_OS);
+			Object ws = props.get(org.eclipse.buckminster.core.TargetPlatform.TARGET_WS);
+			Object arch = props.get(org.eclipse.buckminster.core.TargetPlatform.TARGET_ARCH);
 
-		Map<String, ? extends Object> props = getReader().getNodeQuery().getProperties();
-		Object os = props.get(org.eclipse.buckminster.core.TargetPlatform.TARGET_OS);
-		Object ws = props.get(org.eclipse.buckminster.core.TargetPlatform.TARGET_WS);
-		Object arch = props.get(org.eclipse.buckminster.core.TargetPlatform.TARGET_ARCH);
+			ComponentQuery query = getReader().getNodeQuery().getComponentQuery();
+			CSpecBuilder cspec = getCSpec();
+			ActionBuilder fullClean = cspec.getRequiredAction(ATTRIBUTE_FULL_CLEAN);
+			GroupBuilder bundleJars = cspec.getRequiredGroup(ATTRIBUTE_BUNDLE_JARS);
+			GroupBuilder sourceBundleJars = cspec.getRequiredGroup(ATTRIBUTE_SOURCE_BUNDLE_JARS);
+			GroupBuilder productConfigExports = cspec.getRequiredGroup(ATTRIBUTE_PRODUCT_CONFIG_EXPORTS);
+			PluginModelManager manager = PDECore.getDefault().getModelManager();
 
-		ComponentQuery query = getReader().getNodeQuery().getComponentQuery();
-		CSpecBuilder cspec = getCSpec();
-		ActionBuilder fullClean = cspec.getRequiredAction(ATTRIBUTE_FULL_CLEAN);
-		GroupBuilder bundleJars = cspec.getRequiredGroup(ATTRIBUTE_BUNDLE_JARS);
-		GroupBuilder sourceBundleJars = cspec.getRequiredGroup(ATTRIBUTE_SOURCE_BUNDLE_JARS);
-		GroupBuilder productConfigExports = cspec.getRequiredGroup(ATTRIBUTE_PRODUCT_CONFIG_EXPORTS);
-		PluginModelManager manager = PDECore.getDefault().getModelManager();
+			boolean hasBogusFragments = false;
+			String id = feature.getId();
+			if (VersionConsolidator.getBooleanProperty(getProperties(), "buckminster.handle.incomplete.platform.features", false)) { //$NON-NLS-1$
+				hasBogusFragments = "org.eclipse.platform".equals(id) //$NON-NLS-1$
+						|| "org.eclipse.equinox.executable".equals(id) //$NON-NLS-1$
+						|| "org.eclipse.rcp".equals(id); //$NON-NLS-1$
+			} else {
+				// We still need this here due to
+				// https://bugs.eclipse.org/bugs/show_bug.cgi?id=319345
+				hasBogusFragments = "org.eclipse.equinox.executable".equals(id); //$NON-NLS-1$
+			}
 
-		boolean hasBogusFragments = false;
-		String id = feature.getId();
-		if (VersionConsolidator.getBooleanProperty(getProperties(), "buckminster.handle.incomplete.platform.features", false)) { //$NON-NLS-1$
-			hasBogusFragments = "org.eclipse.platform".equals(id) //$NON-NLS-1$
-					|| "org.eclipse.equinox.executable".equals(id) //$NON-NLS-1$
-					|| "org.eclipse.rcp".equals(id); //$NON-NLS-1$
-		} else {
-			// We still need this here due to
-			// https://bugs.eclipse.org/bugs/show_bug.cgi?id=319345
-			hasBogusFragments = "org.eclipse.equinox.executable".equals(id); //$NON-NLS-1$
+			for (IFeaturePlugin plugin : plugins) {
+				if (!(isListOK(plugin.getOS(), os) && isListOK(plugin.getWS(), ws) && isListOK(plugin.getArch(), arch))) {
+					// Only include this if we can find it in the target
+					// platform
+					//
+					if (manager.findEntry(plugin.getId()) == null)
+						continue;
+				}
+
+				if (hasBogusFragments && (plugin.getOS() != null || plugin.getWS() != null || plugin.getArch() != null)) {
+					// Only include this if we can find it in the target
+					// platform.
+					// See https://bugs.eclipse.org/bugs/show_bug.cgi?id=213437
+					//
+					if (manager.findEntry(plugin.getId()) == null)
+						continue;
+				}
+
+				ComponentRequestBuilder dep = createDependency(plugin);
+				if (brandingPluginName != null && brandingPluginName.equals(dep.getName()))
+					brandingPluginName = null;
+
+				if (skipComponent(query, dep))
+					continue;
+
+				if (!addDependency(dep))
+					continue;
+
+				bundleJars.addExternalPrerequisite(dep, ATTRIBUTE_BUNDLE_AND_FRAGMENTS);
+
+				// We either add this bundles action to generate it's own
+				// source, or we add an already existing source bundle. Let's
+				// check with the target platform
+				if (!plugin.getId().endsWith(SOURCE_SUFFIX)) {
+					String sourceId = plugin.getId() + SOURCE_SUFFIX;
+					if (manager.findEntry(sourceId) == null)
+						sourceBundleJars.addExternalPrerequisite(dep, ATTRIBUTE_BUNDLE_AND_FRAGMENTS_SOURCE);
+					else {
+						ComponentRequestBuilder sourceDep = new ComponentRequestBuilder();
+						sourceDep.setName(sourceId);
+						sourceDep.setComponentTypeID(IComponentType.OSGI_BUNDLE);
+						sourceDep.setVersionRange(dep.getVersionRange());
+						addDependency(sourceDep);
+						sourceBundleJars.addExternalPrerequisite(sourceDep, ATTRIBUTE_BUNDLE_JAR);
+					}
+				}
+				fullClean.addExternalPrerequisite(dep, ATTRIBUTE_FULL_CLEAN);
+				productConfigExports.addExternalPrerequisite(dep, ATTRIBUTE_PRODUCT_CONFIG_EXPORTS);
+			}
 		}
 
-		for (IFeaturePlugin plugin : plugins) {
-			if (!(isListOK(plugin.getOS(), os) && isListOK(plugin.getWS(), ws) && isListOK(plugin.getArch(), arch))) {
-				// Only include this if we can find it in the target platform
-				//
-				if (manager.findEntry(plugin.getId()) == null)
-					continue;
-			}
-
-			if (hasBogusFragments && (plugin.getOS() != null || plugin.getWS() != null || plugin.getArch() != null)) {
-				// Only include this if we can find it in the target platform.
-				// See https://bugs.eclipse.org/bugs/show_bug.cgi?id=213437
-				//
-				if (manager.findEntry(plugin.getId()) == null)
-					continue;
-			}
-
-			ComponentRequestBuilder dep = createDependency(plugin);
-			if (skipComponent(query, dep))
-				continue;
-
-			if (!addDependency(dep))
-				continue;
-
-			bundleJars.addExternalPrerequisite(dep, ATTRIBUTE_BUNDLE_AND_FRAGMENTS);
-
-			// We either add this bundles action to generate it's own source, or
-			// we add an already existing source bundle. Let's check with the
-			// target platform
-			if (!plugin.getId().endsWith(SOURCE_SUFFIX)) {
-				String sourceId = plugin.getId() + SOURCE_SUFFIX;
-				if (manager.findEntry(sourceId) == null)
-					sourceBundleJars.addExternalPrerequisite(dep, ATTRIBUTE_BUNDLE_AND_FRAGMENTS_SOURCE);
-				else {
-					ComponentRequestBuilder sourceDep = new ComponentRequestBuilder();
-					sourceDep.setName(sourceId);
-					sourceDep.setComponentTypeID(IComponentType.OSGI_BUNDLE);
-					sourceDep.setVersionRange(dep.getVersionRange());
-					addDependency(sourceDep);
-					sourceBundleJars.addExternalPrerequisite(sourceDep, ATTRIBUTE_BUNDLE_JAR);
-				}
-			}
-			fullClean.addExternalPrerequisite(dep, ATTRIBUTE_FULL_CLEAN);
-			productConfigExports.addExternalPrerequisite(dep, ATTRIBUTE_PRODUCT_CONFIG_EXPORTS);
+		if (brandingPluginName != null) {
+			// We have a branding plugin that we have no other dependency to.
+			// This is also a valid dependency so let's add it.
+			ComponentRequestBuilder dep = getCSpec().createDependencyBuilder();
+			dep.setName(brandingPluginName);
+			dep.setComponentTypeID(IComponentType.OSGI_BUNDLE);
+			addDependency(dep);
 		}
 	}
 

@@ -348,6 +348,10 @@ public interface IPDEConstants {
 
 	static final String TASK_REPLACE_TOKEN = "replaceToken"; //$NON-NLS-1$
 
+	static final String TASK_REPLACE_TWO_TOKENS = "replaceTwoTokens"; //$NON-NLS-1$
+
+	static final String TASK_REPLACE_THREE_TOKENS = "replaceThreeTokens"; //$NON-NLS-1$
+
 	static final String TASK_API_GENERATION = "apigeneration"; //$NON-NLS-1$
 
 	static final String TASK_UNJAR_NAMED = "unjar.named"; //$NON-NLS-1$

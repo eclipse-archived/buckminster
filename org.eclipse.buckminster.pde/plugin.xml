@@ -171,6 +171,10 @@
 			ID="mergeLicenseFeature"
 			class="org.eclipse.buckminster.pde.internal.actor.MergeLicenseFeature"
 			name="License Feature Merger" />
+		<actor
+			ID="ownerVersionExtractor"
+			class="org.eclipse.buckminster.pde.internal.actor.OwnerVersionExtractor"
+			name="Owner Version Extractor" />
  </extension>
  <extension
        point="org.eclipse.buckminster.cmdline.commands">

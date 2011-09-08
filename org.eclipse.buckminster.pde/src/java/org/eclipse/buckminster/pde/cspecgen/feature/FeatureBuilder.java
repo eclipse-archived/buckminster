@@ -22,6 +22,7 @@ import org.eclipse.buckminster.core.helpers.PropertiesParser;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.core.reader.URLFileReader;
 import org.eclipse.buckminster.core.reader.ZipArchiveReader;
+import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.pde.PDEPlugin;
 import org.eclipse.buckminster.pde.cspecgen.CSpecGenerator;
@@ -83,7 +84,7 @@ public class FeatureBuilder extends PDEBuilder {
 		String featureId = feature.getId();
 		if (featureId == null || featureId.length() == 0) {
 			PDEPlugin.getLogger().warning(
-					NLS.bind(Messages.No_feature_id_found_in_0, new File(reader.getLocation(), "feature.xml").getAbsolutePath()));
+					NLS.bind(Messages.No_feature_id_found_in_0, new File(reader.getLocation(), IPDEConstants.FEATURE_MANIFEST).getAbsolutePath()));
 			feature.setId("<undefined feature id>"); //$NON-NLS-1$
 		}
 

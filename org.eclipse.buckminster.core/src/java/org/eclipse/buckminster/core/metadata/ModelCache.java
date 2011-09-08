@@ -7,6 +7,8 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.metadata;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,6 +49,11 @@ public class ModelCache implements IModelCache {
 			cspecCache.put(request, cspec);
 		}
 		return cspec;
+	}
+
+	@Override
+	public synchronized Collection<CSpec> getAllFoundCSpecs() {
+		return cspecCache == null ? Collections.<CSpec> emptyList() : cspecCache.values();
 	}
 
 	@Override

@@ -243,6 +243,23 @@
 		<replace token="${token}" value="${value}" file="${sp:action.output}"/>
 	</target>
 
+	<target name="replaceTwoTokens">
+		<copy file="${sp:action.input}" tofile="${sp:action.output}"/>
+		<replace file="${sp:action.output}">
+			<replacefilter token="${token1}" value="${value1}"/>
+			<replacefilter token="${token2}" value="${value2}"/>
+		</replace>
+	</target>
+
+	<target name="replaceThreeTokens">
+		<copy file="${sp:action.input}" tofile="${sp:action.output}"/>
+		<replace file="${sp:action.output}">
+			<replacefilter token="${token1}" value="${value1}"/>
+			<replacefilter token="${token2}" value="${value2}"/>
+			<replacefilter token="${token3}" value="${value3}"/>
+		</replace>
+	</target>
+
 	<target name="replaceFeatureVersion">
 		<extractFeatureVersion file="${sp:manifest}" property="feature.version"/>
 		<copy file="${sp:action.input}" tofile="${sp:action.output}"/>

@@ -33,13 +33,21 @@ public interface IGlobalContext extends IModelCache {
 	void addGeneratedResolution(Resolution resolution, IPath location);
 
 	/**
+	 * Add a new property to the context
+	 * 
+	 * @param key
+	 * @param value
+	 */
+	void addProperty(String key, Object value);
+
+	/**
 	 * Returns the property set to use when performing <code>attribute</code>.
 	 * 
 	 * @param attribute
 	 *            The attribute for which we need the properties
 	 * @return The properties to use for attribute.
 	 */
-	Map<String, ? extends Object> getExecutionProperties(Attribute attribute) throws CoreException;
+	Map<String, Object> getExecutionProperties(Attribute attribute) throws CoreException;
 
 	/**
 	 * Obtains a generated materialization from the context for the given

@@ -1,5 +1,6 @@
 package org.eclipse.buckminster.core.metadata.model;
 
+import java.util.Collection;
 import java.util.Map;
 
 import org.eclipse.buckminster.core.cspec.ICSpecData;
@@ -25,6 +26,12 @@ public interface IModelCache {
 	 *             If no such component could be found
 	 */
 	CSpec findCSpec(ICSpecData ownerCSpec, ComponentRequest request) throws CoreException;
+
+	/**
+	 * Returns all CSpecs that has been requested so far by the
+	 * {@link #findCSpec} method
+	 */
+	Collection<CSpec> getAllFoundCSpecs();
 
 	/**
 	 * Returns the cache used when evaulating attribute path groups

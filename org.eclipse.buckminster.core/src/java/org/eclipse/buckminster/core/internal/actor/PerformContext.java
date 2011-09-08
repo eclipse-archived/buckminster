@@ -230,6 +230,11 @@ public class PerformContext implements IActionContext {
 	}
 
 	@Override
+	public Collection<CSpec> getAllFoundCSpecs() {
+		return globalCtx.getAllFoundCSpecs();
+	}
+
+	@Override
 	public IProgressMonitor getCancellationMonitor() {
 		return new SubProgressMonitor(cancellationMonitor, 1);
 	}

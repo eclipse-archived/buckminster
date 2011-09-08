@@ -615,10 +615,13 @@ public class CSpecFromSource extends CSpecGenerator {
 	protected AttributeBuilder addAboutMappingsAction(IPath rawAboutMappingPath, IPath projectRoot) throws CoreException {
 		ArtifactBuilder rawAboutMappings = getCSpec().addArtifact(ATTRIBUTE_RAW_ABOUT_MAPPINGS, false, projectRoot);
 		rawAboutMappings.addPath(rawAboutMappingPath);
-		ActionBuilder mappingAction = addAntAction(ACTION_ABOUT_MAPPINGS, TASK_REPLACE_TOKEN, false);
-		mappingAction.addProperty("token", "@build@", false); //$NON-NLS-1$ //$NON-NLS-2$
-		mappingAction.addProperty("value", "${build.id}", false); //$NON-NLS-1$ //$NON-NLS-2$
+		ActionBuilder mappingAction = addAntAction(ACTION_ABOUT_MAPPINGS, TASK_REPLACE_TWO_TOKENS, false);
+		mappingAction.addProperty("token1", "@build@", false); //$NON-NLS-1$ //$NON-NLS-2$
+		mappingAction.addProperty("value1", "${build.id}", false); //$NON-NLS-1$ //$NON-NLS-2$
+		mappingAction.addProperty("token2", "@version@", false); //$NON-NLS-1$ //$NON-NLS-2$
+		mappingAction.addProperty("value2", "${" + getCSpec().getName() + ".unqualified.owner.version}", false); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		mappingAction.addLocalPrerequisite(ATTRIBUTE_RAW_ABOUT_MAPPINGS, "action.input"); //$NON-NLS-1$
+		mappingAction.addLocalPrerequisite(getCSpec().addAction("ownerVersion", false, "ownerVersionExtractor", false)); //$NON-NLS-1$//$NON-NLS-2$
 		mappingAction.setProductAlias(ALIAS_OUTPUT);
 		mappingAction.setProductBase(OUTPUT_DIR_TEMP);
 		mappingAction.addProductPath(Path.fromPortableString(ABOUT_MAPPINGS_FILE));

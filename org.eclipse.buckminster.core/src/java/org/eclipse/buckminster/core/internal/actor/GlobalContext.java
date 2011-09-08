@@ -78,7 +78,14 @@ public class GlobalContext extends ModelCache implements IGlobalContext {
 	}
 
 	@Override
-	public Map<String, ? extends Object> getExecutionProperties(Attribute attribute) throws CoreException {
+	public void addProperty(String key, Object value) {
+		@SuppressWarnings("unchecked")
+		Map<String, Object> userProps = (Map<String, Object>) super.getProperties();
+		userProps.put(key, value);
+	}
+
+	@Override
+	public Map<String, Object> getExecutionProperties(Attribute attribute) throws CoreException {
 		Map<String, String> actionProps = (attribute instanceof IAction) ? ((IAction) attribute).getProperties() : Collections
 				.<String, String> emptyMap();
 		int mapSize = globalProps.size() + actionProps.size() + 10;
@@ -123,7 +130,7 @@ public class GlobalContext extends ModelCache implements IGlobalContext {
 	 * @author Guillaume CHATELET
 	 */
 	@Override
-	public synchronized Map<String, ? extends Object> getProperties() {
+	public synchronized Map<String, Object> getProperties() {
 		Map<String, ? extends Object> userProperties = super.getProperties();
 		ExpandingProperties<Object> allProps = new ExpandingProperties<Object>(userProperties.size() + globalProps.size());
 		allProps.putAll(globalProps, true);
