@@ -38,7 +38,7 @@ public class QualifiedDependency {
 		VersionRange dsg = advice.getVersionOverride();
 		if (dsg != null) {
 			change = true;
-			rq = new ComponentRequest(rq.getName(), rq.getComponentTypeID(), dsg);
+			rq = new ComponentRequest(rq.getName(), rq.getComponentTypeID(), dsg, rq.getFilter());
 		}
 
 		Collection<String> attrs = advice.getAttributes();
