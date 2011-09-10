@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.util.Locale;
 
 import org.eclipse.buckminster.pde.PDEPlugin;
 import org.eclipse.buckminster.runtime.Logger;
@@ -139,7 +140,7 @@ public class BrandingIron implements IXMLConstants {
 			File icon = null;
 			if (icons.length > 0)
 				for (int i = 0; i < icons.length; i++) {
-					if (icons[i].toLowerCase().endsWith(".xpm")) { //$NON-NLS-1$
+					if (icons[i].toLowerCase(Locale.ENGLISH).endsWith(".xpm")) { //$NON-NLS-1$
 						icon = new File(icons[i]);
 						break;
 					}
@@ -174,7 +175,7 @@ public class BrandingIron implements IXMLConstants {
 			File icon = null;
 			if (icons.length > 1)
 				for (int i = 0; i < icons.length; i++) {
-					if (icons[i].toLowerCase().endsWith(".icns")) { //$NON-NLS-1$
+					if (icons[i].toLowerCase(Locale.ENGLISH).endsWith(".icns")) { //$NON-NLS-1$
 						icon = new File(icons[i]);
 						break;
 					}

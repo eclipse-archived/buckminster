@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -147,7 +148,7 @@ public class MapFile {
 				continue;
 			}
 
-			String readerTypeID = fetchType.toLowerCase();
+			String readerTypeID = fetchType.toLowerCase(Locale.ENGLISH);
 			if ("get".equals(readerTypeID)) //$NON-NLS-1$
 			{
 				readerTypeID = "url"; //$NON-NLS-1$

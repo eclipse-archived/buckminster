@@ -6,6 +6,7 @@
  */
 package org.eclipse.buckminster.model.common.impl;
 
+import java.util.Locale;
 import java.util.Map;
 
 import org.eclipse.buckminster.model.common.CommonPackage;
@@ -34,7 +35,7 @@ public class ToUpperImpl extends ValueFilterImpl implements ToUpper {
 	@Override
 	public String checkedGetValue(Map<String, String> props, int recursionGuard) {
 		String resolved = this.checkedGetSourceValue(props, recursionGuard);
-		return (resolved == null || NO_VALUE.equals(resolved)) ? NO_VALUE : resolved.toUpperCase();
+		return (resolved == null || NO_VALUE.equals(resolved)) ? NO_VALUE : resolved.toUpperCase(Locale.ENGLISH);
 	}
 
 	/**

@@ -15,6 +15,7 @@ import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -35,7 +36,7 @@ abstract class FilterImpl implements Filter, Comparable<FilterImpl> {
 			int top = map.size();
 			Map<String, String> lcMap = null;
 			for (String key : map.keySet()) {
-				String lowKey = key.toLowerCase();
+				String lowKey = key.toLowerCase(Locale.ENGLISH);
 				if (key != lowKey) {
 					if (lcMap == null)
 						lcMap = new HashMap<String, String>(top);
@@ -55,7 +56,7 @@ abstract class FilterImpl implements Filter, Comparable<FilterImpl> {
 
 		@Override
 		public V get(Object key) {
-			String stringKey = ((String) key).toLowerCase();
+			String stringKey = ((String) key).toLowerCase(Locale.ENGLISH);
 			if (lowerCaseMap != null) {
 				String realKey = lowerCaseMap.get(stringKey);
 				if (realKey != null)
@@ -83,7 +84,7 @@ abstract class FilterImpl implements Filter, Comparable<FilterImpl> {
 				String key = keys.nextElement();
 				Object value = dictionary.get(key);
 				if (!caseSensitive) {
-					String lowKey = key.toLowerCase();
+					String lowKey = key.toLowerCase(Locale.ENGLISH);
 					if (containsKey(lowKey))
 						throw new IllegalArgumentException("case variants of key: " + lowKey); //$NON-NLS-1$
 					key = lowKey;
@@ -100,7 +101,7 @@ abstract class FilterImpl implements Filter, Comparable<FilterImpl> {
 
 		@Override
 		public Object get(Object key) {
-			return caseSensitive ? super.get(key) : super.get(((String) key).toLowerCase());
+			return caseSensitive ? super.get(key) : super.get(((String) key).toLowerCase(Locale.ENGLISH));
 		}
 	}
 

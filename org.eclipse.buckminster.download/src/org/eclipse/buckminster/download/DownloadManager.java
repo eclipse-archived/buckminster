@@ -18,6 +18,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Locale;
 
 import org.eclipse.buckminster.download.internal.CacheImpl;
 import org.eclipse.buckminster.download.internal.FileReader;
@@ -99,7 +100,7 @@ public class DownloadManager {
 
 	public static boolean isWindows() {
 		String os = System.getProperty("os.name"); //$NON-NLS-1$
-		return os != null && os.toLowerCase().startsWith("windows"); //$NON-NLS-1$
+		return os != null && os.toLowerCase(Locale.ENGLISH).startsWith("windows"); //$NON-NLS-1$
 	}
 
 	public static InputStream read(URL url, IConnectContext cctx) throws CoreException, FileNotFoundException {

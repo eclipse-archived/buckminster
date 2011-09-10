@@ -7,6 +7,8 @@
  *****************************************************************************/
 package org.eclipse.buckminster.pde;
 
+import java.util.Locale;
+
 import org.eclipse.pde.core.plugin.IMatchRules;
 
 public enum MatchRule {
@@ -85,7 +87,7 @@ public enum MatchRule {
 			return NONE;
 
 		try {
-			return valueOf(matchRuleString.toUpperCase());
+			return valueOf(matchRuleString.toUpperCase(Locale.ENGLISH));
 		} catch (IllegalArgumentException e) {
 			return NONE;
 		}

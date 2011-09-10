@@ -10,6 +10,7 @@
 
 package org.eclipse.buckminster.core.common.model;
 
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -24,7 +25,7 @@ public class ToUpper extends ValueHolderFilter {
 	@Override
 	public String checkedGetValue(Map<String, ? extends Object> props, int recursionGuard) {
 		String resolved = this.checkedGetSourceValue(props, recursionGuard);
-		return (resolved == null || NO_VALUE.equals(resolved)) ? NO_VALUE : resolved.toUpperCase();
+		return (resolved == null || NO_VALUE.equals(resolved)) ? NO_VALUE : resolved.toUpperCase(Locale.ENGLISH);
 	}
 
 	@Override

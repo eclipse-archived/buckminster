@@ -10,6 +10,8 @@
 
 package org.eclipse.buckminster.pde.internal;
 
+import java.util.Locale;
+
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
@@ -48,7 +50,7 @@ public class EclipsePlatformVersionFinder extends AbstractVersionFinder {
 		String uri = provider.getURI(query.getProperties());
 		IPath path = new Path(uri);
 		if (path.segmentCount() == 2) {
-			type = InstalledType.valueOf(path.segment(0).toUpperCase());
+			type = InstalledType.valueOf(path.segment(0).toUpperCase(Locale.ENGLISH));
 			if (type != null) {
 				componentName = path.segment(1);
 				return;

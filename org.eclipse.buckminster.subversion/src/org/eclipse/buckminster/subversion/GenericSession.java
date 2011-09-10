@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -171,7 +172,7 @@ public abstract class GenericSession<REPO_LOCATION_TYPE, SVN_ENTRY_TYPE, SVN_REV
 			CorePlugin.getLogger().warning(NLS.bind(Messages.URI_0_has_no_scheme, uri));
 			return "file"; //$NON-NLS-1$
 		}
-		return scheme.toLowerCase();
+		return scheme.toLowerCase(Locale.ENGLISH);
 	}
 
 	protected final VersionSelector branchOrTag;

@@ -22,6 +22,7 @@ import java.security.DigestOutputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+import java.util.Locale;
 
 import org.eclipse.buckminster.download.ICache;
 import org.eclipse.buckminster.download.Messages;
@@ -49,8 +50,8 @@ public class DigestPolicy extends AbstractFetchPolicy {
 
 		public synchronized byte[] getBytes() throws CoreException {
 			if (byteCount > count)
-				throw BuckminsterException.fromMessage(NLS.bind(Messages.digest_not_fully_read_expected_0_got_1, String.valueOf(byteCount), String
-						.valueOf(count)));
+				throw BuckminsterException.fromMessage(NLS.bind(Messages.digest_not_fully_read_expected_0_got_1, String.valueOf(byteCount),
+						String.valueOf(count)));
 			return Hex.decode(buf, byteCount);
 		}
 	}
@@ -197,7 +198,7 @@ public class DigestPolicy extends AbstractFetchPolicy {
 	}
 
 	protected File getLocalDigest(File localFile) {
-		return new File(localFile.getPath() + '.' + algorithm.toLowerCase());
+		return new File(localFile.getPath() + '.' + algorithm.toLowerCase(Locale.ENGLISH));
 	}
 
 	protected byte[] readLocalDigest(File localDigestFile) throws CoreException {

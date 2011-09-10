@@ -9,6 +9,7 @@
 package org.eclipse.buckminster.pde;
 
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
@@ -27,12 +28,12 @@ public class PDEPlugin extends LogAwarePlugin implements IPDEConstants {
 	private static BundleContext context;
 
 	static {
-		namesOfInterest.add(PLUGIN_FILE.toLowerCase());
-		namesOfInterest.add(FEATURE_MANIFEST.toLowerCase());
-		namesOfInterest.add(SITE_FILE.toLowerCase());
-		namesOfInterest.add(FRAGMENT_FILE.toLowerCase());
-		namesOfInterest.add(BUILD_PROPERTIES_FILE.toLowerCase());
-		namesOfInterest.add(MANIFEST.toLowerCase());
+		namesOfInterest.add(PLUGIN_FILE.toLowerCase(Locale.ENGLISH));
+		namesOfInterest.add(FEATURE_MANIFEST.toLowerCase(Locale.ENGLISH));
+		namesOfInterest.add(SITE_FILE.toLowerCase(Locale.ENGLISH));
+		namesOfInterest.add(FRAGMENT_FILE.toLowerCase(Locale.ENGLISH));
+		namesOfInterest.add(BUILD_PROPERTIES_FILE.toLowerCase(Locale.ENGLISH));
+		namesOfInterest.add(MANIFEST.toLowerCase(Locale.ENGLISH));
 	}
 
 	public static BundleContext getContext() {

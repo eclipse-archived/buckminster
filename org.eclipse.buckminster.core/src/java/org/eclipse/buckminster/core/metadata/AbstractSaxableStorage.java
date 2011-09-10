@@ -11,6 +11,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.UUID;
 
 import org.eclipse.buckminster.core.Messages;
@@ -41,7 +42,7 @@ abstract class AbstractSaxableStorage<T extends UUIDKeyed> implements ISaxableSt
 	}
 
 	synchronized Method getGetter(String keyName) throws CoreException {
-		String key = keyName.toLowerCase();
+		String key = keyName.toLowerCase(Locale.ENGLISH);
 		if (getters == null)
 			getters = new HashMap<String, Method>();
 		else {
@@ -57,7 +58,7 @@ abstract class AbstractSaxableStorage<T extends UUIDKeyed> implements ISaxableSt
 			//
 			int mod = method.getModifiers();
 			if (Modifier.isPublic(mod) && !Modifier.isStatic(mod) && method.getReturnType().equals(retType) && method.getParameterTypes().length == 0) {
-				String name = method.getName().toLowerCase();
+				String name = method.getName().toLowerCase(Locale.ENGLISH);
 				if (name.length() > 3 && name.startsWith("get")) //$NON-NLS-1$
 				{
 					name = name.substring(3);

@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.regex.Matcher;
@@ -101,7 +102,7 @@ public class EclipsePlatformReader extends AbstractCatalogReader {
 		String uri = rInfo.getRepositoryURI();
 		IPath path = new Path(uri);
 		if (path.segmentCount() == 2) {
-			type = InstalledType.valueOf(path.segment(0).toUpperCase());
+			type = InstalledType.valueOf(path.segment(0).toUpperCase(Locale.ENGLISH));
 			if (type != null) {
 				componentName = path.segment(1);
 				return;
