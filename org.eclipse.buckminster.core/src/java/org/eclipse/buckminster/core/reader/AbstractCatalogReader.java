@@ -269,9 +269,38 @@ public abstract class AbstractCatalogReader extends AbstractReader implements IC
 	}
 
 	protected void innerGetMatchingRootFiles(Pattern pattern, List<FileHandle> files, IProgressMonitor monitor) throws CoreException, IOException {
+		if (!isFileSystemReader())
+			return;
+
+		File source = getLocation();
+		String[] rootFiles = source.list();
+		if (rootFiles == null)
+			return;
+
+		for (String rootFile : rootFiles) {
+			if (pattern.matcher(rootFile).matches()) {
+				File f = new File(source, rootFile);
+				if (f.isFile() && f.canRead())
+					files.add(new FileHandle(rootFile, f, false));
+			}
+		}
 	}
 
 	protected void innerList(List<String> files, IProgressMonitor monitor) throws CoreException {
+		if (!isFileSystemReader())
+			return;
+
+		File source = getLocation();
+		File[] rootFiles = source.listFiles();
+		if (rootFiles == null)
+			return;
+
+		for (File rootFile : rootFiles) {
+			String name = rootFile.getName();
+			if (rootFile.isDirectory())
+				name += "/"; //$NON-NLS-1$
+			files.add(name);
+		}
 	}
 
 	protected abstract <T> T innerReadFile(String fileName, IStreamConsumer<T> consumer, IProgressMonitor monitor) throws CoreException, IOException;

@@ -19,8 +19,6 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
-import java.util.List;
-import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.Messages;
@@ -94,6 +92,15 @@ public class URLCatalogReader extends AbstractCatalogReader {
 		}
 	}
 
+	@Override
+	public boolean isFileSystemReader() {
+		try {
+			return getLocation() != null;
+		} catch (CoreException e) {
+			return false;
+		}
+	}
+
 	protected final URI getURI() {
 		return uri;
 	}
@@ -131,45 +138,6 @@ public class URLCatalogReader extends AbstractCatalogReader {
 			return new FileHandle(fileName, file, false);
 		} finally {
 			monitor.done();
-		}
-	}
-
-	@Override
-	protected void innerGetMatchingRootFiles(Pattern pattern, List<FileHandle> files, IProgressMonitor monitor) throws CoreException, IOException {
-		URL url = getURL();
-		File source = FileUtils.getFile(url);
-		if (source == null)
-			return;
-
-		String[] rootFiles = source.list();
-		if (rootFiles == null)
-			return;
-
-		for (String rootFile : rootFiles) {
-			if (pattern.matcher(rootFile).matches()) {
-				File f = new File(source, rootFile);
-				if (f.isFile() && f.canRead())
-					files.add(new FileHandle(rootFile, f, false));
-			}
-		}
-	}
-
-	@Override
-	protected void innerList(List<String> files, IProgressMonitor monitor) throws CoreException {
-		URL url = getURL();
-		File source = FileUtils.getFile(url);
-		if (source == null)
-			return;
-
-		File[] rootFiles = source.listFiles();
-		if (rootFiles == null)
-			return;
-
-		for (File rootFile : rootFiles) {
-			String name = rootFile.getName();
-			if (rootFile.isDirectory())
-				name += "/"; //$NON-NLS-1$
-			files.add(name);
 		}
 	}
 

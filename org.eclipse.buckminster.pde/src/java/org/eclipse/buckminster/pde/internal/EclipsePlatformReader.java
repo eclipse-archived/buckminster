@@ -181,6 +181,11 @@ public class EclipsePlatformReader extends AbstractCatalogReader {
 		throw new UnsupportedOperationException("checkout"); //$NON-NLS-1$
 	}
 
+	@Override
+	public boolean isFileSystemReader() {
+		return true;
+	}
+
 	protected String getResolvedFile(String relativeFile, InputStream[] isReturn) throws IOException, CoreException {
 		File modelRoot = getLocation();
 		if (modelRoot == null)

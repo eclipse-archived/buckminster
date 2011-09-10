@@ -320,7 +320,8 @@ public class P2Materializer extends AbstractMaterializer {
 				if (status.getSeverity() == IStatus.ERROR)
 					throw BuckminsterException.wrap(status);
 			} finally {
-				registry.removeProfile(profile.getProfileId());
+				if (profile != null)
+					registry.removeProfile(profile.getProfileId());
 			}
 
 			// The resource holding the target archive must be refreshed (if

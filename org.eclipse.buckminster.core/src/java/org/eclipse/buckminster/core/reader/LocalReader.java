@@ -28,4 +28,9 @@ public class LocalReader extends URLCatalogReader {
 	public void innerMaterialize(IPath destination, IProgressMonitor monitor) throws CoreException {
 		throw new UnsupportedOperationException(Messages.local_reader_cannot_materialize);
 	}
+
+	@Override
+	public boolean isFileSystemReader() {
+		return true;
+	}
 }

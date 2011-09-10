@@ -83,6 +83,11 @@ public abstract class AbstractReader implements IComponentReader {
 	}
 
 	@Override
+	public boolean isFileSystemReader() {
+		return false;
+	}
+
+	@Override
 	public ResolverDecision logDecision(ComponentRequest request, ResolverDecisionType decisionType, Object... args) {
 		return getNodeQuery().logDecision(request, decisionType, args);
 	}

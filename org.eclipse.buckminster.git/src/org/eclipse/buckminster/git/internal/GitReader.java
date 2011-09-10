@@ -53,6 +53,11 @@ public class GitReader extends AbstractCatalogReader {
 	}
 
 	@Override
+	public boolean isFileSystemReader() {
+		return true;
+	}
+
+	@Override
 	protected boolean innerExists(String fileName, IProgressMonitor monitor) throws CoreException {
 		synchronized (repoAccess.getRepositoryPath()) {
 			TreeWalk walk = repoAccess.getTreeWalk(getProviderMatch().getVersionMatch(), fileName, monitor);

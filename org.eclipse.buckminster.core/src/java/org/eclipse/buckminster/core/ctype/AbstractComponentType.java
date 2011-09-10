@@ -304,18 +304,21 @@ public abstract class AbstractComponentType extends AbstractExtension implements
 		}
 
 		monitor.beginTask(null, 2000);
-		IComponentReader[] reader = new IComponentReader[1];
+		IComponentReader[] readerHandle = new IComponentReader[1];
 		try {
-			reader[0] = rInfo.getReader(MonitorUtils.subMonitor(monitor, 200));
+			IComponentReader reader = rInfo.getReader(MonitorUtils.subMonitor(monitor, 200));
+			if (forResolutionAidOnly && reader.isFileSystemReader())
+				forResolutionAidOnly = false;
+			readerHandle[0] = reader;
 			ComponentRequest request = rInfo.getNodeQuery().getComponentRequest();
 			String componentType = request.getComponentTypeID();
 			if (componentType != null && !getId().equals(componentType))
 				throw new ComponentTypeMismatchException(request.getName(), componentType, getId());
 
-			IResolutionBuilder builder = getResolutionBuilder(reader[0], MonitorUtils.subMonitor(monitor, 800));
-			return builder.build(reader, forResolutionAidOnly, MonitorUtils.subMonitor(monitor, 1000));
+			IResolutionBuilder builder = getResolutionBuilder(readerHandle[0], MonitorUtils.subMonitor(monitor, 800));
+			return builder.build(readerHandle, forResolutionAidOnly, MonitorUtils.subMonitor(monitor, 1000));
 		} finally {
-			IOUtils.close(reader[0]);
+			IOUtils.close(readerHandle[0]);
 		}
 	}
 }

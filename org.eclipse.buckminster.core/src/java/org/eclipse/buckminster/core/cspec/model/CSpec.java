@@ -832,12 +832,6 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted, ICSpecData {
 				continue;
 			}
 
-			if (pq.isPatternFilter()) {
-				if (filters == null)
-					filters = new Stack<IAttributeFilter>();
-				filters.push(pq);
-			}
-
 			Attribute pqAttr;
 			try {
 				pqAttr = getRequiredAttribute(pq.getAttribute());

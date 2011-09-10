@@ -7,8 +7,6 @@
  *****************************************************************************/
 package org.eclipse.buckminster.pde.cspecgen.feature;
 
-import java.io.File;
-import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -25,10 +23,8 @@ import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.UpToDatePolicy;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
-import org.eclipse.buckminster.core.reader.LocalReader;
 import org.eclipse.buckminster.pde.internal.actor.MergeLicenseFeature;
 import org.eclipse.buckminster.pde.tasks.SourceFeatureCreator;
-import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -140,14 +136,8 @@ public class CSpecFromSource extends CSpecFromFeature {
 			}
 		} else {
 			List<String> binIncludes;
-			if (getReader() instanceof LocalReader) {
-				File baseDir;
-				try {
-					baseDir = new File(((LocalReader) getReader()).getURL().toURI());
-				} catch (URISyntaxException e) {
-					throw BuckminsterException.wrap(e);
-				}
-				binIncludes = expandBinFiles(baseDir, buildProperties);
+			if (getReader().isFileSystemReader()) {
+				binIncludes = expandBinFiles(getReader().getLocation(), buildProperties);
 			} else {
 				binIncludes = Collections.emptyList();
 			}

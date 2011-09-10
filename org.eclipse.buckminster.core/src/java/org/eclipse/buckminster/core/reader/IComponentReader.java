@@ -54,6 +54,8 @@ public interface IComponentReader extends IResolverBackchannel, Closeable {
 	 * Returns the location of the artifact (directory or file) that this reader
 	 * can read, or <code>null</code> if that location cannot be represented as
 	 * a {@link java.io.File file}.
+	 * 
+	 * @see {@link #isFileSystemReader()}
 	 */
 	File getLocation() throws CoreException;
 
@@ -80,6 +82,16 @@ public interface IComponentReader extends IResolverBackchannel, Closeable {
 	 * @throws CoreException
 	 */
 	IVersionConverter getVersionConverter() throws CoreException;
+
+	/**
+	 * Returns true if this reader reads its file directly form the file system.
+	 * This is typically true for the {@link LocalReader} and readers that clone
+	 * the repository before accessing it (such as the git reader).
+	 * 
+	 * @return <code>true</code> to indicate that files are read from the local
+	 *         filesystem
+	 */
+	boolean isFileSystemReader();
 
 	/**
 	 * Materialize (download and unpack) the the file appointed by this reader

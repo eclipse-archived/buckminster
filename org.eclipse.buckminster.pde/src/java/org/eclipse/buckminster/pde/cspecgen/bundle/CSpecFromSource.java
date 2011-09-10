@@ -10,7 +10,6 @@ package org.eclipse.buckminster.pde.cspecgen.bundle;
 
 import java.io.File;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -37,15 +36,12 @@ import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
-import org.eclipse.buckminster.core.reader.IReaderType;
-import org.eclipse.buckminster.core.reader.LocalReader;
 import org.eclipse.buckminster.core.reader.ProjectDescReader;
 import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.jdt.ClasspathReader;
 import org.eclipse.buckminster.pde.cspecgen.CSpecGenerator;
 import org.eclipse.buckminster.pde.internal.actor.FragmentsActor;
 import org.eclipse.buckminster.pde.tasks.VersionConsolidator;
-import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.core.internal.resources.LinkDescription;
@@ -126,15 +122,13 @@ public class CSpecFromSource extends CSpecGenerator {
 	public void generate(IProgressMonitor monitor) throws CoreException {
 		monitor.beginTask(null, 100);
 
-		boolean localReader = IReaderType.LOCAL.equals(getReader().getReaderType().getId());
-
 		CSpecBuilder cspec = getCSpec();
 		GroupBuilder classpath = cspec.addGroup(ATTRIBUTE_JAVA_BINARIES, true);
 		GroupBuilder fullClean = cspec.addGroup(ATTRIBUTE_FULL_CLEAN, true);
 		GroupBuilder bundleJars = cspec.addGroup(ATTRIBUTE_BUNDLE_JARS, true);
 		cspec.addGroup(ATTRIBUTE_PRODUCT_CONFIG_EXPORTS, true);
 
-		if (localReader)
+		if (getReader().isFileSystemReader())
 			projectDesc = ProjectDescReader.getProjectDescription(getReader(), MonitorUtils.subMonitor(monitor, 15));
 		else {
 			projectDesc = null;
@@ -295,13 +289,8 @@ public class CSpecFromSource extends CSpecGenerator {
 		//
 		List<String> binIncludes;
 		List<String> srcIncludes;
-		if (getReader() instanceof LocalReader) {
-			File baseDir;
-			try {
-				baseDir = new File(((LocalReader) getReader()).getURL().toURI());
-			} catch (URISyntaxException e) {
-				throw BuckminsterException.wrap(e);
-			}
+		if (getReader().isFileSystemReader()) {
+			File baseDir = getReader().getLocation();
 			binIncludes = expandBinFiles(baseDir, build);
 			srcIncludes = expandSrcFiles(baseDir, build);
 		} else {
@@ -532,7 +521,8 @@ public class CSpecFromSource extends CSpecGenerator {
 		ActionBuilder buildPlugin;
 		String jarName = plugin.getId() + '_' + plugin.getVersion() + ".jar"; //$NON-NLS-1$
 		IPath jarPath = Path.fromPortableString(jarName);
-		if (localReader && (getReader().exists(jarName, new NullProgressMonitor()) || getLinkDescriptions().containsKey(jarPath))) {
+		if (getReader().isFileSystemReader()
+				&& (getReader().exists(jarName, new NullProgressMonitor()) || getLinkDescriptions().containsKey(jarPath))) {
 			buildPlugin = addAntAction(ATTRIBUTE_BUNDLE_JAR, TASK_COPY_GROUP, true);
 			buildPlugin.setPrerequisitesAlias(ALIAS_REQUIREMENTS);
 			IPath resolvedJarPath = resolveLink(jarPath, projectRootReplacement);
