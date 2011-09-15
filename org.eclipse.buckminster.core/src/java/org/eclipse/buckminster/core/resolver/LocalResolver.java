@@ -31,7 +31,6 @@ import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequestConflictException;
 import org.eclipse.buckminster.core.ctype.AbstractComponentType;
 import org.eclipse.buckminster.core.ctype.IComponentType;
-import org.eclipse.buckminster.core.ctype.MissingCSpecSourceException;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.metadata.MissingComponentException;
 import org.eclipse.buckminster.core.metadata.StorageManager;
@@ -170,7 +169,9 @@ public class LocalResolver extends HashMap<String, ResolverNode[]> implements IR
 					largestCSpecSize = imageSize;
 					bestMatch = resolution;
 				}
-			} catch (MissingCSpecSourceException e) {
+			} catch (Exception e) {
+				// Let's just care about folders where we the cspec generation
+				// is successful.
 				continue;
 			}
 		}
