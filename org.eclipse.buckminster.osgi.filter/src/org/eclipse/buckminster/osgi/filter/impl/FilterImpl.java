@@ -230,9 +230,13 @@ abstract class FilterImpl implements Filter, Comparable<FilterImpl> {
 		synchronized (propertyChoices) {
 			String[] choices = propertyChoices.get(getAttr());
 			if (choices == null) {
-				propertyChoices.put(getAttr(), new String[] { stringValue });
+				propertyChoices.put(getAttr(), stringValue == null ? new String[0] : new String[] { stringValue });
 				return;
 			}
+			if (stringValue == null)
+				// Since choices already exists for this attribute and this
+				// apparently is a null check
+				return;
 
 			int top = choices.length;
 			int idx = top;
