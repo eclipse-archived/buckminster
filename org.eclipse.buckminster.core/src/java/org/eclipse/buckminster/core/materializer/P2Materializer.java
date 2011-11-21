@@ -378,7 +378,7 @@ public class P2Materializer extends AbstractMaterializer {
 			IOUtils.close(out);
 		}
 		File tmpRename = File.createTempFile("oldbundle-", ".jar", tempRoot); //$NON-NLS-1$//$NON-NLS-2$;
-		if (bundleJar.renameTo(tmpRename)) {
+		if (tmpRename.delete() && bundleJar.renameTo(tmpRename)) {
 			if (outFile.renameTo(bundleJar))
 				tmpRename.delete();
 			else {
