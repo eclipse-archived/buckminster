@@ -73,7 +73,7 @@ public class ResultSerializer implements XMLReader {
 		if (listener.getTestRunSession() == null) {
 			throw new IllegalArgumentException(Messages.ResultSerializer_No_Test_Session);
 		}
-		
+
 		this.testListener = listener;
 		this.testRunSession = listener.getTestRunSession();
 		this.stdOut = stdout;
@@ -270,6 +270,8 @@ public class ResultSerializer implements XMLReader {
 
 	private void writeStdErr() throws SAXException {
 		for (IStreamMonitor sm : stdErr) {
+			if (sm == null)
+				continue;
 			String contents = sm.getContents();
 			if (contents.length() > 0) {
 				startElement(IXMLTags.NODE_SYSTEM_ERR, NO_ATTS);
@@ -281,6 +283,8 @@ public class ResultSerializer implements XMLReader {
 
 	private void writeStdOut() throws SAXException {
 		for (IStreamMonitor sm : stdOut) {
+			if (sm == null)
+				continue;
 			String contents = sm.getContents();
 			if (contents.length() > 0) {
 				startElement(IXMLTags.NODE_SYSTEM_OUT, NO_ATTS);

@@ -36,6 +36,7 @@ import org.eclipse.debug.core.IStreamListener;
 import org.eclipse.debug.core.model.IFlushableStreamMonitor;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IStreamMonitor;
+import org.eclipse.debug.core.model.IStreamsProxy;
 import org.eclipse.osgi.util.NLS;
 
 public class Launch extends WorkspaceCommand {
@@ -134,8 +135,10 @@ public class Launch extends WorkspaceCommand {
 	 */
 	public String getStdErr() {
 		StringBuffer content = new StringBuffer();
-		for (IStreamMonitor err : stdErr)
-			content.append(err.getContents());
+		for (IStreamMonitor err : stdErr) {
+			if (err != null)
+				content.append(err.getContents());
+		}
 		return content.toString();
 	}
 
@@ -149,8 +152,10 @@ public class Launch extends WorkspaceCommand {
 	 */
 	public String getStdOut() {
 		StringBuffer content = new StringBuffer();
-		for (IStreamMonitor out : stdOut)
-			content.append(out.getContents());
+		for (IStreamMonitor out : stdOut) {
+			if (out != null)
+				content.append(out.getContents());
+		}
 		return content.toString();
 	}
 
@@ -208,12 +213,16 @@ public class Launch extends WorkspaceCommand {
 		stdOut = new IStreamMonitor[processes.length];
 		stdErr = new IStreamMonitor[processes.length];
 		for (int i = 0; i < processes.length; i++) {
-			stdOut[i] = processes[i].getStreamsProxy().getOutputStreamMonitor();
-			if (stdOutFile != null)
-				new StreamListener(stdOut[i], stdOutFile, true);
-			stdErr[i] = processes[i].getStreamsProxy().getErrorStreamMonitor();
-			if (stdErrFile != null)
-				new StreamListener(stdErr[i], stdErrFile, false);
+			IProcess p = processes[i];
+			IStreamsProxy streamsProxy = p.getStreamsProxy();
+			if (streamsProxy != null) {
+				stdOut[i] = streamsProxy.getOutputStreamMonitor();
+				if (stdOutFile != null)
+					new StreamListener(stdOut[i], stdOutFile, true);
+				stdErr[i] = streamsProxy.getErrorStreamMonitor();
+				if (stdErrFile != null)
+					new StreamListener(stdErr[i], stdErrFile, false);
+			}
 		}
 
 		if (background) {
