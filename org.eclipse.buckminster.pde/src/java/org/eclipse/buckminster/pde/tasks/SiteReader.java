@@ -29,7 +29,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.ecf.core.security.IConnectContext;
-import org.eclipse.equinox.internal.p2.updatesite.DefaultSiteParser;
+import org.eclipse.equinox.internal.p2.updatesite.CategoryParser;
 import org.eclipse.equinox.internal.p2.updatesite.SiteModel;
 import org.xml.sax.SAXException;
 
@@ -63,7 +63,7 @@ public class SiteReader implements IStreamConsumer<SiteModel> {
 
 	private static SiteModel parseSite(InputStream input, URI uri) throws CoreException, FileNotFoundException {
 		try {
-			DefaultSiteParser siteParser = new DefaultSiteParser(uri);
+			CategoryParser siteParser = new CategoryParser(uri);
 			SiteModel site = siteParser.parse(input);
 			IStatus status = siteParser.getStatus();
 			if (status != null)

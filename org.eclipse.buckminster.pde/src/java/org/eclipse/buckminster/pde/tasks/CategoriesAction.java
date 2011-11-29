@@ -10,6 +10,7 @@ package org.eclipse.buckminster.pde.tasks;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -28,9 +29,11 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.equinox.internal.p2.core.helpers.CollectionUtils;
 import org.eclipse.equinox.internal.p2.metadata.IRequiredCapability;
 import org.eclipse.equinox.internal.p2.updatesite.SiteCategory;
 import org.eclipse.equinox.internal.p2.updatesite.SiteFeature;
+import org.eclipse.equinox.internal.p2.updatesite.SiteIU;
 import org.eclipse.equinox.internal.p2.updatesite.SiteModel;
 import org.eclipse.equinox.p2.metadata.IArtifactKey;
 import org.eclipse.equinox.p2.metadata.IInstallableUnit;
@@ -411,6 +414,30 @@ public class CategoriesAction extends AbstractPublisherAction {
 						catList.add(cat);
 				}
 			}
+			for (SiteIU siteIU : site.getIUs()) {
+				for (IInstallableUnit iu : getIUs(siteIU, publisherInfo, results)) {
+					for (String id : siteIU.getCategoryNames()) {
+						Category cat = categories.get(id);
+						if (cat == null) {
+							SiteCategory siteCat = site.getCategory(id);
+							if (siteCat == null)
+								continue;
+
+							cat = new Category(id);
+							cat.setDescription(siteCat.getDescription());
+							cat.setLabel(siteCat.getLabel());
+							categories.put(id, cat);
+						}
+						List<Category> catList = mappings.get(iu);
+						if (catList == null) {
+							catList = new ArrayList<Category>();
+							mappings.put(iu, catList);
+							catList.add(cat);
+						} else if (!catList.contains(cat))
+							catList.add(cat);
+					}
+				}
+			}
 		} catch (FileNotFoundException e) {
 			// This is expected. Just ignore
 		}
@@ -423,5 +450,32 @@ public class CategoriesAction extends AbstractPublisherAction {
 			mappings.put(iu, defaultCategories);
 		}
 		return mappings;
+	}
+
+	private Collection<IInstallableUnit> getIUs(SiteIU siteIU, IPublisherInfo publisherInfo, IPublisherResult results) {
+		String id = siteIU.getID();
+		String range = siteIU.getRange();
+		String type = siteIU.getQueryType();
+		String expression = siteIU.getQueryExpression();
+		Object[] params = siteIU.getQueryParams();
+		if (id == null && (type == null || expression == null))
+			return CollectionUtils.emptyList();
+		IQuery<IInstallableUnit> query = null;
+		if (id != null) {
+			VersionRange vRange = new VersionRange(range);
+			query = QueryUtil.createIUQuery(id, vRange);
+		} else if (type.equals("context")) { //$NON-NLS-1$
+			query = QueryUtil.createQuery(expression, params);
+		} else if (type.equals("match")) //$NON-NLS-1$
+			query = QueryUtil.createMatchQuery(expression, params);
+		if (query == null)
+			return CollectionUtils.emptyList();
+		IQueryResult<IInstallableUnit> queryResult = results.query(query, null);
+		if (queryResult.isEmpty())
+			queryResult = publisherInfo.getMetadataRepository().query(query, null);
+		if (queryResult.isEmpty() && publisherInfo.getContextMetadataRepository() != null)
+			queryResult = publisherInfo.getContextMetadataRepository().query(query, null);
+
+		return queryResult.toUnmodifiableSet();
 	}
 }
