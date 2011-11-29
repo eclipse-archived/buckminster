@@ -16,5 +16,15 @@
             class="org.eclipse.buckminster.rmap.psf.PsfPackage"
             genModel="model/psf.genmodel"/>
    </extension>
-
+	<extension point="org.eclipse.buckminster.core.parserExtensions">
+		<parserExtension
+			namespace="http://www.eclipse.org/buckminster/PSFProvider-1.0"
+			parserIds="provider"
+			resource="/model/psf.xsd">
+			<handler
+				class="org.eclipse.buckminster.rmap.psf.extension.PSFProviderHandler"
+				type="PSFProvider">
+			</handler>
+		</parserExtension>
+	</extension>
 </plugin>

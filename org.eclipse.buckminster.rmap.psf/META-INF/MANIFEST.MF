@@ -12,5 +12,8 @@ Export-Package: org.eclipse.buckminster.rmap.psf,
  org.eclipse.buckminster.rmap.psf.impl,
  org.eclipse.buckminster.rmap.psf.util
 Require-Bundle: org.eclipse.buckminster.rmap;visibility:=reexport,
+ org.eclipse.buckminster.core,
+ org.eclipse.buckminster.sax,
+ org.eclipse.buckminster.team.psf,
  org.eclipse.core.runtime
 Bundle-ActivationPolicy: lazy
