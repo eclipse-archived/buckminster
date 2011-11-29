@@ -25,6 +25,7 @@ import org.eclipse.buckminster.cmdline.parser.InvalidOptionValueException;
 import org.eclipse.buckminster.cmdline.parser.ParseResult;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.BuckminsterException;
+import org.eclipse.buckminster.runtime.BuckminsterPreferences;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.Trivial;
@@ -75,6 +76,10 @@ public class Headless implements IApplication, OptionValueType {
 		}
 	}
 
+	enum LogType {
+		console, ant, eclipse
+	}
+
 	/**
 	 * The plug-in ID
 	 */
@@ -122,6 +127,10 @@ public class Headless implements IApplication, OptionValueType {
 	private boolean usingScript = false;
 
 	private int logLevel = Logger.INFO;
+
+	private int antLogLevel = -1;
+
+	private static final Pattern commaSplit = Pattern.compile(","); //$NON-NLS-1$
 
 	public void addProperty(String key, String value) {
 		if (props == null)
@@ -174,7 +183,7 @@ public class Headless implements IApplication, OptionValueType {
 				IOUtils.close(is);
 			}
 		}
-	}
+	};
 
 	protected void parse(String[] args) throws Exception {
 		ArrayList<OptionDescriptor> optionArr = new ArrayList<OptionDescriptor>();
@@ -199,18 +208,38 @@ public class Headless implements IApplication, OptionValueType {
 				scriptFile = option.getValue();
 			else if (option.is(LOG_LEVEL)) {
 				int level;
-				String arg = option.getValue();
-				if ("info".equalsIgnoreCase(arg)) //$NON-NLS-1$
-					level = Logger.INFO;
-				else if ("warning".equalsIgnoreCase(arg)) //$NON-NLS-1$
-					level = Logger.WARNING;
-				else if ("error".equalsIgnoreCase(arg)) //$NON-NLS-1$
-					level = Logger.ERROR;
-				else if ("debug".equalsIgnoreCase(arg)) //$NON-NLS-1$
-					level = Logger.DEBUG;
-				else
-					throw new InvalidOptionValueException(option.getName(), option.getValue());
-				logLevel = level;
+				for (String levelDecl : commaSplit.split(option.getValue())) {
+					LogType logType = LogType.console;
+					int eqIdx = levelDecl.indexOf('=');
+					if (eqIdx > 0) {
+						String logTypeName = levelDecl.substring(0, eqIdx);
+						if ("console".equalsIgnoreCase(logTypeName)) //$NON-NLS-1$
+							logType = LogType.console;
+						else if ("ant".equalsIgnoreCase(logTypeName)) //$NON-NLS-1$
+							logType = LogType.ant;
+						else
+							throw new InvalidOptionValueException(option.getName(), option.getValue());
+						levelDecl = levelDecl.substring(eqIdx + 1);
+					}
+					if ("info".equalsIgnoreCase(levelDecl)) //$NON-NLS-1$
+						level = Logger.INFO;
+					else if ("warning".equalsIgnoreCase(levelDecl)) //$NON-NLS-1$
+						level = Logger.WARNING;
+					else if ("error".equalsIgnoreCase(levelDecl)) //$NON-NLS-1$
+						level = Logger.ERROR;
+					else if ("debug".equalsIgnoreCase(levelDecl)) //$NON-NLS-1$
+						level = Logger.DEBUG;
+					else
+						throw new InvalidOptionValueException(option.getName(), option.getValue());
+
+					switch (logType) {
+						case console:
+							logLevel = level;
+							break;
+						case ant:
+							antLogLevel = level;
+					}
+				}
 			} else if (option.is(DEFINE_DESCRIPTOR)) {
 				String v = option.getValue();
 				Matcher m = DEFINE_PATTERN.matcher(v);
@@ -278,6 +307,7 @@ public class Headless implements IApplication, OptionValueType {
 	}
 
 	protected int run(String[] args) throws Exception {
+		int currentAntLogLevel = BuckminsterPreferences.getLogLevelAntLogger();
 		Properties sysProps = System.getProperties();
 		try {
 			parse(args);
@@ -285,6 +315,9 @@ public class Headless implements IApplication, OptionValueType {
 			Logger.setConsoleLevelThreshold(logLevel);
 			Logger.setEclipseLoggerLevelThreshold(logLevel);
 			Logger.setEclipseLoggerToConsole(true);
+
+			if (antLogLevel != -1)
+				BuckminsterPreferences.setLogLevelAntLogger(antLogLevel);
 
 			if (help) {
 				help(System.out);
@@ -321,6 +354,8 @@ public class Headless implements IApplication, OptionValueType {
 		} finally {
 			if (props != null)
 				System.setProperties(sysProps);
+			if (antLogLevel != -1)
+				BuckminsterPreferences.setLogLevelAntLogger(currentAntLogLevel);
 		}
 		return EXIT_OK;
 	}
