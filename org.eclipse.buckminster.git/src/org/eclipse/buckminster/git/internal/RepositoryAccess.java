@@ -330,7 +330,7 @@ class RepositoryAccess {
 					return treeWalk;
 				}
 			} else {
-				path = component + '/' + path;
+				path = component + (path != null ? '/' + path : "");
 			}
 			treeWalk.setFilter(PathFilter.create(path));
 			return treeWalk;
