@@ -1,0 +1,7 @@
+Import proxy settings from system properties into workspace preferences.
+
+usage: importproxysettings
+       [{ -? | --help }]
+ -?
+--help
+  Show this help text

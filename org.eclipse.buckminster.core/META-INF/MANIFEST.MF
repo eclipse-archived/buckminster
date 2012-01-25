@@ -55,3 +55,5 @@ Export-Package: org.eclipse.buckminster.core,
  org.eclipse.buckminster.core.rmap.model,
  org.eclipse.buckminster.core.rmap.parser,
  org.eclipse.buckminster.core.version
+Import-Package: org.eclipse.core.internal.net;resolution:=optional,
+ org.eclipse.core.net.proxy;resolution:=optional

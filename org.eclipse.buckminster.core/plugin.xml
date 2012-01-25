@@ -280,6 +280,13 @@
       </command>
       <command
             addhelpflags="true"
+            class="org.eclipse.buckminster.core.commands.ImportProxySettings"
+            name="prefs.importproxysettings"
+            status="NORMAL">
+         <alias name="importproxysettings"/>
+      </command>
+      <command
+            addhelpflags="true"
             class="org.eclipse.buckminster.core.commands.GetPreference"
             name="prefs.getpreference"
             status="NORMAL">
