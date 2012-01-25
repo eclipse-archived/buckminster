@@ -603,6 +603,12 @@ public class Messages extends NLS {
 
 	public static String unable_to_find_product_0_for_action_1;
 
+	public static String No_proxy_settings_to_import;
+
+	public static String Platform_proxy_API_not_available;
+
+	public static String Platform_proxy_service_not_registered;
+
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
