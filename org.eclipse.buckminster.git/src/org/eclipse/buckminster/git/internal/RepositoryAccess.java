@@ -330,7 +330,7 @@ class RepositoryAccess {
 					return treeWalk;
 				}
 			} else {
-				path = component + (path != null ? '/' + path : "");
+				path = component + (path != null ? '/' + path : ""); //$NON-NLS-1$
 			}
 			treeWalk.setFilter(PathFilter.create(path));
 			return treeWalk;
