@@ -131,11 +131,11 @@ public class ImportProxySettings extends WorkspaceCommand {
 		}
 
 		protected void importProxyPortSetting(String proxyPortPropertyName, IProxyData proxyDatum) {
-			String proxyPortPropertyValue = savedProxyProperties.getProperty(proxyPortPropertyName);
+			String proxyPortString = savedProxyProperties.getProperty(proxyPortPropertyName);
 
-			if (proxyPortPropertyValue != null) {
+			if (proxyPortString != null) {
 				try {
-					proxyDatum.setPort(Integer.parseInt(proxyPortPropertyValue));
+					proxyDatum.setPort(Integer.parseInt(proxyPortString));
 					return;
 				} catch (NumberFormatException e) {
 					// fall through
@@ -181,6 +181,15 @@ public class ImportProxySettings extends WorkspaceCommand {
 			savedProxyProperties.setProperty(proxyPropertyName, proxyPropertyValue);
 		}
 
+		protected void setProxyPortSystemProperty(String proxyPortPropertyName, IProxyData proxyDatum) {
+			int proxyPort = proxyDatum.getPort();
+
+			if (proxyPort != -1)
+				System.getProperties().setProperty(proxyPortPropertyName, Integer.toString(proxyPort));
+			else
+				System.getProperties().remove(proxyPortPropertyName);
+		}
+
 		public void setProxySettingsSystemProperties(IProxyData proxyDatum) {
 			setProxySettingsSystemPropertiesImpl(proxyDatum);
 			savedProxyProperties.clear();
@@ -196,15 +205,6 @@ public class ImportProxySettings extends WorkspaceCommand {
 		 * preferences.
 		 */
 		protected abstract void setProxySettingsSystemPropertiesImpl(IProxyData proxyDatum);
-
-		protected void setProxyPortSystemProperty(String proxyPortPropertyName, IProxyData proxyDatum) {
-			int proxyPort = proxyDatum.getPort();
-
-			if (proxyPort != -1)
-				System.getProperties().setProperty(proxyPortPropertyName, Integer.toString(proxyPort));
-			else
-				System.getProperties().remove(proxyPortPropertyName);
-		}
 
 	}
 
@@ -289,7 +289,7 @@ public class ImportProxySettings extends WorkspaceCommand {
 		}
 
 		@Override
-		public boolean importProxySettings(IProxyData proxyDatum, Set<String> nonProxiedHostsString) {
+		public boolean importProxySettings(IProxyData proxyDatum, Set<String> nonProxiedHosts) {
 			String proxyHost = savedProxyProperties.getProperty("socksProxyHost"); //$NON-NLS-1$
 			if (proxyHost == null)
 				return false;
