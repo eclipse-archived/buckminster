@@ -339,6 +339,10 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted {
 		return versionConverter;
 	}
 
+	public boolean hasLocalCache() {
+		return false;
+	}
+
 	/**
 	 * @return Returns the hasSource.
 	 */
@@ -402,6 +406,18 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted {
 	@Override
 	public void store(StorageManager sm) throws CoreException {
 		sm.getProviders().putElement(this);
+	}
+
+	public boolean supportsComponentType(String componentTypeID) {
+		if (componentTypeID == null)
+			return true;
+
+		String[] componentTypes = getComponentTypeIDs();
+		int idx = componentTypes.length;
+		while (--idx >= 0)
+			if (componentTypeID.equals(componentTypes[idx]))
+				return true;
+		return false;
 	}
 
 	@Override

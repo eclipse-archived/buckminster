@@ -146,6 +146,11 @@ public class MavenProvider extends Provider {
 	}
 
 	@Override
+	public boolean hasLocalCache() {
+		return true;
+	}
+
+	@Override
 	protected void addAttributes(AttributesImpl attrs) throws SAXException {
 		super.addAttributes(attrs);
 		attrs.addAttribute(javax.xml.XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "type", "xsi:type", //$NON-NLS-1$ //$NON-NLS-2$
