@@ -136,6 +136,6 @@ public class SvnReaderType extends GenericReaderType<ISVNRepositoryLocation, ISV
 	}
 
 	private ISVNInfo getInfoFromWorkingCopy(File workingCopy) throws SVNClientException, SVNException {
-		return SVNProviderPlugin.getPlugin().getSVNClientManager().createSVNClient().getInfoFromWorkingCopy(workingCopy);
+		return SVNProviderPlugin.getPlugin().getSVNClientManager().getSVNClient().getInfoFromWorkingCopy(workingCopy);
 	}
 }
