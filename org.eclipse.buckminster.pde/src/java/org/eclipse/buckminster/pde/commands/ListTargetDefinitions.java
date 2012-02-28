@@ -18,11 +18,11 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.pde.core.target.ITargetDefinition;
+import org.eclipse.pde.core.target.ITargetHandle;
+import org.eclipse.pde.core.target.ITargetLocation;
+import org.eclipse.pde.core.target.ITargetPlatformService;
 import org.eclipse.pde.internal.core.target.AbstractBundleContainer;
-import org.eclipse.pde.internal.core.target.provisional.IBundleContainer;
-import org.eclipse.pde.internal.core.target.provisional.ITargetDefinition;
-import org.eclipse.pde.internal.core.target.provisional.ITargetHandle;
-import org.eclipse.pde.internal.core.target.provisional.ITargetPlatformService;
 
 @SuppressWarnings("restriction")
 public class ListTargetDefinitions extends WorkspaceCommand {
@@ -34,11 +34,9 @@ public class ListTargetDefinitions extends WorkspaceCommand {
 				return name;
 			name = null;
 		}
-		IBundleContainer[] bundleContainers = target.getBundleContainers();
+		ITargetLocation[] bundleContainers = target.getTargetLocations();
 		if (bundleContainers != null && bundleContainers.length == 1) {
-			IBundleContainer container = bundleContainers[0];
-			if (container instanceof AbstractBundleContainer)
-				return ((AbstractBundleContainer) container).getLocation(false);
+			return bundleContainers[0].getLocation(false);
 		}
 		return "<no name>"; //$NON-NLS-1$
 	}

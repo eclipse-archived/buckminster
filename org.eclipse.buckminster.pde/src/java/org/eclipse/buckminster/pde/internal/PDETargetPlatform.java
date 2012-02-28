@@ -34,16 +34,18 @@ import org.eclipse.equinox.p2.metadata.Version;
 import org.eclipse.equinox.p2.metadata.VersionRange;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.pde.core.plugin.TargetPlatform;
-import org.eclipse.pde.internal.core.ifeature.IFeature;
+import org.eclipse.pde.core.target.ITargetDefinition;
+import org.eclipse.pde.core.target.ITargetHandle;
+import org.eclipse.pde.core.target.ITargetLocation;
+import org.eclipse.pde.core.target.ITargetPlatformService;
+import org.eclipse.pde.core.target.LoadTargetDefinitionJob;
+import org.eclipse.pde.core.target.TargetBundle;
+import org.eclipse.pde.core.target.TargetFeature;
+import org.eclipse.pde.internal.core.ExternalFeatureModelManager;
+import org.eclipse.pde.internal.core.ICoreConstants;
 import org.eclipse.pde.internal.core.ifeature.IFeatureModel;
 import org.eclipse.pde.internal.core.target.DirectoryBundleContainer;
 import org.eclipse.pde.internal.core.target.TargetPlatformService;
-import org.eclipse.pde.internal.core.target.provisional.IBundleContainer;
-import org.eclipse.pde.internal.core.target.provisional.IResolvedBundle;
-import org.eclipse.pde.internal.core.target.provisional.ITargetDefinition;
-import org.eclipse.pde.internal.core.target.provisional.ITargetHandle;
-import org.eclipse.pde.internal.core.target.provisional.ITargetPlatformService;
-import org.eclipse.pde.internal.core.target.provisional.LoadTargetDefinitionJob;
 
 /**
  * @author Thomas Hallgren
@@ -64,21 +66,20 @@ public class PDETargetPlatform extends AbstractExtension implements ITargetPlatf
 		return doWithActivePlatform(new ITargetDefinitionOperation<IFeatureModel>() {
 			@Override
 			public IFeatureModel run(ITargetDefinition target) throws CoreException {
-				IFeatureModel[] allFeatures = target.getAllFeatures();
+				TargetFeature[] allFeatures = target.getAllFeatures();
 				if (allFeatures == null)
 					return null;
 
-				IFeatureModel candidate = null;
+				TargetFeature candidate = null;
 				Version candidateVersion = null;
-				for (IFeatureModel featureModel : allFeatures) {
-					IFeature feature = featureModel.getFeature();
-					if (!componentName.equals(feature.getId()))
+				for (TargetFeature targetFeature : allFeatures) {
+					if (!componentName.equals(targetFeature.getId()))
 						continue;
 
-					Version v = Version.create(feature.getVersion());
+					Version v = Version.create(targetFeature.getVersion());
 					if (v == null) {
 						if (candidate == null && versionDesignator == null)
-							candidate = featureModel;
+							candidate = targetFeature;
 						continue;
 					}
 
@@ -89,11 +90,18 @@ public class PDETargetPlatform extends AbstractExtension implements ITargetPlatf
 					}
 
 					if (candidateVersion == null || candidateVersion.compareTo(v) < 0) {
-						candidate = featureModel;
+						candidate = targetFeature;
 						candidateVersion = v;
 					}
 				}
-				return candidate;
+				IFeatureModel model = null;
+				if (candidate != null) {
+					// candidate.getLocation()
+					// can't be <code>null</code> after passing
+					// org.eclipse.pde.core.target.TargetFeature.initialize(File)
+					model = ExternalFeatureModelManager.createModel(new File(candidate.getLocation(), ICoreConstants.FEATURE_FILENAME_DESCRIPTOR));
+				}
+				return model;
 			}
 		});
 	}
@@ -102,14 +110,14 @@ public class PDETargetPlatform extends AbstractExtension implements ITargetPlatf
 		return doWithActivePlatform(new ITargetDefinitionOperation<BundleInfo>() {
 			@Override
 			public BundleInfo run(ITargetDefinition target) throws CoreException {
-				IResolvedBundle[] allBundles = target.getAllBundles();
+				TargetBundle[] allBundles = target.getAllBundles();
 				if (allBundles == null)
 					return null;
 
 				BundleInfo candidate = null;
 				Version candidateVersion = null;
-				for (IResolvedBundle bundle : allBundles) {
-					BundleInfo bi = bundle.getBundleInfo();
+				for (TargetBundle targetBundle : allBundles) {
+					BundleInfo bi = targetBundle.getBundleInfo();
 					if (!componentName.equals(bi.getSymbolicName()))
 						continue;
 
@@ -180,10 +188,10 @@ public class PDETargetPlatform extends AbstractExtension implements ITargetPlatf
 	}
 
 	private static File getLocation(ITargetDefinition target) throws CoreException {
-		IBundleContainer[] containers = target.getBundleContainers();
+		ITargetLocation[] containers = target.getTargetLocations();
 		if (containers == null)
 			return null;
-		for (IBundleContainer container : containers) {
+		for (ITargetLocation container : containers) {
 			// bug 285449: the directory bundle container is actually the only
 			// we one we can use
 			if (container instanceof DirectoryBundleContainer) {
@@ -212,11 +220,10 @@ public class PDETargetPlatform extends AbstractExtension implements ITargetPlatf
 				if (!target.isResolved())
 					target.resolve(new NullProgressMonitor());
 				List<ComponentIdentifier> result = new ArrayList<ComponentIdentifier>();
-				for (IFeatureModel feature : target.getAllFeatures()) {
-					IFeature f = feature.getFeature();
-					result.add(new ComponentIdentifier(f.getId(), IComponentType.ECLIPSE_FEATURE, Version.parseVersion(f.getVersion())));
+				for (TargetFeature feature : target.getAllFeatures()) {
+					result.add(new ComponentIdentifier(feature.getId(), IComponentType.ECLIPSE_FEATURE, Version.parseVersion(feature.getVersion())));
 				}
-				for (IResolvedBundle bundle : target.getBundles()) {
+				for (TargetBundle bundle : target.getBundles()) {
 					BundleInfo b = bundle.getBundleInfo();
 					result.add(new ComponentIdentifier(b.getSymbolicName(), IComponentType.OSGI_BUNDLE, Version.parseVersion(b.getVersion())));
 				}
@@ -252,10 +259,10 @@ public class PDETargetPlatform extends AbstractExtension implements ITargetPlatf
 			if (!tpFolder.exists())
 				tpFolder.create(true, false, null);
 
-			dflt = ((TargetPlatformService) service).newDefaultTargetDefinition();
-			IBundleContainer runningInstance = dflt.getBundleContainers()[0];
-			IBundleContainer directory = service.newDirectoryContainer(tpFolder.getLocation().toOSString());
-			dflt.setBundleContainers(new IBundleContainer[] { directory, runningInstance });
+			dflt = ((TargetPlatformService) service).newDefaultTarget();
+			ITargetLocation runningInstance = dflt.getTargetLocations()[0];
+			ITargetLocation directory = service.newDirectoryLocation(tpFolder.getLocation().toOSString());
+			dflt.setTargetLocations(new ITargetLocation[] { directory, runningInstance });
 			dflt.setName(defaultTP);
 			service.saveTargetDefinition(dflt);
 		}
@@ -338,14 +345,14 @@ public class PDETargetPlatform extends AbstractExtension implements ITargetPlatf
 			}
 
 			ITargetDefinition target = activeHandle.getTargetDefinition();
-			IBundleContainer[] containers = target.getBundleContainers();
+			ITargetLocation[] containers = target.getTargetLocations();
 			if (containers == null || containers.length == 0) {
 				log.debug("Active target handle has no containers"); //$NON-NLS-1$
 				return;
 			}
 
 			boolean found = false;
-			for (IBundleContainer container : containers) {
+			for (ITargetLocation container : containers) {
 				if (container instanceof DirectoryBundleContainer
 						&& locations.contains(new File(((DirectoryBundleContainer) container).getLocation(true)))) {
 					found = true;

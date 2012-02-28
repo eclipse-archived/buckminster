@@ -12,6 +12,7 @@ import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.equinox.frameworkadmin.BundleInfo;
 import org.eclipse.equinox.internal.p2.publisher.eclipse.IProductDescriptor;
+import org.eclipse.equinox.internal.p2.publisher.eclipse.ProductContentType;
 import org.eclipse.equinox.p2.metadata.IInstallableUnit;
 import org.eclipse.equinox.p2.metadata.IVersionedId;
 import org.eclipse.equinox.p2.metadata.Version;
@@ -131,6 +132,11 @@ public class ProductVersionPatcher implements IProductDescriptor {
 	@Override
 	public File getLocation() {
 		return product.getLocation();
+	}
+
+	@Override
+	public ProductContentType getProductContentType() {
+		return product.getProductContentType();
 	}
 
 	@Override

@@ -16,10 +16,10 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.pde.internal.core.target.provisional.ITargetDefinition;
-import org.eclipse.pde.internal.core.target.provisional.ITargetHandle;
-import org.eclipse.pde.internal.core.target.provisional.ITargetPlatformService;
-import org.eclipse.pde.internal.core.target.provisional.LoadTargetDefinitionJob;
+import org.eclipse.pde.core.target.ITargetDefinition;
+import org.eclipse.pde.core.target.ITargetHandle;
+import org.eclipse.pde.core.target.ITargetPlatformService;
+import org.eclipse.pde.core.target.LoadTargetDefinitionJob;
 import org.osgi.service.prefs.BackingStoreException;
 
 /**

@@ -11,10 +11,10 @@ import org.eclipse.buckminster.cmdline.BasicPreferenceHandler;
 import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.pde.core.target.ITargetDefinition;
+import org.eclipse.pde.core.target.ITargetHandle;
+import org.eclipse.pde.core.target.ITargetPlatformService;
 import org.eclipse.pde.internal.core.ICoreConstants;
-import org.eclipse.pde.internal.core.target.provisional.ITargetDefinition;
-import org.eclipse.pde.internal.core.target.provisional.ITargetHandle;
-import org.eclipse.pde.internal.core.target.provisional.ITargetPlatformService;
 import org.osgi.service.prefs.BackingStoreException;
 
 /**

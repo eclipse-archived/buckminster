@@ -29,10 +29,10 @@ import org.eclipse.pde.api.tools.internal.provisional.ApiPlugin;
 import org.eclipse.pde.api.tools.internal.provisional.IApiBaselineManager;
 import org.eclipse.pde.api.tools.internal.provisional.model.IApiBaseline;
 import org.eclipse.pde.api.tools.internal.provisional.model.IApiComponent;
-import org.eclipse.pde.internal.core.target.provisional.IResolvedBundle;
-import org.eclipse.pde.internal.core.target.provisional.ITargetDefinition;
-import org.eclipse.pde.internal.core.target.provisional.ITargetHandle;
-import org.eclipse.pde.internal.core.target.provisional.ITargetPlatformService;
+import org.eclipse.pde.core.target.ITargetDefinition;
+import org.eclipse.pde.core.target.ITargetHandle;
+import org.eclipse.pde.core.target.ITargetPlatformService;
+import org.eclipse.pde.core.target.TargetBundle;
 
 @SuppressWarnings("restriction")
 public class AddBaseline extends WorkspaceCommand {
@@ -122,7 +122,7 @@ public class AddBaseline extends WorkspaceCommand {
 	private IApiBaseline createBaseline(ITargetDefinition target, IProgressMonitor monitor) throws CoreException {
 		SubMonitor submon = SubMonitor.convert(monitor, 10);
 		target.resolve(submon.newChild(2));
-		IResolvedBundle[] bundles = target.getBundles();
+		TargetBundle[] bundles = target.getBundles();
 		List<IApiComponent> components = new ArrayList<IApiComponent>();
 		IApiBaseline baseline = ApiModelFactory.newApiBaseline(ListTargetDefinitions.getTargetName(target));
 		submon.setWorkRemaining(bundles.length);

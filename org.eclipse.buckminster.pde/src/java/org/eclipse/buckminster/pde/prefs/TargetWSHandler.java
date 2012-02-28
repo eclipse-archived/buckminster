@@ -8,7 +8,7 @@
 package org.eclipse.buckminster.pde.prefs;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.pde.internal.core.target.provisional.ITargetDefinition;
+import org.eclipse.pde.core.target.ITargetDefinition;
 import org.osgi.service.prefs.BackingStoreException;
 
 /**
@@ -16,7 +16,6 @@ import org.osgi.service.prefs.BackingStoreException;
  * 
  * @author Thomas Hallgren
  */
-@SuppressWarnings("restriction")
 public class TargetWSHandler extends TargetVariableHandler {
 	@Override
 	public void unset() throws BackingStoreException {

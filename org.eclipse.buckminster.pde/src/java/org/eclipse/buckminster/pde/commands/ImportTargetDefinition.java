@@ -38,13 +38,13 @@ import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.equinox.p2.core.IProvisioningAgent;
 import org.eclipse.equinox.p2.repository.metadata.IMetadataRepositoryManager;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.pde.core.target.ITargetDefinition;
+import org.eclipse.pde.core.target.ITargetHandle;
+import org.eclipse.pde.core.target.ITargetLocation;
+import org.eclipse.pde.core.target.ITargetPlatformService;
 import org.eclipse.pde.internal.core.target.DirectoryBundleContainer;
 import org.eclipse.pde.internal.core.target.IUBundleContainer;
 import org.eclipse.pde.internal.core.target.TargetDefinitionPersistenceHelper;
-import org.eclipse.pde.internal.core.target.provisional.IBundleContainer;
-import org.eclipse.pde.internal.core.target.provisional.ITargetDefinition;
-import org.eclipse.pde.internal.core.target.provisional.ITargetHandle;
-import org.eclipse.pde.internal.core.target.provisional.ITargetPlatformService;
 
 @SuppressWarnings("restriction")
 public class ImportTargetDefinition extends WorkspaceCommand {
@@ -128,12 +128,12 @@ public class ImportTargetDefinition extends WorkspaceCommand {
 			target = handle.getTargetDefinition();
 
 		// Perform some sanity checks
-		IBundleContainer[] containers = target.getBundleContainers();
+		ITargetLocation[] containers = target.getTargetLocations();
 		if (containers == null)
 			throw BuckminsterException.fromMessage(NLS.bind(Messages.target_0_has_no_containers, targetPath));
 
 		SubMonitor mon = SubMonitor.convert(monitor, containers.length * 100 + (importAsActive ? 0 : 50));
-		for (IBundleContainer container : containers) {
+		for (ITargetLocation container : containers) {
 			SubMonitor child = mon.newChild(50);
 			if (container instanceof IUBundleContainer)
 				verifyIUBundleContainer(target, (IUBundleContainer) container, child);
@@ -150,7 +150,7 @@ public class ImportTargetDefinition extends WorkspaceCommand {
 		return 0;
 	}
 
-	private void verifyBundleContainer(ITargetDefinition target, IBundleContainer container, SubMonitor monitor) throws CoreException {
+	private void verifyBundleContainer(ITargetDefinition target, ITargetLocation container, SubMonitor monitor) throws CoreException {
 		IStatus status = container.resolve(target, monitor);
 		if (status.getSeverity() == IStatus.ERROR)
 			throw new CoreException(status);

@@ -559,8 +559,8 @@ public class PluginImportOperation extends JarImportOperation {
 		if (isJARd()) {
 			extractJARdPlugin(MonitorUtils.subMonitor(monitor, 3));
 		} else {
-			importContent(new File(model.getInstallLocation()), project.getFullPath(), FileSystemStructureProvider.INSTANCE, null, MonitorUtils
-					.subMonitor(monitor, 1));
+			importContent(new File(model.getInstallLocation()), project.getFullPath(), FileSystemStructureProvider.INSTANCE, null,
+					MonitorUtils.subMonitor(monitor, 1));
 			importSourceArchives(MonitorUtils.subMonitor(monitor, 1));
 
 			// make sure all libraries have been imported

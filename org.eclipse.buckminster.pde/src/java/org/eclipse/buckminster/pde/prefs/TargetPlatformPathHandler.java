@@ -18,11 +18,11 @@ import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.pde.core.target.ITargetDefinition;
+import org.eclipse.pde.core.target.ITargetHandle;
+import org.eclipse.pde.core.target.ITargetLocation;
+import org.eclipse.pde.core.target.ITargetPlatformService;
 import org.eclipse.pde.internal.core.target.AbstractBundleContainer;
-import org.eclipse.pde.internal.core.target.provisional.IBundleContainer;
-import org.eclipse.pde.internal.core.target.provisional.ITargetDefinition;
-import org.eclipse.pde.internal.core.target.provisional.ITargetHandle;
-import org.eclipse.pde.internal.core.target.provisional.ITargetPlatformService;
 import org.osgi.service.prefs.BackingStoreException;
 
 /**
@@ -43,16 +43,16 @@ public class TargetPlatformPathHandler extends BasicPreferenceHandler {
 			throw BuckminsterException.fromMessage(Messages.No_active_target_platform);
 
 		ITargetDefinition activeTarget = activeHandle.getTargetDefinition();
-		IBundleContainer[] containers = activeTarget.getBundleContainers();
+		ITargetLocation[] containers = activeTarget.getTargetLocations();
 		if (containers == null || containers.length == 0)
 			throw BuckminsterException.fromMessage(NLS.bind(Messages.Active_target_0_has_no_containers, activeTarget.getName()));
 
 		if (containers.length > 1)
 			throw BuckminsterException.fromMessage(NLS.bind(Messages.Active_target_0_is_too_complex, activeTarget.getName()));
 
-		IBundleContainer activeContainer = containers[0];
-		if (activeContainer instanceof AbstractBundleContainer)
-			return ((AbstractBundleContainer) activeContainer).getLocation(true);
+		ITargetLocation activeTargetLocation = containers[0];
+		if (activeTargetLocation instanceof AbstractBundleContainer)
+			return ((AbstractBundleContainer) activeTargetLocation).getLocation(true);
 
 		throw BuckminsterException.fromMessage(NLS.bind(Messages.Unable_to_determine_path_for_active_target_0, activeTarget.getName()));
 	}
@@ -66,7 +66,7 @@ public class TargetPlatformPathHandler extends BasicPreferenceHandler {
 			ITargetDefinition target = null;
 			for (ITargetHandle targetHandle : service.getTargets(new NullProgressMonitor())) {
 				ITargetDefinition candidate = targetHandle.getTargetDefinition();
-				IBundleContainer[] containers = candidate.getBundleContainers();
+				ITargetLocation[] containers = candidate.getTargetLocations();
 				if (containers == null || containers.length != 1)
 					continue;
 				if (targetPlatform.equals(((AbstractBundleContainer) containers[0]).getLocation(true))) {
@@ -83,8 +83,8 @@ public class TargetPlatformPathHandler extends BasicPreferenceHandler {
 
 			if (target == null) {
 				target = service.newTarget();
-				IBundleContainer container = service.newDirectoryContainer(targetPlatform);
-				target.setBundleContainers(new IBundleContainer[] { container });
+				ITargetLocation container = service.newDirectoryLocation(targetPlatform);
+				target.setTargetLocations(new ITargetLocation[] { container });
 				target.setName("Directory " + targetPlatform); //$NON-NLS-1$
 				File tpDir = new File(targetPlatform);
 				if (!tpDir.isDirectory()) {

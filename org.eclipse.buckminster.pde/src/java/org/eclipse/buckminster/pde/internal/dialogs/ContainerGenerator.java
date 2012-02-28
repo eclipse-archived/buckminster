@@ -41,7 +41,8 @@ import org.eclipse.osgi.util.NLS;
  * ContainerGenerator gen = new ContainerGenerator(new Path(&quot;/A/B&quot;));
  * IContainer res = null;
  * try {
- * 	res = gen.getContainer(monitor); // creates project A and folder B if required
+ * 	res = gen.getContainer(monitor); // creates project A and folder B if
+ * 										// required
  * } catch (CoreException e) {
  * 	// handle failure
  * } catch (OperationCanceledException e) {
