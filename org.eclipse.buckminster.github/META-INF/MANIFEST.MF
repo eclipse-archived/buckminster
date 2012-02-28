@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Github extensions to Buckminster
+Bundle-SymbolicName: org.eclipse.buckminster.github;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Cloudsmith Inc.
+Require-Bundle: javax.mail,
+ javax.activation,
+ org.apache.commons.codec,
+ org.apache.commons.logging;bundle-version="1.1.1",
+ org.apache.httpcomponents.httpcore,
+ org.apache.httpcomponents.httpclient,
+ com.google.gson,
+ org.eclipse.egit.github.core
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy
+Export-Package: org.eclipse.buckminster.github,
+ org.eclipse.buckminster.github.schema,
+ org.eclipse.buckminster.github.service
