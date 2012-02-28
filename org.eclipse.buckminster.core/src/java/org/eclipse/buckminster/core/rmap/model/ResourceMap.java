@@ -143,6 +143,45 @@ public class ResourceMap extends AbstractSaxableElement implements ISaxable {
 		return documentation;
 	}
 
+	/**
+	 * Returns the first provider that the query appoints
+	 * 
+	 * @param query
+	 * @return The provider or null
+	 * @throws CoreException
+	 */
+	public Provider getFirstProvider(NodeQuery query) throws CoreException {
+		ComponentRequest request = query.getComponentRequest();
+		Map<String, ? extends Object> props = query.getProperties();
+		if (!properties.isEmpty()) {
+			query = new NodeQuery(query, properties, false);
+			props = query.getProperties();
+		}
+
+		String componentName = request.getName();
+		for (Matcher matcher : matchers) {
+			if (!(matcher.isFilterMatchFor(query, null) && matcher.matches(componentName)))
+				continue;
+
+			if (matcher instanceof Redirect)
+				return ((Redirect) matcher).getResourceMap(query).getFirstProvider(query);
+
+			Locator locator = (Locator) matcher;
+			String searchPathRef = locator.getSearchPath();
+			searchPathRef = ExpandingProperties.expand(props, searchPathRef, 0);
+			SearchPath sp = getSearchPathByReference(searchPathRef);
+			for (Provider provider : sp.getProviders()) {
+				if (provider.isFilterMatchFor(query, null)) {
+					ProviderScore score = query.getProviderScore(provider.isMutable(), provider.hasSource());
+					if (score == ProviderScore.REJECTED || !provider.supportsComponentType(query.getComponentRequest().getComponentTypeID()))
+						continue;
+					return provider;
+				}
+			}
+		}
+		return null;
+	}
+
 	public List<Matcher> getMatchers() {
 		return matchers;
 	}

@@ -23,6 +23,7 @@ import org.eclipse.buckminster.core.helpers.JobBlocker;
 import org.eclipse.buckminster.core.metadata.model.BOMNode;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
+import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.rmap.model.ResourceMap;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -186,22 +187,38 @@ public class ResourceMapResolver extends LocalResolver implements IJobChangeList
 		monitor.beginTask(null, 100);
 		try {
 			BOMNode node = null;
-			if (factory.isLocalResolve()) {
-				query.logDecision(ResolverDecisionType.USING_RESOLVER, "Local resolver"); //$NON-NLS-1$
-				node = localResolve(query, MonitorUtils.subMonitor(monitor, 5));
-			} else {
-				query.logDecision(ResolverDecisionType.RESOLVER_REJECTED, "All local resolvers"); //$NON-NLS-1$
-				MonitorUtils.worked(monitor, 5);
+			ComponentQuery cquery = null;
+			URL rmapURL = null;
+			ResourceMap rmap = null;
+			boolean mayUseLocalResolver = true;
+
+			if (query.useResolutionService()) {
+				cquery = query.getComponentQuery();
+				rmapURL = cquery.getResolvedResourceMapURL();
+				rmap = factory.getResourceMap(getContext(), rmapURL, cquery.getConnectContext());
+				Provider directProvider = rmap.getFirstProvider(query);
+				if (directProvider != null && directProvider.hasLocalCache())
+					// Use the given provider! Make no attempt to use the
+					// LocalProvider
+					mayUseLocalResolver = false;
 			}
 
-			if (node == null && query.useResolutionService()) {
-				ComponentQuery cquery = query.getComponentQuery();
-				URL rmapURL = cquery.getResolvedResourceMapURL();
-				ResourceMap rmap = factory.getResourceMap(getContext(), rmapURL, cquery.getConnectContext());
+			if (mayUseLocalResolver) {
+				if (factory.isLocalResolve()) {
+					query.logDecision(ResolverDecisionType.USING_RESOLVER, "Local resolver"); //$NON-NLS-1$
+					node = localResolve(query, MonitorUtils.subMonitor(monitor, 5));
+				} else {
+					query.logDecision(ResolverDecisionType.RESOLVER_REJECTED, "All local resolvers"); //$NON-NLS-1$
+					MonitorUtils.worked(monitor, 5);
+				}
+			}
+
+			if (node == null && rmap != null) {
 				query.logDecision(ResolverDecisionType.USING_RESOURCE_MAP, rmapURL);
 				node = rmap.resolve(query, MonitorUtils.subMonitor(monitor, 95));
 			} else
 				MonitorUtils.worked(monitor, 95);
+
 			return node;
 		} catch (CoreException e) {
 			RMContext context = getContext();
