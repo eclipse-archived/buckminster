@@ -72,7 +72,7 @@ public class CVSTest extends TestCase
 
 	private static String NON_EXISTING_FILE = "foobar.txt";
 
-	private static String REPO_LOCATION = ":pserver:anonymous@dev.eclipse.org:/cvsroot/technology,org.eclipse.dash/org.eclipse.dash.siteassembler";
+	private static String REPO_LOCATION = ":pserver:anonymous@dev.eclipse.org:/cvsroot/eclipse,org.junit4";
 
 	public static Test suite()
 	{
