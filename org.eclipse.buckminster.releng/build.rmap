@@ -75,7 +75,7 @@
       <rm:uri format="http://community.polarion.com/projects/subversive/download/eclipse/2.0/update-site"/>
     </rm:provider>
   </rm:searchPath>
-  <rm:searchPath name="git-pde">
+  <rm:searchPath name="git.pde">
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false">
       <rm:property key="buckminster.source" value="false"/>
       <rm:property key="buckminster.mutable" value="false"/>
