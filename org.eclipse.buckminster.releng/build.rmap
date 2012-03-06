@@ -3,13 +3,14 @@
   <rm:property key="eclipse.download.prefix" value="http://download.eclipse.org"/>
   <rm:property key="eclipse.svn.prefix" value="http://dev.eclipse.org/svnroot"/>
   <rm:property key="build.type" value="R"/>
-  <rm:property key="git.clone.dir" value="${checkout.root}"/>
-  <rm:property key="checkout.root" value="${user.home}/git/buckminster"/>
+  <rm:property key="git.clone.dir" value="${user.home}/git"/>
+  <rm:property key="buckminster.clone" value="buckminster"/>
   <rm:locator pattern="^org\.eclipse\.buckminster(\..+)?" searchPathRef="buckminster"/>
   <rm:locator pattern="^org\.slf4j\.extendable$" searchPathRef="buckminster"/>
   <rm:locator pattern="^org\.eclipse\.equinox\.p2\.director\.(product|feature)$" searchPathRef="buckminster"/>
   <rm:locator pattern="^org\.eclipse\.equinox\.executable(\..+)?$" searchPathRef="platform-3.8"/>
   <rm:locator pattern="^org\.eclipse\.egit\.fetchfactory(\..+)?$" searchPathRef="git.pde"/>
+  <rm:locator pattern="^org\.eclipse\.egit(\..+)?$" searchPathRef="git.patch"/>
   <rm:locator pattern="^org\.eclipse\.[ej]git(\..+)?$" searchPathRef="git"/>
   <rm:locator pattern="^com\.mountainminds\.eclemma\.core$" searchPathRef="emma"/>
   <rm:locator pattern="^org\.tigris\.subversion(\..+)?" searchPathRef="subclipse"/>
@@ -20,7 +21,17 @@
   <rm:searchPath name="buckminster">
     <rm:provider componentTypes="osgi.bundle,eclipse.feature,buckminster" readerType="git">
       <rm:property key="git.remote.uri" value="git://git.eclipse.org/gitroot/buckminster/buckminster.git"/>
-      <rm:uri format="{0},{1}">
+      <rm:uri format="{0}/{1},{2}">
+        <bc:propertyRef key="git.clone.dir"/>
+        <bc:propertyRef key="buckminster.clone"/>
+        <bc:propertyRef key="buckminster.component"/>
+      </rm:uri>
+    </rm:provider>
+  </rm:searchPath>
+  <rm:searchPath name="git.patch">
+    <rm:provider componentTypes="osgi.bundle,eclipse.feature,buckminster" readerType="git">
+      <rm:property key="git.remote.uri" value="git://git.eclipse.org/gitroot/egit/egit.git"/>
+      <rm:uri format="{0}/egit,{1}">
         <bc:propertyRef key="git.clone.dir"/>
         <bc:propertyRef key="buckminster.component"/>
       </rm:uri>
@@ -48,7 +59,7 @@
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false">
       <rm:property key="buckminster.source" value="false"/>
       <rm:property key="buckminster.mutable" value="false"/>
-      <rm:uri format="{0}/releases/juno/201202030900">
+      <rm:uri format="{0}/releases/staging">
         <bc:propertyRef key="eclipse.download.prefix"/>
       </rm:uri>
     </rm:provider>

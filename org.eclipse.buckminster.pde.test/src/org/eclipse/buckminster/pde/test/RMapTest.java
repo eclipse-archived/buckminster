@@ -29,10 +29,10 @@ import org.eclipse.core.runtime.NullProgressMonitor;
  * @author Thomas Hallgren
  */
 public class RMapTest extends PDETestCase {
-	public void testEclipseInstalled() throws Exception {
+	public void testGetEclipseOSGIViaRMAP() throws Exception {
 		try {
 			this.getPlugin();
-			ComponentRequest request = new ComponentRequest("org.eclipse.pde", IComponentType.OSGI_BUNDLE, null); //$NON-NLS-1$
+			ComponentRequest request = new ComponentRequest("org.eclipse.osgi", IComponentType.OSGI_BUNDLE, null); //$NON-NLS-1$
 
 			ComponentQueryBuilder queryBld = new ComponentQueryBuilder();
 			queryBld.setRootRequest(request);
