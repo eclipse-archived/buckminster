@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -24,6 +25,7 @@ import java.util.regex.Pattern;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.pde.IPDEConstants;
+import org.eclipse.buckminster.pde.PDEPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -111,6 +113,11 @@ public class CategoriesAction extends AbstractPublisherAction {
 	private static final String PROP_CATEGORY_DEFAULT = "category.default"; //$NON-NLS-1$
 
 	private static final String PROP_CATEGORY_ID_PREFIX = "category.id."; //$NON-NLS-1$
+
+	/**
+	 * This category is excluded from categorized view.
+	 */
+	private static final String HIDDEN_CATEGORY_ID = "hidden_category"; //$NON-NLS-1$
 
 	private static final Pattern idAndVersionPattern = Pattern.compile("^(\\S)_([0-9]+(?:\\.[0-9]+){0,2}(?:\\.[A-Za-z0-9_-]))$"); //$NON-NLS-1$
 
@@ -268,8 +275,21 @@ public class CategoriesAction extends AbstractPublisherAction {
 		return Status.OK_STATUS;
 	}
 
+	private StringBuilder collectIDs(Set<IInstallableUnit> iUs) {
+		StringBuilder strBuilder = new StringBuilder();
+		for (Iterator<IInstallableUnit> iterator = iUs.iterator(); iterator.hasNext();) {
+			IInstallableUnit iInstallableUnit = iterator.next();
+			strBuilder.append(iInstallableUnit.getId());
+			if (iterator.hasNext()) {
+				strBuilder.append(", "); //$NON-NLS-1$
+			}
+		}
+		return strBuilder;
+	}
+
 	/**
-	 * Generates IUs corresponding to update site categories.
+	 * Generates IUs corresponding to update site categories.<br>
+	 * Note: "hidden-category" is explicitly excluded.
 	 * 
 	 * @param categoriesToFeatures
 	 *            Map of Category ->Set (Feature IUs in that category).
@@ -277,8 +297,20 @@ public class CategoriesAction extends AbstractPublisherAction {
 	 *            The generator result being built
 	 */
 	private void generateCategoryIUs(Map<Category, Set<IInstallableUnit>> categoriesToFeatures, IPublisherResult result) {
-		for (Map.Entry<Category, Set<IInstallableUnit>> entry : categoriesToFeatures.entrySet())
-			result.addIU(createCategoryIU(entry.getKey(), entry.getValue(), null), IPublisherResult.NON_ROOT);
+		for (Map.Entry<Category, Set<IInstallableUnit>> entry : categoriesToFeatures.entrySet()) {
+			Category category = entry.getKey();
+			Set<IInstallableUnit> iUs = entry.getValue();
+			if (!HIDDEN_CATEGORY_ID.equals(category.getName())) {
+				result.addIU(createCategoryIU(category, iUs, null), IPublisherResult.NON_ROOT);
+			} else {
+				if (PDEPlugin.getLogger().isDebugEnabled()) {
+					StringBuilder strBuilder = collectIDs(iUs);
+					PDEPlugin
+							.getLogger()
+							.debug("Category %s is used. Following features will be hidden in categorized view: %s", HIDDEN_CATEGORY_ID, strBuilder.toString()); //$NON-NLS-1$
+				}
+			}
+		}
 	}
 
 	private IInstallableUnit getFeatureIU(String name, Version version, IPublisherInfo publisherInfo, IPublisherResult results,

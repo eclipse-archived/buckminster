@@ -107,7 +107,7 @@ public class P2ReaderType extends CatalogReaderType {
 		IMetadataRepositoryManager manager = (IMetadataRepositoryManager) CorePlugin.getDefault().getResolverAgent()
 				.getService(IMetadataRepositoryManager.SERVICE_NAME);
 		if (manager == null)
-			throw new IllegalStateException("No artifact repository manager found"); //$NON-NLS-1$
+			throw new IllegalStateException("No metadata repository manager found"); //$NON-NLS-1$
 
 		SubMonitor subMon = SubMonitor.convert(monitor, 200);
 		try {

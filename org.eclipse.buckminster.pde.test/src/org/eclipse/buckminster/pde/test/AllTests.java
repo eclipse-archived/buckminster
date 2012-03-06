@@ -16,6 +16,8 @@ public class AllTests {
 		suite.addTestSuite(MultiSourceFolderTest.class);
 		// suite.addTestSuite(RootFilesTest.class);
 		suite.addTestSuite(SourceBundleTest.class);
+		suite.addTestSuite(SourceFeatureTest.class);
+		suite.addTestSuite(CategoryActionTest.class);
 		// $JUnit-END$
 		return suite;
 	}

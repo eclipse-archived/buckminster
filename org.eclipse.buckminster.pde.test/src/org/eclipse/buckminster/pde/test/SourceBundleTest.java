@@ -1,9 +1,7 @@
 package org.eclipse.buckminster.pde.test;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
@@ -14,18 +12,14 @@ import org.eclipse.buckminster.core.actor.IPerformManager;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Path;
 import org.osgi.framework.Constants;
 
 public class SourceBundleTest extends PDETestCase {
@@ -37,17 +31,13 @@ public class SourceBundleTest extends PDETestCase {
 		IProgressMonitor monitor = new NullProgressMonitor();
 
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
-		IWorkspaceRoot wsRoot = workspace.getRoot();
 
 		// Bind project
-		IPath locationPath = Path.fromOSString(projectFolder.getAbsolutePath());
-		IProjectDescription description = workspace.loadProjectDescription(locationPath.append(".project")); //$NON-NLS-1$
-		IProject project = wsRoot.getProject(description.getName());
-		project.create(description, monitor);
-		project.open(monitor);
+		IProject project = createProject(projectFolder, workspace);
 
 		// The buckminster.properties will redirect the build result to this
 		// location
+		IWorkspaceRoot wsRoot = workspace.getRoot();
 		IProject result = wsRoot.getProject("result");
 		if (result.exists())
 			result.delete(true, true, monitor);
@@ -56,21 +46,6 @@ public class SourceBundleTest extends PDETestCase {
 
 		// Assert that we build OK
 		workspace.build(IncrementalProjectBuilder.FULL_BUILD, monitor);
-
-		boolean errors = false;
-		List<String> messages = new ArrayList<String>();
-		IMarker[] markers = project.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
-		for (IMarker marker : markers) {
-			if (marker.getAttribute(IMarker.SEVERITY, IMarker.SEVERITY_INFO) == IMarker.SEVERITY_ERROR)
-				errors = true;
-			messages.add(marker.getAttribute(IMarker.LOCATION, "<unknown location>") + ": "
-					+ marker.getAttribute(IMarker.MESSAGE, "<unknown problem>"));
-		}
-		if (errors) {
-			for (String message : messages)
-				System.out.println(message);
-			fail();
-		}
 
 		Map<String, String> props = Collections.singletonMap("buckminster.output.root", "${workspace.root}/result");
 		IPerformManager performManager = CorePlugin.getPerformManager();
