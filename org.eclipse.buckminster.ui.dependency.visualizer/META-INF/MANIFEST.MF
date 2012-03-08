@@ -8,7 +8,7 @@ Bundle-Activator: org.eclipse.buckminster.ui.dependency.visualizer.Activator
 Require-Bundle: org.eclipse.zest.core;bundle-version="1.2.0",
  org.eclipse.zest.layouts;bundle-version="1.1.0",
  org.eclipse.buckminster.ui,
- org.eclipse.ui,
+ org.eclipse.ui;bundle-version="3.7.0",
  org.eclipse.ui.forms,
  org.eclipse.ui.ide,
  org.eclipse.buckminster.core,

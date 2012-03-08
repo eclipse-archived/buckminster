@@ -11,7 +11,7 @@ Require-Bundle: org.eclipse.buckminster.ui,
  org.eclipse.buckminster.runtime,
  org.eclipse.pde.ui,
  org.eclipse.jdt.core,
- org.eclipse.ui,
+ org.eclipse.ui;bundle-version="3.7.0",
  org.eclipse.core.runtime,
  org.eclipse.equinox.p2.metadata
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6,
