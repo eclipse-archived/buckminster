@@ -3,12 +3,13 @@
   <rm:property key="eclipse.download.prefix" value="http://download.eclipse.org"/>
   <rm:property key="eclipse.svn.prefix" value="http://dev.eclipse.org/svnroot"/>
   <rm:property key="build.type" value="R"/>
-  <rm:property key="git.clone.dir" value="${checkout.root}"/>
-  <rm:property key="checkout.root" value="${user.home}/git/buckminster"/>
+  <rm:property key="git.clone.dir" value="${user.home}/git"/>
+  <rm:property key="buckminster.local.clone" value="buckminster"/>
   <rm:locator pattern="^org\.eclipse\.buckminster(\..+)?" searchPathRef="buckminster"/>
   <rm:locator pattern="^org\.slf4j\.extendable$" searchPathRef="buckminster"/>
   <rm:locator pattern="^org\.eclipse\.equinox\.p2\.director\.(product|feature)$" searchPathRef="buckminster"/>
   <rm:locator pattern="^org\.eclipse\.egit\.fetchfactory(\..+)?$" searchPathRef="git.pde"/>
+  <rm:locator pattern="^org\.eclipse\.egit(\..+)?$" searchPathRef="git"/>
   <rm:locator pattern="^com\.mountainminds\.eclemma\.core$" searchPathRef="emma"/>
   <rm:locator pattern="^org\.tmatesoft(\..+)?" searchPathRef="svnkit"/>
   <rm:locator pattern="^com\.trilead(\..+)?" searchPathRef="svnkit"/>
@@ -20,7 +21,17 @@
   <rm:searchPath name="buckminster">
     <rm:provider componentTypes="osgi.bundle,eclipse.feature,buckminster" readerType="git">
       <rm:property key="git.remote.uri" value="git://git.eclipse.org/gitroot/buckminster/buckminster.git"/>
-      <rm:uri format="{0},{1}">
+      <rm:uri format="{0}/{1},{2}">
+        <bc:propertyRef key="git.clone.dir"/>
+        <bc:propertyRef key="buckminster.local.clone"/>
+        <bc:propertyRef key="buckminster.component"/>
+      </rm:uri>
+    </rm:provider>
+  </rm:searchPath>
+  <rm:searchPath name="git">
+    <rm:provider componentTypes="osgi.bundle,eclipse.feature,buckminster" readerType="git">
+      <rm:property key="git.remote.uri" value="git://git.eclipse.org/gitroot/egit/egit.git"/>
+      <rm:uri format="{0}/egit,{1}">
         <bc:propertyRef key="git.clone.dir"/>
         <bc:propertyRef key="buckminster.component"/>
       </rm:uri>
