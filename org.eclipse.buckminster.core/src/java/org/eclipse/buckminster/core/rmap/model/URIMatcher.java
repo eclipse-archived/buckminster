@@ -160,7 +160,7 @@ public class URIMatcher extends RxAssembly {
 
 		URL baseURL;
 		try {
-			baseURL = new URL(ExpandingProperties.expand(query.getProperties(), base, 0));
+			baseURL = new URL(ExpandingProperties.expand(provider.getProperties(query.getProperties()), base, 0));
 		} catch (MalformedURLException e) {
 			throw BuckminsterException.wrap(e);
 		}
