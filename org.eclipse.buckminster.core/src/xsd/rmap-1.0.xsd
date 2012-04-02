@@ -114,6 +114,8 @@
 			<element maxOccurs="unbounded" minOccurs="1" ref="com:rxPart"/>
 		</sequence>
 		<attribute name="base" use="required"/>
+		<attribute name="versionFormat" use="optional"/>
+		<attribute name="versionType" use="optional"/>
 	</complexType>
 
 	<complexType name="Digest">
