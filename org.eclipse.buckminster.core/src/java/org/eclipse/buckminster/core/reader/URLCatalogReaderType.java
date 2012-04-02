@@ -93,7 +93,7 @@ public class URLCatalogReaderType extends CatalogReaderType {
 	/**
 	 * Pattern that scans for href's that are relative and don't start with ?
 	 */
-	private static final Pattern htmlPattern = Pattern.compile("<A\\s+HREF=\"([^?/][^:\"]+)\"\\s*>[^<]+</A>", //$NON-NLS-1$
+	private static final Pattern htmlPattern = Pattern.compile("<A\\s+HREF=\"([^?][^:\"]+)\"\\s*>[^<]+</A>", //$NON-NLS-1$
 			Pattern.CASE_INSENSITIVE);
 
 	/**

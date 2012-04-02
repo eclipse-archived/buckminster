@@ -120,16 +120,16 @@ public class SearchPath extends AbstractSaxableElement {
 				if (bestMatch == null || match.compareTo(bestMatch) > 0) {
 					if (bestMatch != null) {
 						Provider rejected = bestMatch.getOriginalProvider();
-						query.logDecision(ResolverDecisionType.REJECTING_PROVIDER, rejected.getReaderTypeId(), getProviderURI(query, rejected), NLS
-								.bind(Messages._0_1_is_producing_a_better_match, provider.getReaderTypeId(), getProviderURI(query, provider)));
+						query.logDecision(ResolverDecisionType.REJECTING_PROVIDER, rejected.getReaderTypeId(), getProviderURI(query, rejected),
+								NLS.bind(Messages._0_1_is_producing_a_better_match, provider.getReaderTypeId(), getProviderURI(query, provider)));
 					}
 					bestMatch = match;
 					continue;
 				}
 
 				Provider best = bestMatch.getOriginalProvider();
-				query.logDecision(ResolverDecisionType.REJECTING_PROVIDER, provider.getReaderTypeId(), getProviderURI(query, provider), NLS.bind(
-						Messages._0_1_is_producing_a_better_match, best.getReaderTypeId(), getProviderURI(query, best)));
+				query.logDecision(ResolverDecisionType.REJECTING_PROVIDER, provider.getReaderTypeId(), getProviderURI(query, provider),
+						NLS.bind(Messages._0_1_is_producing_a_better_match, best.getReaderTypeId(), getProviderURI(query, best)));
 			}
 
 			if (bestMatch == null) {
@@ -170,6 +170,9 @@ public class SearchPath extends AbstractSaxableElement {
 	}
 
 	String getProviderURI(NodeQuery query, Provider provider) {
-		return provider.getURI().toString() + '[' + provider.getURI(resourceMap.getProperties(query.getProperties())) + ']';
+		String providerURI = provider.getURI().toString();
+		if (provider.getURIMatcher() == null)
+			providerURI += '[' + provider.getURI(provider.getProperties(query.getProperties())) + ']';
+		return providerURI;
 	}
 }

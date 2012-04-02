@@ -158,14 +158,21 @@ public class URIMatcher extends RxAssembly {
 		VersionMatch candidate = null;
 		Map<String, String> candidateMap = null;
 
+		Map<String, ? extends Object> providerProperties = provider.getProperties(query.getProperties());
 		URL baseURL;
 		try {
-			baseURL = new URL(ExpandingProperties.expand(provider.getProperties(query.getProperties()), base, 0));
+			baseURL = new URL(ExpandingProperties.expand(providerProperties, base, 0));
 		} catch (MalformedURLException e) {
 			throw BuckminsterException.wrap(e);
 		}
 
-		for (URL urlToMatch : URLCatalogReaderType.list(baseURL, query.getComponentQuery().getConnectContext(), monitor)) {
+		URL[] urlsToMatch = URLCatalogReaderType.list(baseURL, query.getComponentQuery().getConnectContext(), monitor);
+		if (urlsToMatch.length == 0) {
+			logger.debug("No URL's for %s found on page %s", cq.getName(), baseURL); //$NON-NLS-1$
+			return null;
+		}
+
+		for (URL urlToMatch : urlsToMatch) {
 			Map<String, String> matchMap = getMatchMap(urlToMatch.toString());
 			if (matchMap == null)
 				continue;
@@ -193,7 +200,7 @@ public class URIMatcher extends RxAssembly {
 			}
 
 			Filter filter = getFilter(matchMap);
-			if (!(filter == null || filter.matchCase(query.getProperties()))) {
+			if (!(filter == null || filter.matchCase(providerProperties))) {
 				logger.debug("URI filter %s does not match current environment", filter); //$NON-NLS-1$
 				continue;
 			}

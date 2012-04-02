@@ -168,8 +168,15 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted {
 			return null;
 		}
 
-		if (uriMatcher != null)
-			return uriMatcher.getMatch(this, query, monitor);
+		if (uriMatcher != null) {
+			ProviderMatch result = uriMatcher.getMatch(this, query, monitor);
+			if (result == null) {
+				ResolverDecision decision = query.logDecision(ResolverDecisionType.REJECTING_PROVIDER, getReaderTypeId(), getProviderURI(query),
+						"matcher didn't match any entries");
+				problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, decision.toString(), null));
+			}
+			return result;
+		}
 
 		IVersionFinder versionFinder = null;
 		monitor.beginTask(null, 120);
