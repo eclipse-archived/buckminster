@@ -160,11 +160,9 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted {
 	}
 
 	public ProviderMatch findMatch(NodeQuery query, MultiStatus problemCollector, IProgressMonitor monitor) throws CoreException {
-		String readerType = getReaderTypeId();
-		String providerURI = searchPath == null ? getURI(query.getProperties()) : searchPath.getProviderURI(query, this);
 		ProviderScore score = query.getProviderScore(isMutable(), hasSource());
 		if (score == ProviderScore.REJECTED) {
-			ResolverDecision decision = query.logDecision(ResolverDecisionType.REJECTING_PROVIDER, readerType, providerURI,
+			ResolverDecision decision = query.logDecision(ResolverDecisionType.REJECTING_PROVIDER, getReaderTypeId(), getProviderURI(query),
 					Messages.Score_is_below_threshold);
 			problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, decision.toString(), null));
 			return null;
@@ -202,8 +200,8 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted {
 					// always consulted
 					//
 					if (!getReaderTypeId().equals(IReaderType.ECLIPSE_PLATFORM)) {
-						ResolverDecision decision = query.logDecision(ResolverDecisionType.REJECTING_PROVIDER, readerType, providerURI,
-								String.format(NLS.bind(Messages.Components_of_type_0_are_not_supported, componentTypeID)));
+						ResolverDecision decision = query.logDecision(ResolverDecisionType.REJECTING_PROVIDER, getReaderTypeId(),
+								getProviderURI(query), String.format(NLS.bind(Messages.Components_of_type_0_are_not_supported, componentTypeID)));
 						problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, decision.toString(), null));
 					}
 					return null;
@@ -231,7 +229,7 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted {
 			}
 
 			if (candidate == null) {
-				ResolverDecision decision = query.logDecision(ResolverDecisionType.REJECTING_PROVIDER, readerType, providerURI,
+				ResolverDecision decision = query.logDecision(ResolverDecisionType.REJECTING_PROVIDER, getReaderTypeId(), getProviderURI(query),
 						Messages.No_component_match_was_found);
 				problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, decision.toString(), problem == null ? null
 						: BuckminsterException.unwind(problem)));
@@ -478,5 +476,9 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted {
 	@Override
 	protected String getElementPrefix(String prefix) {
 		return XMLConstants.BM_RMAP_PREFIX;
+	}
+
+	private String getProviderURI(NodeQuery query) {
+		return searchPath == null ? getURI(query.getProperties()) : searchPath.getProviderURI(query, this);
 	}
 }
