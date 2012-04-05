@@ -2,7 +2,7 @@ Adds a baseline based on a target definition to a workspace. The name of the
 target definition becomes the name of the baseline
 
 usage: addbaseline
-       [{-a | --active}]
+       [{-A | --active}]
        [{ -? | --help }]
        <name of target definition>
  -?

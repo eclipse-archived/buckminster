@@ -223,6 +223,7 @@ abstract public class AbstractCommand {
 				handleOption(option);
 		}
 		endOptionProcessing();
-		handleUnparsed(pr.getUnparsed());
+		if (!helpRequested)
+			handleUnparsed(pr.getUnparsed());
 	}
 }
