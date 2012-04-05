@@ -34,6 +34,53 @@ import org.osgi.service.prefs.BackingStoreException;
  */
 @SuppressWarnings("restriction")
 public class TargetPlatformPathHandler extends BasicPreferenceHandler {
+	public static void setTargetPlatform(String targetPlatformPath, String name, boolean active) throws BackingStoreException {
+		Buckminster bucky = Buckminster.getDefault();
+		ITargetPlatformService service = null;
+		try {
+			service = bucky.getService(ITargetPlatformService.class);
+			ITargetDefinition target = null;
+			for (ITargetHandle targetHandle : service.getTargets(new NullProgressMonitor())) {
+				ITargetDefinition candidate = targetHandle.getTargetDefinition();
+				ITargetLocation[] containers = candidate.getTargetLocations();
+				if (containers == null || containers.length != 1)
+					continue;
+				if (targetPlatformPath.equals(((AbstractBundleContainer) containers[0]).getLocation(true))) {
+					ITargetHandle activeHandle = service.getWorkspaceTargetHandle();
+					if (activeHandle != null && activeHandle.equals(targetHandle))
+						// This target is already active. Nothing left to do
+						// here
+						return;
+
+					target = candidate;
+					break;
+				}
+			}
+
+			if (target == null) {
+				target = service.newTarget();
+				ITargetLocation container = service.newDirectoryLocation(targetPlatformPath);
+				target.setTargetLocations(new ITargetLocation[] { container });
+				target.setName(name);
+				File tpDir = new File(targetPlatformPath);
+				if (!tpDir.isDirectory()) {
+					PDEPlugin.getLogger().warning(NLS.bind(Messages.tpdir_0_does_not_exist, targetPlatformPath));
+					tpDir.mkdirs();
+					if (!tpDir.isDirectory())
+						throw new BackingStoreException(NLS.bind(Messages.unable_to_create_tpdir_0, targetPlatformPath));
+				}
+			}
+
+			service.saveTargetDefinition(target);
+			if (active)
+				PDETargetPlatform.setTargetActive(target, new NullProgressMonitor());
+		} catch (CoreException e) {
+			throw new BackingStoreException(e.getMessage(), e);
+		} finally {
+			bucky.ungetService(service);
+		}
+	}
+
 	@Override
 	public String get(String defaultValue) throws CoreException {
 		Buckminster bucky = Buckminster.getDefault();
@@ -59,49 +106,7 @@ public class TargetPlatformPathHandler extends BasicPreferenceHandler {
 
 	@Override
 	public void set(String targetPlatform) throws BackingStoreException {
-		Buckminster bucky = Buckminster.getDefault();
-		ITargetPlatformService service = null;
-		try {
-			service = bucky.getService(ITargetPlatformService.class);
-			ITargetDefinition target = null;
-			for (ITargetHandle targetHandle : service.getTargets(new NullProgressMonitor())) {
-				ITargetDefinition candidate = targetHandle.getTargetDefinition();
-				ITargetLocation[] containers = candidate.getTargetLocations();
-				if (containers == null || containers.length != 1)
-					continue;
-				if (targetPlatform.equals(((AbstractBundleContainer) containers[0]).getLocation(true))) {
-					ITargetHandle activeHandle = service.getWorkspaceTargetHandle();
-					if (activeHandle != null && activeHandle.equals(targetHandle))
-						// This target is already active. Nothing left to do
-						// here
-						return;
-
-					target = candidate;
-					break;
-				}
-			}
-
-			if (target == null) {
-				target = service.newTarget();
-				ITargetLocation container = service.newDirectoryLocation(targetPlatform);
-				target.setTargetLocations(new ITargetLocation[] { container });
-				target.setName("Directory " + targetPlatform); //$NON-NLS-1$
-				File tpDir = new File(targetPlatform);
-				if (!tpDir.isDirectory()) {
-					PDEPlugin.getLogger().warning(NLS.bind(Messages.tpdir_0_does_not_exist, targetPlatform));
-					tpDir.mkdirs();
-					if (!tpDir.isDirectory())
-						throw new BackingStoreException(NLS.bind(Messages.unable_to_create_tpdir_0, targetPlatform));
-				}
-			}
-
-			service.saveTargetDefinition(target);
-			PDETargetPlatform.setTargetActive(target, new NullProgressMonitor());
-		} catch (CoreException e) {
-			throw new BackingStoreException(e.getMessage(), e);
-		} finally {
-			bucky.ungetService(service);
-		}
+		setTargetPlatform(targetPlatform, "Directory " + targetPlatform, true); //$NON-NLS-1$
 	}
 
 	@Override

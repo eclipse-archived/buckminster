@@ -22,9 +22,7 @@ import org.eclipse.pde.core.target.ITargetDefinition;
 import org.eclipse.pde.core.target.ITargetHandle;
 import org.eclipse.pde.core.target.ITargetLocation;
 import org.eclipse.pde.core.target.ITargetPlatformService;
-import org.eclipse.pde.internal.core.target.AbstractBundleContainer;
 
-@SuppressWarnings("restriction")
 public class ListTargetDefinitions extends WorkspaceCommand {
 	public static String getTargetName(ITargetDefinition target) throws CoreException {
 		String name = target.getName();

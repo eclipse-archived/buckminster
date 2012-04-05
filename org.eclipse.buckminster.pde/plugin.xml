@@ -214,6 +214,15 @@
              name="importtarget">
        </alias>
     </command>
+    <command
+          addhelpflags="true"
+          class="org.eclipse.buckminster.pde.commands.AddTargetPlatform"
+          name="addtargetplatform"
+          status="NORMAL">
+       <alias
+             name="addtarget">
+       </alias>
+    </command>
  </extension>
  <extension
        point="org.eclipse.ant.core.antProperties">
