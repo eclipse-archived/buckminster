@@ -181,7 +181,7 @@
     <command
           addhelpflags="true"
           class="org.eclipse.buckminster.pde.commands.AddBaseline"
-          name="org.eclipse.buckminster.pde.addbaseline"
+          name="addbaseline"
           status="NORMAL">
        <alias
              name="addbaseline">
@@ -190,7 +190,7 @@
     <command
           addhelpflags="true"
           class="org.eclipse.buckminster.pde.commands.ListBaselines"
-          name="org.eclipse.buckminster.pde.listbaselines"
+          name="listbaselines"
           status="NORMAL">
        <alias
              name="lsbaselines">
@@ -199,7 +199,7 @@
     <command
           addhelpflags="true"
           class="org.eclipse.buckminster.pde.commands.ListTargetDefinitions"
-          name="org.eclipse.buckminster.pde.listtargetdefinitions"
+          name="listtargetdefinitions"
           status="NORMAL">
        <alias
              name="lstargets">
@@ -208,7 +208,7 @@
     <command
           addhelpflags="true"
           class="org.eclipse.buckminster.pde.commands.ImportTargetDefinition"
-          name="org.eclipse.buckminster.pde.importtargetdefinition"
+          name="importtargetdefinition"
           status="NORMAL">
        <alias
              name="importtarget">
