@@ -1,0 +1,22 @@
+Adds a named, directory based, target platform to a workspace.
+
+usage: addtargetplatform
+       {-N | --name} <name>
+       [{-A | --active}]
+       [{ -? | --help }]
+       <target platform directory>
+ -?
+--help
+  Show this help text
+
+-N
+--name
+The name of the target platform (required)
+
+-A
+--active
+Make the new target platform active
+
+<target platform directory>
+The directory for the target platform. Typically contains an artifacs.xml
+file and two folders, features and plugins.

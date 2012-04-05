@@ -174,6 +174,8 @@ public class Messages extends NLS {
 
 	public static String target_0_has_no_containers;
 
+	public static String target_platform_must_be_named;
+
 	public static String tpdir_0_does_not_exist;
 
 	public static String error_conflictingProperties;
