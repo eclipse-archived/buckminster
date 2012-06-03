@@ -389,7 +389,6 @@ public class SubversiveSession extends GenericSession<IRepositoryLocation, SVNEn
 	@Override
 	protected void initializeSvn(RMContext context, URI ourRoot, IRepositoryLocation bestMatch) {
 		final ISVNConnector svnProxy = getSVNProxy();
-		svnProxy.setTouchUnresolved(false);
 		svnProxy.setCommitMissingFiles(false);
 		svnProxy.setSSLCertificateCacheEnabled(true);
 		svnProxy.setUsername(username);
