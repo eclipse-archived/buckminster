@@ -235,7 +235,7 @@ class RepositoryAccess {
 		return location;
 	}
 
-	Repository getRepository() throws IOException {
+	Repository getRepository() throws CoreException {
 		File canonicalLocalRepo;
 		try {
 			canonicalLocalRepo = localRepo.getCanonicalFile();
@@ -248,25 +248,31 @@ class RepositoryAccess {
 			if (repository != null)
 				return repository;
 
-			boolean infant = !canonicalLocalRepo.exists();
+			try {
+				boolean infant = !canonicalLocalRepo.exists();
 
-			if (infant) {
-				File localDir = canonicalLocalRepo.getParentFile();
-				logger.info("Cloning remote repository %s into %s", repoURI.toString(), localDir.getAbsolutePath()); //$NON-NLS-1$
-				CloneCommand cc = Git.cloneRepository();
-				cc.setBare(false);
-				cc.setDirectory(localDir);
-				cc.setNoCheckout(false);
-				cc.setURI(repoURI.toPrivateString());
-				cc.call();
+				if (infant) {
+					File localDir = canonicalLocalRepo.getParentFile();
+					logger.info("Cloning remote repository %s into %s", repoURI.toString(), localDir.getAbsolutePath()); //$NON-NLS-1$
+					CloneCommand cc = Git.cloneRepository();
+					cc.setBare(false);
+					cc.setDirectory(localDir);
+					cc.setNoCheckout(false);
+					cc.setURI(repoURI.toPrivateString());
+					cc.call();
+				}
+				repository = new FileRepository(canonicalLocalRepo);
+
+				// Add repository if it's not already addded
+				RepositoryUtil repoUtil = org.eclipse.egit.core.Activator.getDefault().getRepositoryUtil();
+				if (repoUtil.addConfiguredRepository(canonicalLocalRepo))
+					logger.info("Added Git repository at %s to the set of known repositories", repoPath); //$NON-NLS-1$
+				return repository;
+			} catch (RuntimeException e) {
+				throw e;
+			} catch (Exception e) {
+				throw BuckminsterException.wrap(e);
 			}
-			repository = new FileRepository(canonicalLocalRepo);
-
-			// Add repository if it's not already addded
-			RepositoryUtil repoUtil = org.eclipse.egit.core.Activator.getDefault().getRepositoryUtil();
-			if (repoUtil.addConfiguredRepository(canonicalLocalRepo))
-				logger.info("Added Git repository at %s to the set of known repositories", repoPath); //$NON-NLS-1$
-			return repository;
 		}
 	}
 
