@@ -76,7 +76,7 @@ public class VersionFinder extends AbstractSCCSVersionFinder {
 								continue;
 
 							// Last part of name is the branch
-							String branch = name.substring(lastSlash + 1);
+							String branch = getBranchName(name);
 							if (Constants.MASTER.equals(branch))
 								continue;
 
@@ -117,6 +117,20 @@ public class VersionFinder extends AbstractSCCSVersionFinder {
 		} catch (IOException e) {
 			throw BuckminsterException.wrap(e);
 		}
+	}
+
+	private static String getBranchName(String name) {
+		final boolean remote = name.startsWith(Constants.R_REMOTES);
+
+		if (remote) {
+			//cut off remote name
+			final int slash = name.indexOf('/', Constants.R_REMOTES.length());
+			if (slash > -1) {
+				return name.substring(slash + 1);
+			}
+		}
+
+		return Repository.shortenRefName(name);
 	}
 
 	@Override
