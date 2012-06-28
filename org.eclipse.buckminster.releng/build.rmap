@@ -8,7 +8,6 @@
   <rm:locator pattern="^org\.eclipse\.buckminster(\..+)?" searchPathRef="buckminster"/>
   <rm:locator pattern="^org\.slf4j\.extendable$" searchPathRef="buckminster"/>
   <rm:locator pattern="^org\.eclipse\.equinox\.p2\.director\.(product|feature)$" searchPathRef="buckminster"/>
-  <rm:locator pattern="^org\.eclipse\.equinox\.executable(\..+)?$" searchPathRef="platform-3.8"/>
   <rm:locator pattern="^org\.eclipse\.egit\.fetchfactory(\..+)?$" searchPathRef="git.pde"/>
   <rm:locator pattern="^org\.eclipse\.[ej]git(\..+)?$" searchPathRef="git"/>
   <rm:locator pattern="^com\.mountainminds\.eclemma\.core$" searchPathRef="emma"/>
@@ -27,20 +26,11 @@
       </rm:uri>
     </rm:provider>
   </rm:searchPath>
-  <rm:searchPath name="platform-3.8">
-    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false">
-      <rm:property key="buckminster.source" value="false"/>
-      <rm:property key="buckminster.mutable" value="false"/>
-      <rm:uri format="{0}/eclipse/updates/3.8milestones/S-3.8RC3-201205310600">
-        <bc:propertyRef key="eclipse.download.prefix"/>
-      </rm:uri>
-    </rm:provider>
-  </rm:searchPath>
   <rm:searchPath name="platform">
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false">
       <rm:property key="buckminster.source" value="false"/>
       <rm:property key="buckminster.mutable" value="false"/>
-      <rm:uri format="{0}/eclipse/updates/4.2milestones/S-4.2RC3-201205311500">
+      <rm:uri format="{0}/eclipse/updates/4.2/R-4.2-201206081400">
         <bc:propertyRef key="eclipse.download.prefix"/>
       </rm:uri>
     </rm:provider>
@@ -81,7 +71,7 @@
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false">
       <rm:property key="buckminster.source" value="false"/>
       <rm:property key="buckminster.mutable" value="false"/>
-      <rm:uri format="{0}/egit/staging/v2.0.0.201205301645-rc2">
+      <rm:uri format="{0}/egit/updates-2.0">
         <bc:propertyRef key="eclipse.download.prefix"/>
       </rm:uri>
     </rm:provider>
