@@ -561,7 +561,7 @@ public class CSpecFromSource extends CSpecGenerator {
 		if (!(model instanceof IFragmentModel)) {
 			ActionBuilder copyTargetFragmentsSource = cspec.addAction(ATTRIBUTE_TARGET_FRAGMENTS_SOURCE, false, ACTOR_COPY_TARGET_FRAGMENTS, false);
 			copyTargetFragmentsSource.setProductAlias(ALIAS_OUTPUT);
-			copyTargetFragmentsSource.setProductBase(OUTPUT_DIR_FRAGMENTS);
+			copyTargetFragmentsSource.setProductBase(OUTPUT_DIR_FRAGMENTS_SOURCE);
 			copyTargetFragmentsSource.setUpToDatePolicy(UpToDatePolicy.ACTOR);
 			copyTargetFragmentsSource.addProperty(FragmentsActor.PROP_FRAGMENT_ATTRIBUTE, ATTRIBUTE_SOURCE_BUNDLE_JAR, false);
 			bundleAndFragmentsSource.addLocalPrerequisite(copyTargetFragmentsSource);

@@ -143,6 +143,8 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 
 	public static final IPath OUTPUT_DIR_FRAGMENTS = OUTPUT_DIR.append("fragments"); //$NON-NLS-1$
 
+	public static final IPath OUTPUT_DIR_FRAGMENTS_SOURCE = OUTPUT_DIR.append("fragments.source"); //$NON-NLS-1$
+
 	public static final IPath OUTPUT_DIR_SITE = OUTPUT_DIR.append("site"); //$NON-NLS-1$
 
 	public static final IPath OUTPUT_DIR_SITE_REPACKED = OUTPUT_DIR.append("site.repacked"); //$NON-NLS-1$
