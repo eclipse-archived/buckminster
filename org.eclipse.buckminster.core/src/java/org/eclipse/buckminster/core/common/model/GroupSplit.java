@@ -11,6 +11,7 @@
 package org.eclipse.buckminster.core.common.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -50,10 +51,14 @@ public class GroupSplit extends AbstractSplit {
 	protected List<String> checkedGetValues(Map<String, ? extends Object> properties, int recursionGuard) {
 		String source = checkedGetSourceValue(properties, recursionGuard);
 		Matcher m = getPattern().matcher(source);
+
+		if (!m.matches())
+			return Collections.emptyList();
+
 		int nGroups = m.groupCount();
 		ArrayList<String> result = new ArrayList<String>(nGroups);
 		for (int idx = 0; idx < nGroups; ++idx)
-			result.add(m.group(nGroups + 1));
+			result.add(m.group(idx + 1));
 		return result;
 	}
 }

@@ -24,6 +24,7 @@ import org.eclipse.buckminster.core.common.model.CircularExpansionException;
 import org.eclipse.buckminster.core.common.model.Constant;
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.common.model.Format;
+import org.eclipse.buckminster.core.common.model.GroupSplit;
 import org.eclipse.buckminster.core.common.model.IProperties;
 import org.eclipse.buckminster.core.common.model.PropertyRef;
 import org.eclipse.buckminster.core.common.model.Replace;
@@ -140,6 +141,24 @@ public class PropertyFormatTest extends TestCase {
 		assertEquals(expected, result);
 	}
 
+	public void testGroupSplit() {
+		ValueHolder<String> value = new Constant<String>("buckminster.tigris.org:/cvs"); //$NON-NLS-1$
+		String fmtString = "First \"{0}\", second \"{1}\", third \"{2}\", and fourth \"{3}\""; //$NON-NLS-1$
+
+		Format fmt = new Format(fmtString);
+		GroupSplit split = new GroupSplit(".*\\.(([^\\.]+)\\.([^\\.]+)):(.*)$"); //$NON-NLS-1$
+		split.addValueHolder(value);
+		fmt.addValueHolder(split);
+
+		String expected = new MessageFormat(fmtString).format(new String[] { "tigris.org", //$NON-NLS-1$
+				"tigris", "org", "/cvs" }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+
+		IProperties<String> props = BMProperties.getSystemProperties();
+		String result = fmt.getValue(props);
+		log(result);
+		assertEquals(expected, result);
+	}
+
 	public void testPropertyParser() throws Exception {
 		IProperties<String> props = new ExpandingProperties<String>(BMProperties.getSystemProperties());
 		props.put("buckminster.component.target", "ant-optional"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -157,6 +176,39 @@ public class PropertyFormatTest extends TestCase {
 
 		assertEquals("http://www.ibiblio.org/maven/ant/jars/ant-optional-1.7.0.jar", result); //$NON-NLS-1$
 		assertEquals("The created URL is \"" + result + '"', verboseResult); //$NON-NLS-1$
+	}
+
+	public void testReplace() {
+		ValueHolder<String> value = new Constant<String>("buckminster.tigris.org:/cvs"); //$NON-NLS-1$
+
+		Replace rpl = new Replace();
+		rpl.addMatch(new Replace.Match("(.*)\\.tigris\\.org", "$1.eclipse.org", false)); //$NON-NLS-1$ //$NON-NLS-2$
+		rpl.addValueHolder(value);
+
+		String expected = "buckminster.eclipse.org:/cvs"; //$NON-NLS-1$
+
+		IProperties<String> props = BMProperties.getSystemProperties();
+		String result = rpl.getValue(props);
+		log(result);
+		assertEquals(expected, result);
+	}
+
+	public void testSplit() {
+		ValueHolder<String> value = new Constant<String>("buckminster.tigris.org:/cvs"); //$NON-NLS-1$
+		String fmtString = "First \"{0}\", second \"{1}\", third \"{2}\", and fourth \"{3}\""; //$NON-NLS-1$
+
+		Format fmt = new Format(fmtString);
+		Split split = new Split("\\.|:", 0); //$NON-NLS-1$
+		split.addValueHolder(value);
+		fmt.addValueHolder(split);
+
+		String expected = new MessageFormat(fmtString).format(new String[] { "buckminster", //$NON-NLS-1$
+				"tigris", "org", "/cvs" }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+
+		IProperties<String> props = BMProperties.getSystemProperties();
+		String result = fmt.getValue(props);
+		log(result);
+		assertEquals(expected, result);
 	}
 
 	public void testSystemProperties() {
