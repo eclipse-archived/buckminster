@@ -22,6 +22,11 @@
    <requires>
       <import plugin="org.tigris.subversion.subclipse.core"/>
       <import plugin="org.tigris.subversion.clientadapter"/>
+      <import plugin="org.tigris.subversion.clientadapter.svnkit"/>
+      <import plugin="org.tmatesoft.svnkit"/>
+      <import plugin="org.tmatesoft.sqljet"/>
+      <import plugin="com.trilead.ssh2"/>
+      <import plugin="net.java.dev.jna"/>
    </requires>
 
    <plugin

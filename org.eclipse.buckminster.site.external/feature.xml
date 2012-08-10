@@ -47,7 +47,42 @@
          unpack="false"/>
 
    <plugin
-         id="org.polarion.eclipse.team.svn.connector.svnkit16"
+         id="org.polarion.eclipse.team.svn.connector.svnkit17"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.tmatesoft.svnkit"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.tmatesoft.sqljet"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="net.java.dev.jna"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.trilead.ssh2"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.tigris.subversion.clientadapter.svnkit"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -55,13 +90,6 @@
 
    <plugin
          id="org.polarion.eclipse.team.svn.connector"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.core.runtime.compatibility.auth"
          download-size="0"
          install-size="0"
          version="0.0.0"

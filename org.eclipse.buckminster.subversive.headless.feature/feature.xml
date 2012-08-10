@@ -21,9 +21,8 @@
 
    <requires>
       <import plugin="org.eclipse.team.svn.core"/>
-      <import plugin="org.polarion.eclipse.team.svn.connector.svnkit16"/>
+      <import plugin="org.polarion.eclipse.team.svn.connector.svnkit17"/>
       <import plugin="org.polarion.eclipse.team.svn.connector"/>
-      <import plugin="org.eclipse.core.runtime.compatibility.auth"/>
    </requires>
 
    <plugin

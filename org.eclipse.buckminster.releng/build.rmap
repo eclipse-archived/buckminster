@@ -12,6 +12,9 @@
   <rm:locator pattern="^org\.eclipse\.[ej]git(\..+)?$" searchPathRef="git"/>
   <rm:locator pattern="^com\.mountainminds\.eclemma\.core$" searchPathRef="emma"/>
   <rm:locator pattern="^org\.tigris\.subversion(\..+)?" searchPathRef="subclipse"/>
+  <rm:locator pattern="^org\.tmatesoft(\..+)?" searchPathRef="subclipse"/>
+  <rm:locator pattern="^com\.trilead\.ssh2(\..+)?" searchPathRef="subclipse"/>
+  <rm:locator pattern="^net\.java\.dev\.jna(\..+)?" searchPathRef="subclipse"/>
   <rm:locator pattern="^org\.polarion(\..+)?" searchPathRef="polarion"/>
   <rm:locator searchPathRef="platform" failOnError="false"/>
   <rm:locator searchPathRef="juno" failOnError="false"/>
@@ -39,7 +42,7 @@
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false">
       <rm:property key="buckminster.source" value="false"/>
       <rm:property key="buckminster.mutable" value="false"/>
-      <rm:uri format="{0}/releases/staging">
+      <rm:uri format="{0}/releases/juno/201206270900/">
         <bc:propertyRef key="eclipse.download.prefix"/>
       </rm:uri>
     </rm:provider>
@@ -64,7 +67,7 @@
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false">
       <rm:property key="buckminster.source" value="false"/>
       <rm:property key="buckminster.mutable" value="false"/>
-      <rm:uri format="http://community.polarion.com/projects/subversive/download/eclipse/2.0/update-site"/>
+      <rm:uri format="http://community.polarion.com/projects/subversive/download/eclipse/3.0/juno-site"/>
     </rm:provider>
   </rm:searchPath>
   <rm:searchPath name="git">
@@ -89,7 +92,7 @@
     <rm:provider componentTypes="osgi.bundle" readerType="url" source="false" mutable="false">
       <rm:property key="buckminster.source" value="false"/>
       <rm:property key="buckminster.mutable" value="false"/>
-      <rm:uri format="http://download.eclipselab.org/eclemma/release/1.4.2/com.mountainminds.eclemma.core_1.4.2.jar"/>
+      <rm:uri format="http://sourceforge.net/projects/eclemma/files/02_EclEmma_Update_Site/1.4.2/com.mountainminds.eclemma.core_1.4.2.jar"/>
     </rm:provider>
   </rm:searchPath>
 </rm:rmap>
