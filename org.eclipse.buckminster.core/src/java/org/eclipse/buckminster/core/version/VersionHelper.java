@@ -137,10 +137,10 @@ public class VersionHelper {
 	 * @return true when the versions are equal irrespective of qualifiers
 	 */
 	public static boolean equalsUnqualified(Version a, Version b) {
-		if (a == null)
-			return b == null;
+		if (a == null || a == Version.emptyVersion)
+			return b == null || b == Version.emptyVersion;
 
-		if (b == null)
+		if (b == null || b == Version.emptyVersion)
 			return false;
 
 		if (a.equals(b))
@@ -175,11 +175,11 @@ public class VersionHelper {
 	}
 
 	public static VersionRange exactRange(Version v) {
-		return v == null ? null : new VersionRange(v, true, v, true);
+		return v == null || v == Version.emptyVersion ? null : new VersionRange(v, true, v, true);
 	}
 
 	public static String getHumanReadable(Version version) {
-		if (version == null)
+		if (version == null || version == Version.emptyVersion)
 			return null;
 
 		StringBuffer buf = new StringBuffer();
@@ -231,7 +231,7 @@ public class VersionHelper {
 	}
 
 	public static String getOriginal(Version version) {
-		if (version == null)
+		if (version == null || version == Version.emptyVersion)
 			return null;
 
 		StringBuffer sb = new StringBuffer();
@@ -240,7 +240,7 @@ public class VersionHelper {
 	}
 
 	public static void getOriginal(Version version, StringBuffer sb) {
-		if (version == null)
+		if (version == null || version == Version.emptyVersion)
 			return;
 
 		String orig = version.getOriginal();
@@ -255,7 +255,7 @@ public class VersionHelper {
 	}
 
 	public static String getQualifier(Version version) {
-		if (version == null || version.getSegmentCount() == 0)
+		if (version == null || version == Version.emptyVersion || version.getSegmentCount() == 0)
 			return null;
 
 		Object last = version.getSegment(version.getSegmentCount() - 1);
@@ -310,7 +310,13 @@ public class VersionHelper {
 	}
 
 	public static VersionRange greaterOrEqualRange(Version version) {
-		return version == null ? null : new VersionRange(version.toString());
+		if (version == null)
+			return null;
+
+		if (version == Version.emptyVersion)
+			return VersionRange.emptyRange;
+
+		return new VersionRange(version.toString());
 	}
 
 	public static Version parseVersion(String versionStr) {

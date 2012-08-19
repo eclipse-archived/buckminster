@@ -35,7 +35,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.equinox.internal.p2.publisher.eclipse.IProductDescriptor;
 import org.eclipse.equinox.p2.metadata.IVersionedId;
 import org.eclipse.equinox.p2.metadata.Version;
-import org.eclipse.equinox.p2.metadata.VersionRange;
 import org.eclipse.pde.internal.core.PDECore;
 import org.eclipse.pde.internal.core.PluginModelManager;
 import org.eclipse.pde.internal.core.ifeature.IFeature;
@@ -245,11 +244,14 @@ public abstract class CSpecFromFeature extends CSpecGenerator {
 		if (licenseFeatureID == null)
 			return null;
 
-		VersionRange range = VersionHelper.exactRange(Version.create(feature.getLicenseFeatureVersion()));
 		ComponentRequestBuilder dep = new ComponentRequestBuilder();
 		dep.setName(licenseFeatureID);
 		dep.setComponentTypeID(IComponentType.ECLIPSE_FEATURE);
-		dep.setVersionRange(range);
+
+		Version licenseFeatureVersion = VersionHelper.parseVersion(feature.getLicenseFeatureVersion());
+		if (licenseFeatureVersion != null)
+			dep.setVersionRange(VersionHelper.exactRange(licenseFeatureVersion));
+
 		if (skipComponent(query, dep))
 			return null;
 
