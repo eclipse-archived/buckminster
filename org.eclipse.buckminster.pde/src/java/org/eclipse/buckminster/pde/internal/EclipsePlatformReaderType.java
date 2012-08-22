@@ -82,6 +82,8 @@ public class EclipsePlatformReaderType extends CatalogReaderType {
 			if (activeMap.isEmpty()) {
 				for (IPluginModelBase model : PluginRegistry.getAllModels()) {
 					BundleDescription desc = model.getBundleDescription();
+					if (desc == null)
+						continue;
 					String id = desc.getSymbolicName();
 					IPluginModelBase[] mbArr = activeMap.get(id);
 					if (mbArr == null)
