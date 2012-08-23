@@ -48,6 +48,8 @@ public class ExcludeFilesTest extends PDETestCase {
 		// The buckminster.properties will redirect the build result to this
 		// location
 		IProject result = wsRoot.getProject("result");
+		if (result.exists())
+			result.delete(true, true, monitor);
 		result.create(monitor);
 		result.open(monitor);
 
