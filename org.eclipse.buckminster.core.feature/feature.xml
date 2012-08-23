@@ -6,7 +6,7 @@
       provider-name="%providerName"
       plugin="org.eclipse.buckminster.ui"
       license-feature="org.eclipse.buckminster.license.feature"
-      license-feature-version="1.0.0.qualifier">
+      license-feature-version="0.0.0">
 
    <description>
       %description

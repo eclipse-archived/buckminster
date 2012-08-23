@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.actor.IPerformManager;
+import org.eclipse.buckminster.core.commands.Build;
 import org.eclipse.buckminster.core.helpers.BMProperties;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.pde.prefs.TargetPlatformPathHandler;
@@ -80,8 +81,14 @@ public class PublishMultiVersionsTest extends PDETestCase {
 		workspace.build(IncrementalProjectBuilder.FULL_BUILD, monitor);
 
 		for (IProject project : boundProjects) {
+			int errors = 0;
 			IMarker[] markers = project.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
-			assertEquals("We've got problem markers on project " + project.getName(), 0, markers.length);
+			for (IMarker marker : markers) {
+				System.err.println(Build.formatMarkerMessage("Marker", marker));
+				if (marker.getAttribute(IMarker.SEVERITY, IMarker.SEVERITY_INFO) == IMarker.SEVERITY_ERROR)
+					++errors;
+			}
+			assertEquals("We've got error markers on project " + project.getName(), 0, errors);
 		}
 
 		// Load the properties

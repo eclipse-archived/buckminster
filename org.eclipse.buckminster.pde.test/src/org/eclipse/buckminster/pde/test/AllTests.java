@@ -18,6 +18,7 @@ public class AllTests {
 		suite.addTestSuite(SourceBundleTest.class);
 		suite.addTestSuite(SourceFeatureTest.class);
 		suite.addTestSuite(CategoryActionTest.class);
+		suite.addTestSuite(ExcludeFilesTest.class);
 		// $JUnit-END$
 		return suite;
 	}

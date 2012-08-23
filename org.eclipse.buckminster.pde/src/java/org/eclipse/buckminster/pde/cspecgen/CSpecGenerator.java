@@ -763,11 +763,18 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		// If we have includes that end with a '/' that are unaffected by
 		// excludes, then we want to retain the directory notion and
 		// not get all files.
+		boolean replaceSep = File.separatorChar != '/';
+
 		String[] excludedFiles = scanner.getExcludedFiles();
 		if (excludedFiles.length > 0) {
 			String[] defaultExcludes = DirectoryScanner.getDefaultExcludes();
 			ArrayList<String> prunedExcludes = new ArrayList<String>();
 			for (String excludedFile : excludedFiles) {
+				if (replaceSep)
+					// Scanner will report files using native separator char. We
+					// don't want that here.
+					excludedFile = excludedFile.replace(File.separatorChar, '/');
+
 				boolean excludedByDefault = false;
 				for (String defaultExclude : defaultExcludes) {
 					if (SelectorUtils.matchPath(defaultExclude, excludedFile)) {
@@ -849,6 +856,9 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 			source = source.replace(DESCRIPTION_VARIABLE_NL, "${target.nl}"); //$NON-NLS-1$
 		}
 		source = Trivial.trim(ExpandingProperties.expand(getProperties(), source, 0));
+		if (source != null && File.separatorChar != '/')
+			// We do all comparison using the forward slash
+			source = source.replace('\\', '/');
 
 		// Our objective is to create a fileset so we don't want the . or ./
 		if (source != null && (".".equals(source) || "./".equals(source))) //$NON-NLS-1$//$NON-NLS-2$
