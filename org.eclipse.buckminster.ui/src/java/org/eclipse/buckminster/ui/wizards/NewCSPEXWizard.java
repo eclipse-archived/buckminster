@@ -7,9 +7,11 @@
  *****************************************************************************/
 package org.eclipse.buckminster.ui.wizards;
 
+import java.io.InputStream;
+import java.io.PrintStream;
+
 import org.eclipse.buckminster.core.helpers.AccessibleByteArrayOutputStream;
 import org.eclipse.ui.INewWizard;
-import java.io.*;
 
 /**
  * This is a new CSPEX wizard. Its role is to create a new file resource in the
@@ -42,6 +44,7 @@ public class NewCSPEXWizard extends NewBMFileWizard implements INewWizard {
 	@Override
 	protected InputStream openContentStream(String containerName, String fileName) {
 		AccessibleByteArrayOutputStream bld = new AccessibleByteArrayOutputStream();
+		@SuppressWarnings("resource")
 		PrintStream contents = new PrintStream(bld);
 		contents.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"); //$NON-NLS-1$
 		contents.println("<cspecExtension"); //$NON-NLS-1$

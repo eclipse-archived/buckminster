@@ -54,8 +54,6 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.team.core.RepositoryProvider;
 
 public class GitReaderType extends CatalogReaderType implements ITeamReaderType {
-	private static final int BATCH_SIZE = 256;
-
 	@Override
 	public String convertFetchFactoryLocator(Map<String, String> fetchFactoryLocator, String componentName) throws CoreException {
 		String repo = fetchFactoryLocator.get("repo"); //$NON-NLS-1$

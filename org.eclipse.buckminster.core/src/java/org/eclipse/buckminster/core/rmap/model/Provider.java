@@ -172,7 +172,7 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted {
 			ProviderMatch result = uriMatcher.getMatch(this, query, monitor);
 			if (result == null) {
 				ResolverDecision decision = query.logDecision(ResolverDecisionType.REJECTING_PROVIDER, getReaderTypeId(), getProviderURI(query),
-						"matcher didn't match any entries");
+						"matcher didn't match any entries"); //$NON-NLS-1$
 				problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, decision.toString(), null));
 			}
 			return result;

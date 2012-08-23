@@ -58,6 +58,7 @@ public class EditableFeatureModel extends ExternalFeatureModel implements IEdita
 
 	public static int getContextQualifierLength(InputStream input) {
 		int ctxQualLen = -1;
+		@SuppressWarnings("resource")
 		Scanner scanner = new Scanner(input);
 		if (scanner.findWithinHorizon(ctxQualLenPattern, 100) != null)
 			ctxQualLen = Integer.parseInt(scanner.match().group(1));

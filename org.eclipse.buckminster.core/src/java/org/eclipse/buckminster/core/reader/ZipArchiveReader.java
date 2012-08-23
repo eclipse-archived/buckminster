@@ -88,13 +88,19 @@ public class ZipArchiveReader extends AbstractCatalogReader {
 	protected <T> T innerReadFile(String fileName, IStreamConsumer<T> consumer, IProgressMonitor monitor) throws CoreException, IOException {
 		ZipInputStream zi = null;
 		try {
+			boolean found = false;
+			T result = null;
 			ZipEntry ze;
 			zi = new ZipInputStream(zipFileReader.open(monitor));
 			while ((ze = zi.getNextEntry()) != null)
-				if (ze.getName().equals(fileName))
-					return consumer.consumeStream(this, fileName, zi, new NullProgressMonitor());
+				if (ze.getName().equals(fileName)) {
+					result = consumer.consumeStream(this, fileName, zi, new NullProgressMonitor());
+					found = true;
+				}
 
-			throw new FileNotFoundException(fileName);
+			if (!found)
+				throw new FileNotFoundException(fileName);
+			return result;
 		} finally {
 			IOUtils.close(zi);
 		}

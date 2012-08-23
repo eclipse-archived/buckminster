@@ -152,9 +152,10 @@ public class CVSReaderType extends CatalogReaderType implements ITeamReaderType 
 
 	@Override
 	public URL convertToURL(String repositoryLocator, VersionMatch versionMatch) throws CoreException {
+		CVSSession session = null;
 		try {
 			VersionSelector versionSelector = versionMatch.getBranchOrTag();
-			CVSSession session = new CVSSession(repositoryLocator);
+			session = new CVSSession(repositoryLocator);
 			ICVSRepositoryLocation location = session.getLocation();
 
 			StringBuilder query = new StringBuilder();
@@ -181,6 +182,9 @@ public class CVSReaderType extends CatalogReaderType implements ITeamReaderType 
 			return uri.toURL();
 		} catch (Exception e) {
 			throw BuckminsterException.wrap(e);
+		} finally {
+			if (session != null)
+				session.close();
 		}
 	}
 

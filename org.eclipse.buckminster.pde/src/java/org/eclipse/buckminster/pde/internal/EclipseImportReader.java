@@ -95,13 +95,14 @@ public class EclipseImportReader extends AbstractRemoteReader implements IPDECon
 			destFile = createTempFile();
 			output = new FileOutputStream(destFile);
 			MonitorUtils.worked(monitor, 10);
+			ZipFile zipFile = null;
 			InputStream input = null;
 			try {
 				File source = getInstallLocation();
 				if (source.isDirectory())
 					input = new FileInputStream(new File(source, fileName));
 				else {
-					ZipFile zipFile = new ZipFile(source);
+					zipFile = new ZipFile(source);
 					ZipEntry entry = zipFile.getEntry(fileName);
 					if (entry == null)
 						throw new FileNotFoundException(source.getName() + '!' + fileName);
@@ -110,6 +111,7 @@ public class EclipseImportReader extends AbstractRemoteReader implements IPDECon
 				FileUtils.copyFile(input, output, MonitorUtils.subMonitor(monitor, 100));
 			} finally {
 				IOUtils.close(input);
+				IOUtils.close(zipFile);
 			}
 			FileHandle fh = new FileHandle(fileName, destFile, true);
 			destFile = null;

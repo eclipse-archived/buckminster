@@ -87,6 +87,7 @@ public class BundleBuilder extends PDEBuilder implements IBuildPropertiesConstan
 						throws CoreException {
 					int len;
 					byte[] buf = new byte[4096];
+					@SuppressWarnings("resource")
 					AccessibleByteArrayOutputStream bld = new AccessibleByteArrayOutputStream();
 					try {
 						while ((len = stream.read(buf)) > 0) {
