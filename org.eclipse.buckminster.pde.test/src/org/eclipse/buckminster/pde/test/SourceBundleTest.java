@@ -60,10 +60,14 @@ public class SourceBundleTest extends PDETestCase {
 		assertEquals("Incorrect number of members in source.jar folder", 1, members.length);
 		IFile jar = (IFile) members[0];
 		JarFile jarFile = new JarFile(jar.getLocation().toFile());
-		Manifest manifest = jarFile.getManifest();
-		Attributes attributes = manifest.getMainAttributes();
-		assertEquals("Bundle-Name not translated in source bundle manifest", "SourceGen Test Bundle Source",
-				attributes.getValue(Constants.BUNDLE_NAME));
-		assertEquals("Bundle-Vendor not translated in source bundle manifest", "TheProvider", attributes.getValue(Constants.BUNDLE_VENDOR));
+		try {
+			Manifest manifest = jarFile.getManifest();
+			Attributes attributes = manifest.getMainAttributes();
+			assertEquals("Bundle-Name not translated in source bundle manifest", "SourceGen Test Bundle Source",
+					attributes.getValue(Constants.BUNDLE_NAME));
+			assertEquals("Bundle-Vendor not translated in source bundle manifest", "TheProvider", attributes.getValue(Constants.BUNDLE_VENDOR));
+		} finally {
+			jarFile.close();
+		}
 	}
 }

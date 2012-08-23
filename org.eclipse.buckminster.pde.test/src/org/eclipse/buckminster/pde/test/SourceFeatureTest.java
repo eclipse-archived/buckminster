@@ -28,13 +28,17 @@ public class SourceFeatureTest extends CommonPdeProjectTest {
 		assertEquals("Incorrect number of members in source.jar folder", 1, members.length);
 
 		// Assert source feature manifest contains desired entries
+		Set<String> sourceBundles = new HashSet<String>();
 		IFile jar = (IFile) members[0];
 		JarFile jarFile = new JarFile(jar.getLocation().toFile());
-		ZipEntry manifest = jarFile.getEntry("feature.xml");
-		IFeature feature = FeatureModelReader.readFeatureModel(jarFile.getInputStream(manifest)).getFeature();
-		Set<String> sourceBundles = new HashSet<String>();
-		for (IFeaturePlugin iFeaturePlugin : feature.getPlugins()) {
-			sourceBundles.add(iFeaturePlugin.getId());
+		try {
+			ZipEntry manifest = jarFile.getEntry("feature.xml");
+			IFeature feature = FeatureModelReader.readFeatureModel(jarFile.getInputStream(manifest)).getFeature();
+			for (IFeaturePlugin iFeaturePlugin : feature.getPlugins()) {
+				sourceBundles.add(iFeaturePlugin.getId());
+			}
+		} finally {
+			jarFile.close();
 		}
 		assertTrue("Source entry for included plugin is missing", sourceBundles.contains("common.project.test.plugin.source"));
 		assertTrue("Source entry for included fragment is missing", sourceBundles.contains("common.project.test.fragment.source"));
