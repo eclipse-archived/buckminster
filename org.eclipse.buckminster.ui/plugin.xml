@@ -218,21 +218,4 @@
           </view>
        </perspectiveExtension>
     </extension>
-    <extension
-          id="org.eclipse.buckminster.ui.actions.editCSpec"
-          name="EditCSpecObjectAction"
-          point="org.eclipse.ui.popupMenus">
-       <objectContribution
-             adaptable="true"
-             id="org.eclipse.buckminster.ui.cspecObjectContribution"
-             objectClass="org.eclipse.buckminster.core.cspec.model.CSpec">
-          <action
-                class="org.eclipse.buckminster.ui.ViewCSpecAction"
-                enablesFor="+"
-                id="org.eclipse.buckminster.ui.openCSpecAction"
-                label="Open"
-                menubarPath="additions">
-          </action>
-       </objectContribution>
-    </extension>
 </plugin>
