@@ -111,7 +111,12 @@ public class EclipseImportReader extends AbstractRemoteReader implements IPDECon
 				FileUtils.copyFile(input, output, MonitorUtils.subMonitor(monitor, 100));
 			} finally {
 				IOUtils.close(input);
-				IOUtils.close(zipFile);
+				if (zipFile != null)
+					try {
+						zipFile.close();
+					} catch (IOException e) {
+						// Ignore
+					}
 			}
 			FileHandle fh = new FileHandle(fileName, destFile, true);
 			destFile = null;
