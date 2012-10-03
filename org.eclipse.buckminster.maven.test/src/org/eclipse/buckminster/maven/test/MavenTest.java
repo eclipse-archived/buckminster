@@ -30,7 +30,7 @@ public class MavenTest extends AbstractTestCase
 
 	public void testTransitive() throws Exception
 	{
-		IResolver resolver = createResolver("org.slf4j/slf4j-site", "maven", "[1.6.6,1.6.6]");
+		IResolver resolver = createResolver("org.slf4j/slf4j-site", "maven", "[1.6.6,1.6.6]", "Triplet");
 		BillOfMaterials bom = resolver.resolve(new NullProgressMonitor());
 		CSpec csp = bom.getResolution().getCSpec();
 		Utils.serialize(csp, System.out);
