@@ -6,9 +6,7 @@ import java.util.Collection;
 
 import org.eclipse.equinox.internal.p2.publisher.eclipse.ExecutablesDescriptor;
 import org.eclipse.equinox.p2.metadata.Version;
-import org.eclipse.equinox.p2.publisher.AbstractPublisherAction;
 import org.eclipse.equinox.p2.publisher.IPublisherAction;
-import org.eclipse.osgi.service.environment.Constants;
 
 @SuppressWarnings("restriction")
 public class ApplicationLauncherAction extends org.eclipse.equinox.p2.publisher.eclipse.ApplicationLauncherAction {
@@ -26,29 +24,6 @@ public class ApplicationLauncherAction extends org.eclipse.equinox.p2.publisher.
 		this.version = version;
 		this.flavor = flavor;
 		this.location = location;
-	}
-
-	@Override
-	protected ExecutablesDescriptor computeExecutables(String configSpec) {
-		// See if we know about an executables feature then use it as the source
-		String os = AbstractPublisherAction.parseConfigSpec(configSpec)[1];
-		ExecutablesDescriptor result = ExecutablesDescriptor.createExecutablesFromFeature(location, configSpec);
-		if (result == null) {
-			// otherwise, assume that we are running against an Eclipse install
-			// and do the default thing
-			result = ExecutablesDescriptor.createDescriptor(os, "eclipse", location); //$NON-NLS-1$
-		}
-		if (Constants.OS_MACOSX.equals(os)) {
-			String name = result.getExecutableName();
-			if (name != null) {
-				// First character of the name should be in upper case.
-				StringBuilder appNameBld = new StringBuilder();
-				appNameBld.append(Character.toUpperCase(name.charAt(0)));
-				appNameBld.append(name, 1, name.length());
-				result.setExecutableName(appNameBld.toString(), false);
-			}
-		}
-		return result;
 	}
 
 	@Override
