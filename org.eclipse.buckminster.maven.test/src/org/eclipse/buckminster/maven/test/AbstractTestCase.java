@@ -53,7 +53,12 @@ public abstract class AbstractTestCase extends TestCase
 
 	protected IResolver createResolver(String componentName, String componentType) throws Exception
 	{
-		ComponentRequest request = new ComponentRequest(componentName, componentType, null);
+		return createResolver(componentName, componentType, null);
+	}
+
+	protected IResolver createResolver(String componentName, String componentType, String versionDesignator) throws Exception
+	{
+		ComponentRequest request = new ComponentRequest(componentName, componentType, versionDesignator, "OSGi");
 		ComponentQueryBuilder queryBld = new ComponentQueryBuilder();
 		queryBld.setRootRequest(request);
 		queryBld.setResourceMapURL(getRMAP().toString());
