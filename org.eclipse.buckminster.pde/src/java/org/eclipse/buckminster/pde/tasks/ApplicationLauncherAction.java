@@ -16,14 +16,11 @@ public class ApplicationLauncherAction extends org.eclipse.equinox.p2.publisher.
 
 	private final String flavor;
 
-	private final File location;
-
 	public ApplicationLauncherAction(String id, Version version, String flavor, String executableName, File location, String[] configSpecs) {
 		super(id, version, flavor, executableName, location, configSpecs);
 		this.id = id;
 		this.version = version;
 		this.flavor = flavor;
-		this.location = location;
 	}
 
 	@Override
