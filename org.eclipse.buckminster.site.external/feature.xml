@@ -25,6 +25,10 @@
          id="org.eclipse.buckminster.subversive.headless.feature"
          version="0.0.0"/>
 
+   <includes
+         id="org.eclipse.buckminster.subversive.svnkit16.headless.feature"
+         version="0.0.0"/>
+
    <plugin
          id="org.tigris.subversion.subclipse.core"
          download-size="0"
@@ -41,6 +45,13 @@
 
    <plugin
          id="org.eclipse.team.svn.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.polarion.eclipse.team.svn.connector.svnkit16"
          download-size="0"
          install-size="0"
          version="0.0.0"
