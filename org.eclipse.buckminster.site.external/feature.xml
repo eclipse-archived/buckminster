@@ -29,6 +29,45 @@
          id="org.eclipse.buckminster.subversive.svnkit16.headless.feature"
          version="0.0.0"/>
 
+   <includes
+         id="org.eclipse.buckminster.emma.headless.feature"
+         version="0.0.0"/>
+
+   <plugin
+         id="com.mountainminds.eclemma.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.mountainminds.eclemma.asm"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.jacoco.report"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.jacoco.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.jacoco.agent"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
    <plugin
          id="org.tigris.subversion.subclipse.core"
          download-size="0"

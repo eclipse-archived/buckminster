@@ -16,6 +16,9 @@ public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.eclipse.buckminster.emma.internal.messages"; //$NON-NLS-1$
 
 	public static String Emma_No_coverage_sessions;
+
+	public static String Emma_Merge_sessions_description;
+
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);

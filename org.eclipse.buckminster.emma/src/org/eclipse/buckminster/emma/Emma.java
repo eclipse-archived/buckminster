@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.buckminster.emma;
 
+import java.text.MessageFormat;
+import java.util.Date;
 import java.util.List;
 
 import org.eclipse.buckminster.cmdline.Option;
@@ -24,25 +26,31 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import com.mountainminds.eclemma.core.CoverageTools;
 import com.mountainminds.eclemma.core.ICoverageSession;
 import com.mountainminds.eclemma.core.ISessionExporter;
+import com.mountainminds.eclemma.core.ISessionExporter.ExportFormat;
+import com.mountainminds.eclemma.core.ISessionManager;
 
 public class Emma extends JUnitCommand {
 	private static final OptionDescriptor MERGE_DESCRIPTOR = new OptionDescriptor('m', "merge", OptionValueType.NONE); //$NON-NLS-1$
 
-	private static final OptionDescriptor EMMA_DESCRIPTOR = new OptionDescriptor(null, "emma", OptionValueType.REQUIRED); //$NON-NLS-1$
+	private static final OptionDescriptor EXEC_DESCRIPTOR = new OptionDescriptor(null, "exec", OptionValueType.REQUIRED); //$NON-NLS-1$
 
-	private static final OptionDescriptor TXT_DESCRIPTOR = new OptionDescriptor(null, "txt", OptionValueType.REQUIRED); //$NON-NLS-1$
+	private static final OptionDescriptor CSV_DESCRIPTOR = new OptionDescriptor(null, "csv", OptionValueType.REQUIRED); //$NON-NLS-1$
 
 	private static final OptionDescriptor HTML_DESCRIPTOR = new OptionDescriptor(null, "html", OptionValueType.REQUIRED); //$NON-NLS-1$
+
+	private static final OptionDescriptor HTMLZIP_DESCRIPTOR = new OptionDescriptor(null, "htmlzip", OptionValueType.REQUIRED); //$NON-NLS-1$
 
 	private static final OptionDescriptor XML_DESCRIPTOR = new OptionDescriptor(null, "xml", OptionValueType.REQUIRED); //$NON-NLS-1$
 
 	private boolean merge;
 
-	private String emma;
+	private String exec;
+
+	private String htmlzip;
 
 	private String xml;
 
-	private String txt;
+	private String csv;
 
 	private String html;
 
@@ -56,9 +64,9 @@ public class Emma extends JUnitCommand {
 		super.getOptionDescriptors(appendHere);
 
 		appendHere.add(MERGE_DESCRIPTOR);
-		appendHere.add(EMMA_DESCRIPTOR);
+		appendHere.add(EXEC_DESCRIPTOR);
 		appendHere.add(HTML_DESCRIPTOR);
-		appendHere.add(TXT_DESCRIPTOR);
+		appendHere.add(CSV_DESCRIPTOR);
 		appendHere.add(XML_DESCRIPTOR);
 	}
 
@@ -68,47 +76,51 @@ public class Emma extends JUnitCommand {
 
 		if (option.is(MERGE_DESCRIPTOR))
 			merge = true;
-		else if (option.is(EMMA_DESCRIPTOR))
-			emma = option.getValue();
+		else if (option.is(EXEC_DESCRIPTOR))
+			exec = option.getValue();
 		else if (option.is(HTML_DESCRIPTOR))
 			html = option.getValue();
-		else if (option.is(TXT_DESCRIPTOR))
-			txt = option.getValue();
+		else if (option.is(HTMLZIP_DESCRIPTOR))
+			htmlzip = option.getValue();
+		else if (option.is(CSV_DESCRIPTOR))
+			csv = option.getValue();
 		else if (option.is(XML_DESCRIPTOR))
 			xml = option.getValue();
 	}
 
 	@Override
 	protected int internalRun(IProgressMonitor monitor) throws Exception {
-		ICoverageSession[] oldSessions = CoverageTools.getSessionManager().getSessions();
+		final ISessionManager sm = CoverageTools.getSessionManager();
+		List<ICoverageSession> oldSessions = sm.getSessions();
 
 		int result = super.internalRun(monitor);
 
 		// check for coverage sessions
-		ICoverageSession[] sessions = CoverageTools.getSessionManager().getSessions();
-		if (sessions == null || sessions.length == 0 || (oldSessions != null && oldSessions.length == sessions.length))
+		List<ICoverageSession> sessions = sm.getSessions();
+		if (sessions == null || sessions.isEmpty() || (oldSessions != null && oldSessions.size() == sessions.size()))
 			throw BuckminsterException.fromMessage(Messages.Emma_No_coverage_sessions);
 
 		// use newest session as default. merge older sessions if requested
-		ICoverageSession session = sessions[sessions.length - 1];
+		ICoverageSession session = sessions.get(sessions.size() - 1);
 		if (merge)
-			for (int i = sessions.length - 2; i >= 0; i--)
-				session = session.merge(sessions[i], session.getDescription() + " + " + sessions[i].getDescription()); //$NON-NLS-1$
+			sm.mergeSessions(sessions, MessageFormat.format(Messages.Emma_Merge_sessions_description, new Date()), monitor);
 
 		// export in requested formats
-		if (emma != null)
-			export(session, ISessionExporter.EMMA_FORMAT, emma, monitor);
+		if (exec != null)
+			export(session, ExportFormat.EXEC, exec, monitor);
 		if (html != null)
-			export(session, ISessionExporter.HTML_FORMAT, html, monitor);
-		if (txt != null)
-			export(session, ISessionExporter.TXT_FORMAT, txt, monitor);
+			export(session, ExportFormat.HTML, html, monitor);
+		if (csv != null)
+			export(session, ExportFormat.CSV, csv, monitor);
 		if (xml != null)
-			export(session, ISessionExporter.XML_FORMAT, xml, monitor);
+			export(session, ExportFormat.XML, xml, monitor);
+		if (htmlzip != null)
+			export(session, ExportFormat.HTMLZIP, htmlzip, monitor);
 
 		return result;
 	}
 
-	private void export(ICoverageSession coverageSession, int format, String destinationFile, IProgressMonitor monitor) throws CoreException {
+	private void export(ICoverageSession coverageSession, ExportFormat format, String destinationFile, IProgressMonitor monitor) throws CoreException {
 		ISessionExporter exporter = CoverageTools.getExporter(coverageSession);
 		exporter.setDestination(destinationFile);
 		exporter.setFormat(format);

@@ -12,9 +12,10 @@ usage: emma
        [{--stdout}] [<path where stdout will be written to or "-" for passthrough>]]
        [{--stderr}] [<path where stderr will be written to or "-" for passthrough>]]
        [{-m | --merge}]
-       [{--emma}] <path where emma coverage output will be written to>]
+       [{--exec}] <path where exec coverage output will be written to>]
        [{--html}] <path where html coverage output will be written to>]
-       [{--txt}] <path where txt coverage output will be written to>]
+       [{--htmlzip}] <path where htmlzip coverage output will be written to>]
+       [{--csv}] <path where csv coverage output will be written to>]
        [{--xml}] <path where xml coverage output will be written to>]
 
  -?
@@ -71,14 +72,17 @@ usage: emma
   Note that you have to execute all test sessions within one Buckminster script. Otherwise
   the code coverage information of previous test runs is deleted and merging is not possible.
 
---emma <path where emma coverage output will be written to>
-  If set, writes coverage output in native Emma format to the specified path.
+--exec <path where execution data output will be written to>
+  If set, writes execution data report to the specified path.
   
---txt <path where txt coverage output will be written to>
-  If set, writes coverage output in plain TXT format to the specified path.
+--csv <path where csv coverage output will be written to>
+  If set, writes coverage output in CSV format to the specified path.
 
 --html <path where html coverage output will be written to>
   If set, writes coverage output in HTML format to the specified path.
 
---xml <path where xml coverage output will be written to>
+--htmlzip <path where zipped html coverage output will be written to>
+  If set, writes coverage output in zipped HTML format to the specified path.
+
+---xml <path where xml coverage output will be written to>
   If set, writes coverage output in XML format to the specified path.

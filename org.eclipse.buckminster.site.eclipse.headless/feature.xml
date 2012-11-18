@@ -51,10 +51,6 @@
          id="org.eclipse.buckminster.product"
          version="0.0.0"/>
 
-   <includes
-         id="org.eclipse.buckminster.emma.headless.feature"
-         version="0.0.0"/>
-
    <plugin
          id="org.eclipse.emf.ecore"
          download-size="0"

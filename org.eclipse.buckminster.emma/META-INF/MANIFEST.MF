@@ -9,7 +9,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6,
 Require-Bundle: org.eclipse.buckminster.junit,
  org.eclipse.buckminster.cmdline,
  org.eclipse.buckminster.core,
- com.mountainminds.eclemma.core,
+ com.mountainminds.eclemma.core;bundle-version="2.2.0",
  org.eclipse.core.runtime,
  org.eclipse.debug.core,
  org.eclipse.buckminster.runtime
