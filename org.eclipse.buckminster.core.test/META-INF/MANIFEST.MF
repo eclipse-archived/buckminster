@@ -12,6 +12,7 @@ Require-Bundle: org.eclipse.buckminster.core,
  org.eclipse.buckminster.cmdline,
  org.eclipse.equinox.p2.metadata,
  org.eclipse.ecf,
+ org.eclipse.core.resources;bundle-version="3.8.1",
  org.junit;bundle-version="4.8.2"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6,
  J2SE-1.5

@@ -35,7 +35,15 @@ import org.eclipse.buckminster.core.helpers.BMProperties;
 import org.eclipse.buckminster.download.DownloadManager;
 import org.eclipse.buckminster.sax.TopHandler;
 import org.eclipse.buckminster.sax.Utils;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -118,6 +126,31 @@ public class PropertyFormatTest extends TestCase {
 
 		log(result);
 		assertEquals(expected, result);
+	}
+
+	public void testExpandingResourcePath() throws Exception {
+		URL dotProjectResource = getClass().getResource("/testData/projects/buckminster.test.build_a/.project"); // $NON-NLS
+		assertNotNull("No resource found for .project file", dotProjectResource);
+		dotProjectResource = FileLocator.toFileURL(dotProjectResource);
+		assertNotNull("Unable to resolve .project resource into a file", dotProjectResource);
+		File dotProjectFile = new File(dotProjectResource.toURI());
+
+		IWorkspace workspace = ResourcesPlugin.getWorkspace();
+		IProject project = workspace.getRoot().getProject("buckminster.test.build_a");
+		if (!project.isOpen()) {
+			IProgressMonitor monitor = new NullProgressMonitor();
+			if (!project.exists()) {
+				IProjectDescription projectDesc = workspace.loadProjectDescription(Path.fromOSString(dotProjectFile.getAbsolutePath()));
+				project.create(projectDesc, monitor);
+			}
+			project.open(monitor);
+		}
+
+		assertTrue("No open project was found after materialization", project.isOpen());
+		ExpandingProperties<String> properties = new ExpandingProperties<String>();
+		String projectPath = properties.get("workspace_loc:buckminster.test.build_a");
+		assertNotNull("workspace_loc:<project name> doesn't resolve existing project", projectPath);
+		assertEquals("Unexpected physical project location", new File(projectPath), dotProjectFile.getParentFile());
 	}
 
 	public void testExpressions() {
