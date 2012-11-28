@@ -36,6 +36,7 @@ public class RMapTest extends PDETestCase {
 
 			ComponentQueryBuilder queryBld = new ComponentQueryBuilder();
 			queryBld.setRootRequest(request);
+			queryBld.getDeclaredProperties().put("buckminster.download.source", "true");
 			queryBld.setResourceMapURL(this.getClass().getResource("test.rmap").toString()); //$NON-NLS-1$
 
 			AdvisorNodeBuilder nodeBld = queryBld.addAdvisorNode();

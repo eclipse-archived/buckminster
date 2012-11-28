@@ -9,10 +9,13 @@
  *******************************************************************************/
 package org.eclipse.buckminster.core.resolver;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
+import org.eclipse.buckminster.core.cspec.model.CSpec;
+import org.eclipse.buckminster.core.materializer.IMaterializer;
 import org.eclipse.buckminster.core.metadata.model.BOMNode;
 import org.eclipse.buckminster.core.metadata.model.GeneratorNode;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
@@ -60,6 +63,18 @@ class ResolverNodeWithJob extends ResolverNode {
 	private final ResourceMapResolver resolver;
 
 	private final NodeResolutionJob job;
+
+	private static final String SOURCE_SUFFIX = ".source"; //$NON-NLS-1$
+
+	private static final String SOURCE_FEATURE_SUFFIX = ".source.feature"; //$NON-NLS-1$
+
+	public static String getIdWithoutSource(String sourceId) {
+		if (sourceId.endsWith(SOURCE_SUFFIX))
+			return sourceId.substring(0, sourceId.length() - SOURCE_SUFFIX.length());
+		if (sourceId.endsWith(SOURCE_FEATURE_SUFFIX))
+			return sourceId.substring(0, sourceId.length() - SOURCE_FEATURE_SUFFIX.length()) + ".feature"; //$NON-NLS-1$
+		return null;
+	}
 
 	ResolverNodeWithJob(ResourceMapResolver resolver, ResolutionContext context, QualifiedDependency qDep, String requestorInfo) {
 		super(context.getNodeQuery(qDep), requestorInfo);
@@ -156,22 +171,34 @@ class ResolverNodeWithJob extends ResolverNode {
 		// into
 		// deadlocks.
 		//
-		String tagInfo = resolution.getCSpec().getTagInfo(getTagInfo());
-		ResolverNode[] children = new ResolverNode[top];
+		CSpec cspec = resolution.getCSpec();
+		String tagInfo = cspec.getTagInfo(getTagInfo());
+		boolean isInSourceForm = IMaterializer.WORKSPACE.equals(resolution.getProvider().getReaderType().getRecommendedMaterializer());
+		List<ResolverNode> children = null;
 		boolean didSchedule = false;
 		for (int idx = 0; idx < top; ++idx) {
 			if (isInvalidated())
 				return false;
 
 			BOMNode childNode = nodeChildren.get(idx);
+			QualifiedDependency childReq = childNode.getQualifiedDependency();
+			if (isInSourceForm && childReq.getRequest().isSyntheticSource()) {
+				String name = childReq.getRequest().getName();
+				if (getIdWithoutSource(name).equals(cspec.getName()))
+					// Don't resolve source for source components
+					continue;
+			}
+
 			ComponentQuery childQuery = childNode.getQuery();
 			ResolutionContext childContext = (childQuery == null) ? context : new ResolutionContext(childQuery, context);
-			ResolverNode child = resolver.getResolverNode(childContext, childNode.getQualifiedDependency(), tagInfo);
-			children[idx] = child;
+			ResolverNode child = resolver.getResolverNode(childContext, childReq, tagInfo);
+			if (children == null)
+				children = new ArrayList<ResolverNode>();
+			children.add(child);
 			if (((ResolverNodeWithJob) child).buildTree(childNode))
 				didSchedule = true;
 		}
-		setResolution(resolution, children);
+		setResolution(resolution, children == null ? null : children.toArray(new ResolverNode[children.size()]));
 		return didSchedule;
 	}
 
