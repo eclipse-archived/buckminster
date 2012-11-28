@@ -190,7 +190,7 @@ public class ResourceMapResolver extends LocalResolver implements IJobChangeList
 			ComponentQuery cquery = null;
 			URL rmapURL = null;
 			ResourceMap rmap = null;
-			boolean mayUseLocalResolver = true;
+			boolean mayUseLocalResolver = query.useWorkspace();
 
 			if (query.useResolutionService()) {
 				cquery = query.getComponentQuery();

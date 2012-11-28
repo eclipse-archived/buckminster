@@ -43,7 +43,7 @@
 
 	<simpleType name="propertyKey">
 		<restriction base="string">
-			<pattern value="[A-Za-z0-9_.${}/]+" />
+			<pattern value="[A-Za-z0-9_.${}/:]+" />
 		</restriction>
 	</simpleType>
 

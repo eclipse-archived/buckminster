@@ -309,7 +309,17 @@ public class ExpandingProperties<T extends Object> implements IProperties<T>, IE
 	@Override
 	public T get(Object key, Map<String, T> expansionScope) {
 		ValueHolder<T> vh = map.get(key);
-		return vh == null ? null : vh.checkedGetValue(expansionScope, 0);
+		if (vh != null)
+			return vh.checkedGetValue(expansionScope, 0);
+
+		if (key instanceof String)
+			try {
+				@SuppressWarnings("unchecked")
+				T value = (T) resolveEclipseVariables((String) key);
+				return value;
+			} catch (ClassCastException e) {
+			}
+		return null;
 	}
 
 	@Override

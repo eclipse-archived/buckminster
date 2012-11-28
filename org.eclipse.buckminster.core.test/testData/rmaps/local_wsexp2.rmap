@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rmap
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.eclipse.org/buckminster/RMap-1.0"
+	xmlns:bc="http://www.eclipse.org/buckminster/Common-1.0"
+	xmlns:mp="http://www.eclipse.org/buckminster/MavenProvider-1.0"
+	xmlns:pp="http://www.eclipse.org/buckminster/PDEMapProvider-1.0">
+	
+	<property key="proj" value="${workspace_loc:buckminster.test.build_a}" />
+
+	<searchPath name="default">
+		<provider readerType="local" componentTypes="buckminster">
+			<uri format="{0}">
+				<bc:propertyRef key="proj"/>
+			</uri>
+		</provider>
+	</searchPath>
+
+	<locator searchPathRef="default" pattern=".*" />
+</rmap>
+
