@@ -158,8 +158,8 @@ public class Logger {
 				streams[idx] = receiver.start("Buckminster log", "org.eclipse.ui.MessageConsole", true, errorStream); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 			return new PrintStream(new MultiTeeOutputStream(streams), true);
-		} catch (Throwable t) {
-			t.printStackTrace(System.err);
+		} catch (Exception t) {
+			// Workbench is not present
 			return sysStream;
 		}
 	}
