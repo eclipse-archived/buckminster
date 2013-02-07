@@ -1,11 +1,17 @@
 <rm:rmap
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:bc="http://www.eclipse.org/buckminster/Common-1.0"
 	xmlns:rm="http://www.eclipse.org/buckminster/RMap-1.0"
 	xmlns:pmp="http://www.eclipse.org/buckminster/PDEMapProvider-1.0">
 
+	<rm:property key="git.clone.dir" value="${user.home}/git"/>
+
 	<rm:searchPath name="pdemap">
-		<rm:provider xsi:type="pmp:PDEMapProvider" readerType="cvs" componentTypes="eclipse.project" mutable="false" source="true">
-			<rm:uri format=":pserver:anonymous@dev.eclipse.org:/cvsroot/eclipse,org.eclipse.releng/maps"/>
+		<rm:provider xsi:type="pmp:PDEMapProvider" readerType="git" componentTypes="eclipse.project" mutable="false" source="true">
+			<rm:property key="git.remote.uri" value="git://git.eclipse.org/gitroot/platform/eclipse.platform.releng.maps.git"/>
+			<rm:uri format="{0}/eclipse.platform.releng.maps,org.eclipse.releng/maps">
+				<bc:propertyRef key="git.clone.dir"/>
+			</rm:uri>
 		</rm:provider>
 	</rm:searchPath>
 

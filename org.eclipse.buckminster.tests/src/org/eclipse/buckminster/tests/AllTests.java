@@ -9,7 +9,10 @@ public class AllTests {
 		TestSuite suite = new TestSuite(AllTests.class.getName());
 		//$JUnit-BEGIN$
 		suite.addTest(org.eclipse.buckminster.core.test.AllTests.suite());
-		suite.addTest(org.eclipse.buckminster.cvspkg.test.AllTests.suite());
+
+		// Disabled now since all tests were using the now disabled cvs repos at Eclipse
+		// suite.addTest(org.eclipse.buckminster.cvspkg.test.AllTests.suite());
+
 		suite.addTest(org.eclipse.buckminster.download.test.AllTests.suite());
 		suite.addTest(org.eclipse.buckminster.executor.test.AllTests.suite());
 		suite.addTest(org.eclipse.buckminster.git.test.AllTests.suite());
