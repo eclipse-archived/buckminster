@@ -91,6 +91,21 @@
 		</sequential>
 	</macrodef>
 
+	<macrodef name="extractProductUid">
+		<attribute name="file"/>
+		<attribute name="property"/>
+		<sequential>
+			<loadfile property="@{property}" srcfile="@{file}">
+				<filterchain>
+					<striplinebreaks/>
+					<replaceregex
+						pattern="^.*&lt;product[^&gt;]*\suid=&quot;([^&quot;]*)&quot;.*$"
+						replace="\1"/>
+				</filterchain>
+			</loadfile>
+		</sequential>
+	</macrodef>
+
 	<macrodef name="extractProductName">
 		<attribute name="file"/>
 		<attribute name="property"/>
