@@ -117,7 +117,7 @@ public final class ProviderMatch implements Comparable<ProviderMatch> {
 	}
 
 	public IConnectContext getConnectContext() {
-		IConnectContext cctx = provider.getConnectContext();
+		IConnectContext cctx = provider.getConnectContext(query.getProperties());
 		if (cctx == null)
 			cctx = getNodeQuery().getComponentQuery().getConnectContext();
 		return cctx;

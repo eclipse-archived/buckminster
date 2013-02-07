@@ -30,12 +30,19 @@ import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.sax.ISaxableElement;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.ecf.core.security.ConnectContextFactory;
+import org.eclipse.ecf.core.security.IConnectContext;
 import org.eclipse.osgi.util.NLS;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 public class MavenProvider extends Provider {
+
+	public static final String MAVEN_PASSWORD_PROPERTY_KEY = "maven.password"; //$NON-NLS-1$
+
+	public static final String MAVEN_USERNAME_PROPERTY_KEY = "maven.username"; //$NON-NLS-1$
+
 	public static final String BM_MAVEN_PROVIDER_NS = XMLConstants.BM_PREFIX + "MavenProvider-1.0"; //$NON-NLS-1$
 
 	public static final String BM_MAVEN_PROVIDER_PREFIX = "mp"; //$NON-NLS-1$
@@ -110,6 +117,8 @@ public class MavenProvider extends Provider {
 	private final Map<String, Scope> scopes;
 
 	private final boolean transitive;
+
+	private IConnectContext connectContext;
 
 	public MavenProvider(SearchPath searchPath, String remoteReaderType, String[] componentTypes, VersionConverterDesc versionConverterDesc,
 			Format uri, Filter resolutionFilter, Map<String, String> properties, Documentation documentation, Map<String, MapEntry> mappings,
@@ -201,6 +210,39 @@ public class MavenProvider extends Provider {
 			}
 		}
 		return getDefaultName(groupId, artifactId);
+	}
+
+	/**
+	 * Get connection context for {@link MavenProvider} using two optional
+	 * properties, {@value #MAVEN_USERNAME_PROPERTY_KEY} and
+	 * {@value #MAVEN_PASSWORD_PROPERTY_KEY}. These properties can be specified
+	 * in the provider, the rmap or the props parameter and allow for property
+	 * expansion.
+	 * 
+	 * @param props
+	 *            A property Map of additional properties (combined with the
+	 *            provider and rmap properties)
+	 * @return A connect context or <code>null</code>.
+	 */
+	@Override
+	public IConnectContext getConnectContext(Map<String, ? extends Object> props) {
+		if (this.connectContext == null) {
+			props = getProperties(props);
+			String username = (String) props.get(MAVEN_USERNAME_PROPERTY_KEY);
+			String password = (String) props.get(MAVEN_PASSWORD_PROPERTY_KEY);
+			if (username == null && password == null) {
+				connectContext = super.getConnectContext(props);
+			}
+			if (username != null) {
+				if (password != null) {
+					connectContext = ConnectContextFactory.createUsernamePasswordConnectContext(username, password);
+				}
+				connectContext = ConnectContextFactory.createUsernamePasswordConnectContext(username, null);
+			} else if (password != null) {
+				connectContext = ConnectContextFactory.createPasswordConnectContext(password);
+			}
+		}
+		return this.connectContext;
 	}
 
 	IMapEntry getGroupAndArtifact(String name) throws CoreException {

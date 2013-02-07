@@ -268,6 +268,18 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted {
 		return null;
 	}
 
+	/**
+	 * Get a connection context given a properties map. This allows for
+	 * properties and property expansion to be used from higher precedence
+	 * scopes.
+	 * 
+	 * @param props
+	 * @return default implementation returns <code>null</code>.
+	 */
+	public IConnectContext getConnectContext(Map<String, ? extends Object> props) {
+		return null;
+	}
+
 	@Override
 	public String getDefaultTag() {
 		return TAG;

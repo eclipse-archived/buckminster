@@ -46,7 +46,7 @@ public abstract class AbstractVersionFinder implements IVersionFinder {
 
 	@Override
 	public IConnectContext getConnectContext() {
-		IConnectContext cctx = provider.getConnectContext();
+		IConnectContext cctx = provider.getConnectContext(query.getProperties());
 		if (cctx == null)
 			cctx = query.getComponentQuery().getConnectContext();
 		return cctx;
