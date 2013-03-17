@@ -160,6 +160,16 @@ public class ProductAction extends org.eclipse.equinox.p2.publisher.eclipse.Prod
 				continue;
 			}
 
+			if (product.useFeatures() && symbolicId.endsWith(".feature.group")) { //$NON-NLS-1$
+				// Strip '.feature.group'
+				String legacyId = symbolicId.substring(0, symbolicId.length() - 14);
+				for (IVersionedId feature : product.getFeatures())
+					if (legacyId.equals(feature.getId())) {
+						innerResult.addIU(iu, IPublisherResult.ROOT);
+						continue nextIU;
+					}
+			}
+
 			for (BundleInfo configBi : product.getBundleInfos()) {
 				if (!symbolicId.equals(configBi.getSymbolicName()))
 					continue;
