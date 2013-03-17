@@ -18,9 +18,9 @@
    </license>
 
    <url>
-      <update url="http://www.eclipse.org/downloads/download.php?file=/tools/buckminster/headless-4.2/&amp;protocol=http&amp;format=xml"/>
-      <discovery label="Buckminster External Juno Headless" url="http://download.cloudsmith.com/buckminster/external-4.2"/>
-      <discovery label="Buckminster Juno Headless" url="http://download.eclipse.org/tools/buckminster/headless-4.2"/>
+      <update url="http://www.eclipse.org/downloads/download.php?file=/tools/buckminster/headless-4.3/&amp;protocol=http&amp;format=xml"/>
+      <discovery label="Buckminster External Juno Headless" url="http://download.cloudsmith.com/buckminster/external-4.3"/>
+      <discovery label="Buckminster Juno Headless" url="http://download.eclipse.org/tools/buckminster/headless-4.3"/>
    </url>
 
    <includes
