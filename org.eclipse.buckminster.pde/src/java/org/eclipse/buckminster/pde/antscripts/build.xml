@@ -8,6 +8,16 @@
 -->
 <project name="org.eclipse.buckminster.pde.misc">
 
+	<scriptdef language="javascript" name="unqualified.version">
+		<attribute name="version" />
+		<attribute name="property" />
+
+		project.setProperty( attributes.get( "property" ),
+			org.eclipse.buckminster.core.version.VersionHelper.replaceQualifier(
+			org.eclipse.equinox.p2.metadata.Version.create(
+			attributes.get( "version" )), null).toString() );
+	</scriptdef>
+
 	<!-- Extract the version of a bundle from its MANIFEST.MF file.
 	     Parameters:
 	         file: The full path to the manifest file
@@ -26,6 +36,15 @@
 					<striplinebreaks/>
 				</filterchain>
 			</loadfile>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="extractBundleVersionUnqualified">
+		<attribute name="file" />
+		<attribute name="property" />
+		<sequential>
+			<extractBundleVersion file="@{file}" property="qualified.version"/>
+			<unqualified.version version="${qualified.version}" property="@{property}"/>
 		</sequential>
 	</macrodef>
 
@@ -58,6 +77,15 @@
 						replace="\1"/>
 				</filterchain>
 			</loadfile>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="extractFeatureVersionUnqualified">
+		<attribute name="file" />
+		<attribute name="property" />
+		<sequential>
+			<extractFeatureVersion file="@{file}" property="qualified.version"/>
+			<unqualified.version version="${qualified.version}" property="@{property}"/>
 		</sequential>
 	</macrodef>
 
