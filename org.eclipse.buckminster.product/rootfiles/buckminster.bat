@@ -1,6 +1,6 @@
 @echo off
 rem ----------------------------------------------------------------
-rem Copyright (c) 2006-2009, Cloudsmith Inc.
+rem Copyright (c) 2006-2013, Cloudsmith Inc.
 rem The code, documentation and other materials contained herein have been
 rem licensed under the Eclipse Public License - v 1.0 by the copyright holder
 rem listed above, as the Initial Contributor under such license. The text of

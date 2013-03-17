@@ -231,20 +231,16 @@ public abstract class JarImportOperation implements IWorkspaceRunnable {
 	}
 
 	protected boolean containsCode(File file) {
-		ZipFile zipFile = null;
 		try {
-			zipFile = new ZipFile(file);
-			return containsCode(new ZipFileStructureProvider(zipFile));
-		} catch (IOException e) {
-		} finally {
-			if (zipFile != null) {
-				try {
-					zipFile.close();
-				} catch (IOException e) {
-				}
+			ZipFile zipFile = new ZipFile(file);
+			try {
+				return containsCode(new ZipFileStructureProvider(zipFile));
+			} finally {
+				zipFile.close();
 			}
+		} catch (IOException e) {
+			return false;
 		}
-		return true;
 	}
 
 	protected boolean containsCode(ZipFileStructureProvider provider) {
@@ -261,23 +257,19 @@ public abstract class JarImportOperation implements IWorkspaceRunnable {
 	}
 
 	protected void extractJavaResources(File file, IResource dest, IProgressMonitor monitor) throws CoreException {
-		ZipFile zipFile = null;
 		try {
-			zipFile = new ZipFile(file);
-			ZipFileStructureProvider provider = new ZipFileStructureProvider(zipFile);
-			ArrayList collected = new ArrayList();
-			collectJavaResources(provider, provider.getRoot(), collected);
-			importContent(provider.getRoot(), dest.getFullPath(), provider, collected, monitor);
+			ZipFile zipFile = new ZipFile(file);
+			try {
+				ZipFileStructureProvider provider = new ZipFileStructureProvider(zipFile);
+				ArrayList collected = new ArrayList();
+				collectJavaResources(provider, provider.getRoot(), collected);
+				importContent(provider.getRoot(), dest.getFullPath(), provider, collected, monitor);
+			} finally {
+				zipFile.close();
+			}
 		} catch (IOException e) {
 			IStatus status = new Status(IStatus.ERROR, PDEPlugin.getPluginId(), IStatus.ERROR, e.getMessage(), e);
 			throw new CoreException(status);
-		} finally {
-			if (zipFile != null) {
-				try {
-					zipFile.close();
-				} catch (IOException e) {
-				}
-			}
 		}
 	}
 
@@ -299,44 +291,36 @@ public abstract class JarImportOperation implements IWorkspaceRunnable {
 	 * @since 3.4
 	 */
 	protected void extractJavaSource(File file, List excludeFolders, IResource dest, IProgressMonitor monitor) throws CoreException {
-		ZipFile zipFile = null;
 		try {
-			zipFile = new ZipFile(file);
-			ZipFileStructureProvider provider = new ZipFileStructureProvider(zipFile);
-			ArrayList collected = new ArrayList();
-			collectJavaSourceFromRoot(provider, excludeFolders, collected);
-			importContent(provider.getRoot(), dest.getFullPath(), provider, collected, monitor);
+			ZipFile zipFile = new ZipFile(file);
+			try {
+				ZipFileStructureProvider provider = new ZipFileStructureProvider(zipFile);
+				ArrayList collected = new ArrayList();
+				collectJavaSourceFromRoot(provider, excludeFolders, collected);
+				importContent(provider.getRoot(), dest.getFullPath(), provider, collected, monitor);
+			} finally {
+				zipFile.close();
+			}
 		} catch (IOException e) {
 			IStatus status = new Status(IStatus.ERROR, PDEPlugin.getPluginId(), IStatus.ERROR, e.getMessage(), e);
 			throw new CoreException(status);
-		} finally {
-			if (zipFile != null) {
-				try {
-					zipFile.close();
-				} catch (IOException e) {
-				}
-			}
 		}
 	}
 
 	protected void extractResources(File file, IResource dest, IProgressMonitor monitor) throws CoreException {
-		ZipFile zipFile = null;
 		try {
-			zipFile = new ZipFile(file);
-			ZipFileStructureProvider provider = new ZipFileStructureProvider(zipFile);
-			ArrayList collected = new ArrayList();
-			collectResources(provider, provider.getRoot(), true, collected);
-			importContent(provider.getRoot(), dest.getFullPath(), provider, collected, monitor);
+			ZipFile zipFile = new ZipFile(file);
+			try {
+				ZipFileStructureProvider provider = new ZipFileStructureProvider(zipFile);
+				ArrayList collected = new ArrayList();
+				collectResources(provider, provider.getRoot(), true, collected);
+				importContent(provider.getRoot(), dest.getFullPath(), provider, collected, monitor);
+			} finally {
+				zipFile.close();
+			}
 		} catch (IOException e) {
 			IStatus status = new Status(IStatus.ERROR, PDEPlugin.getPluginId(), IStatus.ERROR, e.getMessage(), e);
 			throw new CoreException(status);
-		} finally {
-			if (zipFile != null) {
-				try {
-					zipFile.close();
-				} catch (IOException e) {
-				}
-			}
 		}
 	}
 
@@ -357,42 +341,34 @@ public abstract class JarImportOperation implements IWorkspaceRunnable {
 	 * @since 3.4
 	 */
 	protected void extractResourcesFromFolder(File file, IPath folderPath, IResource dest, IProgressMonitor monitor) throws CoreException {
-		ZipFile zipFile = null;
 		try {
-			zipFile = new ZipFile(file);
-			ZipFileStructureProvider provider = new ZipFileStructureProvider(zipFile);
-			ArrayList collected = new ArrayList();
-			collectResourcesFromFolder(provider, provider.getRoot(), folderPath, collected);
-			importContent(provider.getRoot(), dest.getFullPath(), provider, collected, monitor);
+			ZipFile zipFile = new ZipFile(file);
+			try {
+				ZipFileStructureProvider provider = new ZipFileStructureProvider(zipFile);
+				ArrayList collected = new ArrayList();
+				collectResourcesFromFolder(provider, provider.getRoot(), folderPath, collected);
+				importContent(provider.getRoot(), dest.getFullPath(), provider, collected, monitor);
+			} finally {
+				zipFile.close();
+			}
 		} catch (IOException e) {
 			IStatus status = new Status(IStatus.ERROR, PDEPlugin.getPluginId(), IStatus.ERROR, e.getMessage(), e);
 			throw new CoreException(status);
-		} finally {
-			if (zipFile != null) {
-				try {
-					zipFile.close();
-				} catch (IOException e) {
-				}
-			}
 		}
 	}
 
 	protected void extractZipFile(File file, IPath destPath, IProgressMonitor monitor) throws CoreException {
-		ZipFile zipFile = null;
 		try {
-			zipFile = new ZipFile(file);
-			ZipFileStructureProvider provider = new ZipFileStructureProvider(zipFile);
-			importContent(provider.getRoot(), destPath, provider, null, monitor);
+			ZipFile zipFile = new ZipFile(file);
+			try {
+				ZipFileStructureProvider provider = new ZipFileStructureProvider(zipFile);
+				importContent(provider.getRoot(), destPath, provider, null, monitor);
+			} finally {
+				zipFile.close();
+			}
 		} catch (IOException e) {
 			IStatus status = new Status(IStatus.ERROR, PDEPlugin.getPluginId(), IStatus.ERROR, e.getMessage(), e);
 			throw new CoreException(status);
-		} finally {
-			if (zipFile != null) {
-				try {
-					zipFile.close();
-				} catch (IOException e) {
-				}
-			}
 		}
 	}
 

@@ -34,7 +34,7 @@
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false">
       <rm:property key="buckminster.source" value="false"/>
       <rm:property key="buckminster.mutable" value="false"/>
-      <rm:uri format="{0}/eclipse/updates/4.2/R-4.2.1-201209141800">
+      <rm:uri format="{0}/eclipse/updates/4.3milestones/S-4.3M6-201303141330">
         <bc:propertyRef key="eclipse.download.prefix"/>
       </rm:uri>
     </rm:provider>
@@ -43,7 +43,7 @@
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false">
       <rm:property key="buckminster.source" value="false"/>
       <rm:property key="buckminster.mutable" value="false"/>
-      <rm:uri format="{0}/releases/juno/201209280900">
+      <rm:uri format="{0}/releases/kepler/201302080900">
         <bc:propertyRef key="eclipse.download.prefix"/>
       </rm:uri>
     </rm:provider>
@@ -52,7 +52,7 @@
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false">
       <rm:property key="buckminster.source" value="false"/>
       <rm:property key="buckminster.mutable" value="false"/>
-      <rm:uri format="{0}/tools/orbit/downloads/drops/R20120526062928/repository">
+      <rm:uri format="{0}/tools/orbit/downloads/drops/S20130308121626/repository">
         <bc:propertyRef key="eclipse.download.prefix"/>
       </rm:uri>
     </rm:provider>
@@ -68,7 +68,7 @@
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false">
       <rm:property key="buckminster.source" value="false"/>
       <rm:property key="buckminster.mutable" value="false"/>
-      <rm:uri format="http://community.polarion.com/projects/subversive/download/eclipse/3.0/juno-site"/>
+      <rm:uri format="http://community.polarion.com/projects/subversive/download/eclipse/3.0/update-site/"/>
     </rm:provider>
   </rm:searchPath>
   <rm:searchPath name="git">

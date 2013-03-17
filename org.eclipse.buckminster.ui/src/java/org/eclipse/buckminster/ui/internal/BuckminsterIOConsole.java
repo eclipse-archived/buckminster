@@ -1,5 +1,5 @@
 /*******************************************************************
- * Copyright (c) 2006-2008, Cloudsmith Inc.
+ * Copyright (c) 2006-2013, Cloudsmith Inc.
  * The code, documentation and other materials contained herein
  * are the sole and exclusive property of Cloudsmith Inc. and may
  * not be disclosed, used, modified, copied or distributed without

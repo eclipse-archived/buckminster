@@ -353,56 +353,52 @@ public class PluginImportOperation extends JarImportOperation {
 	}
 
 	private void extractJARdPlugin(IProgressMonitor monitor) throws CoreException {
-		ZipFile zipFile = null;
 		try {
-			zipFile = new ZipFile(model.getInstallLocation());
-			ZipFileStructureProvider provider = new ZipFileStructureProvider(zipFile);
-			if (!containsCode(provider)) {
-				extractZipFile(new File(model.getInstallLocation()), project.getFullPath(), monitor);
-				return;
-			}
-			ArrayList<?> collected = new ArrayList<Object>();
-			collectNonJavaResources(provider, provider.getRoot(), collected);
-			importContent(provider.getRoot(), project.getFullPath(), provider, collected, monitor);
-
-			File file = new File(model.getInstallLocation());
-			if (hasEmbeddedSource(provider) && importType == IMPORT_WITH_SOURCE) {
-				collected = new ArrayList<Object>();
-				collectJavaFiles(provider, provider.getRoot(), collected);
-				importContent(provider.getRoot(), project.getFullPath(), provider, collected, monitor);
-				collected = new ArrayList<Object>();
-				collectJavaResources(provider, provider.getRoot(), collected);
-				importContent(provider.getRoot(), project.getFullPath().append("src"), provider, collected, monitor); //$NON-NLS-1$
-			} else {
-				if (importType == IMPORT_BINARY_WITH_LINKS) {
-					project.getFile(file.getName()).createLink(new Path(file.getAbsolutePath()), IResource.NONE, null);
-				} else {
-					importArchive(project, file, new Path(file.getName()));
+			ZipFile zipFile = new ZipFile(model.getInstallLocation());
+			try {
+				ZipFileStructureProvider provider = new ZipFileStructureProvider(zipFile);
+				if (!containsCode(provider)) {
+					extractZipFile(new File(model.getInstallLocation()), project.getFullPath(), monitor);
+					return;
 				}
-				if (!hasEmbeddedSource(provider)) {
+				ArrayList<?> collected = new ArrayList<Object>();
+				collectNonJavaResources(provider, provider.getRoot(), collected);
+				importContent(provider.getRoot(), project.getFullPath(), provider, collected, monitor);
+
+				File file = new File(model.getInstallLocation());
+				if (hasEmbeddedSource(provider) && importType == IMPORT_WITH_SOURCE) {
+					collected = new ArrayList<Object>();
+					collectJavaFiles(provider, provider.getRoot(), collected);
+					importContent(provider.getRoot(), project.getFullPath(), provider, collected, monitor);
+					collected = new ArrayList<Object>();
+					collectJavaResources(provider, provider.getRoot(), collected);
+					importContent(provider.getRoot(), project.getFullPath().append("src"), provider, collected, monitor); //$NON-NLS-1$
+				} else {
 					if (importType == IMPORT_BINARY_WITH_LINKS) {
-						linkSourceArchives(new SubProgressMonitor(monitor, 1));
+						project.getFile(file.getName()).createLink(new Path(file.getAbsolutePath()), IResource.NONE, null);
 					} else {
-						importSourceArchives(new SubProgressMonitor(monitor, 1));
+						importArchive(project, file, new Path(file.getName()));
+					}
+					if (!hasEmbeddedSource(provider)) {
+						if (importType == IMPORT_BINARY_WITH_LINKS) {
+							linkSourceArchives(new SubProgressMonitor(monitor, 1));
+						} else {
+							importSourceArchives(new SubProgressMonitor(monitor, 1));
+						}
 					}
 				}
+				if (importType != IMPORT_WITH_SOURCE) {
+					modifyBundleClasspathHeader(model);
+				} else {
+					removeSignedHeaders();
+				}
+				setPermissions();
+			} finally {
+				zipFile.close();
 			}
-			if (importType != IMPORT_WITH_SOURCE) {
-				modifyBundleClasspathHeader(model);
-			} else {
-				removeSignedHeaders();
-			}
-			setPermissions();
 		} catch (IOException e) {
 			IStatus status = new Status(IStatus.ERROR, PDEPlugin.getPluginId(), IStatus.ERROR, e.getMessage(), e);
 			throw new CoreException(status);
-		} finally {
-			if (zipFile != null) {
-				try {
-					zipFile.close();
-				} catch (IOException e) {
-				}
-			}
 		}
 	}
 
