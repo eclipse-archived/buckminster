@@ -623,6 +623,13 @@
          unpack="false"/>
 
    <plugin
+         id="javaewah"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
          id="org.eclipse.pde.build"
          download-size="0"
          install-size="0"
@@ -749,12 +756,6 @@
 
    <plugin
          id="org.junit"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.junit4"
          download-size="0"
          install-size="0"
          version="0.0.0"/>

@@ -43,7 +43,6 @@
       <import plugin="org.eclipse.text"/>
       <import plugin="org.hamcrest.core"/>
       <import plugin="org.junit"/>
-      <import plugin="org.junit4"/>
       <import plugin="org.objectweb.asm"/>
    </requires>
 

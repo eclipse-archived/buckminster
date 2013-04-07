@@ -30,7 +30,7 @@ import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.StoredConfig;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
-import org.eclipse.jgit.storage.file.FileRepository;
+import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.eclipse.jgit.transport.URIish;
 import org.eclipse.jgit.treewalk.CanonicalTreeParser;
 import org.eclipse.jgit.treewalk.FileTreeIterator;
@@ -261,7 +261,7 @@ class RepositoryAccess {
 					cc.setURI(repoURI.toPrivateString());
 					cc.call();
 				}
-				repository = new FileRepository(canonicalLocalRepo);
+				repository = FileRepositoryBuilder.create(canonicalLocalRepo);
 
 				// Add repository if it's not already addded
 				RepositoryUtil repoUtil = org.eclipse.egit.core.Activator.getDefault().getRepositoryUtil();
