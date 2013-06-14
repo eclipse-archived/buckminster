@@ -6,7 +6,7 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Eclipse.org
 Require-Bundle: org.eclipse.buckminster.runtime,
  org.eclipse.buckminster.download,
- org.eclipse.ecf.provider.filetransfer.httpclient,
+ org.eclipse.ecf.provider.filetransfer.httpclient4,
  org.eclipse.ecf.filetransfer,
  org.eclipse.ecf,
  org.eclipse.core.runtime,

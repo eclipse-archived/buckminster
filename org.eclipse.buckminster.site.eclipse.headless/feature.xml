@@ -398,14 +398,14 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.ecf.provider.filetransfer.httpclient"
+         id="org.eclipse.ecf.provider.filetransfer.httpclient4"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.ecf.provider.filetransfer.httpclient.ssl"
+         id="org.eclipse.ecf.provider.filetransfer.httpclient4.ssl"
          download-size="0"
          install-size="0"
          version="0.0.0"

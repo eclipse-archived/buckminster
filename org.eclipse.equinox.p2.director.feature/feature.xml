@@ -37,8 +37,8 @@
       <import plugin="org.eclipse.ecf.identity"/>
       <import plugin="org.eclipse.ecf.provider.filetransfer"/>
       <import plugin="org.eclipse.ecf.provider.filetransfer.ssl"/>
-      <import plugin="org.eclipse.ecf.provider.filetransfer.httpclient"/>
-      <import plugin="org.eclipse.ecf.provider.filetransfer.httpclient.ssl"/>
+      <import plugin="org.eclipse.ecf.provider.filetransfer.httpclient4"/>
+      <import plugin="org.eclipse.ecf.provider.filetransfer.httpclient4.ssl"/>
       <import plugin="org.eclipse.ecf.ssl"/>
       <import plugin="org.eclipse.equinox.app"/>
       <import plugin="org.eclipse.equinox.common"/>
