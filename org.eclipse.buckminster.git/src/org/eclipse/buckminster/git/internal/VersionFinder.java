@@ -103,7 +103,7 @@ public class VersionFinder extends AbstractSCCSVersionFinder {
 									obj = ((RevTag) obj).getObject();
 								} while (obj instanceof RevTag);
 
-								if (!(obj instanceof RevCommit && TreeWalk.forPath(repo, component, ((RevCommit) obj).getTree()) != null))
+								if (!(obj instanceof RevCommit && ((RevCommit) obj).getTree() != null && TreeWalk.forPath(repo, component, ((RevCommit) obj).getTree()) != null))
 									continue;
 							}
 							branchesOrTags.add(new RevisionEntry(tag.getTagName(), tag.getTaggerIdent().getWhen(), 0L));
