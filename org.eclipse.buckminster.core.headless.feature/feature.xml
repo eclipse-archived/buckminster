@@ -23,6 +23,8 @@
       <import plugin="com.ibm.icu.base"/>
       <import plugin="com.jcraft.jsch"/>
       <import plugin="org.apache.commons.logging"/>
+      <import plugin="org.apache.httpcomponents.httpcore"/>
+      <import plugin="org.apache.httpcomponents.httpclient"/>
       <import plugin="org.eclipse.ant.core"/>
       <import plugin="org.eclipse.core.expressions"/>
       <import plugin="org.eclipse.core.filesystem"/>

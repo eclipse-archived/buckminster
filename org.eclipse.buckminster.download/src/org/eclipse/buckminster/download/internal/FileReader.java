@@ -29,6 +29,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.ecf.core.security.IConnectContext;
 import org.eclipse.ecf.filetransfer.FileTransferJob;
+import org.eclipse.ecf.filetransfer.IFileRangeSpecification;
 import org.eclipse.ecf.filetransfer.IFileTransferListener;
 import org.eclipse.ecf.filetransfer.IIncomingFileTransfer;
 import org.eclipse.ecf.filetransfer.IRetrieveFileTransferContainerAdapter;
@@ -70,6 +71,19 @@ public class FileReader extends FileTransferJob implements IFileTransferListener
 	private final long connectionRetryDelay;
 
 	private final IConnectContext connectContext;
+
+	static final IFileRangeSpecification ALL_RANGE = new IFileRangeSpecification() {
+
+		@Override
+		public long getEndPosition() {
+			return Long.MAX_VALUE;
+		}
+
+		@Override
+		public long getStartPosition() {
+			return 0;
+		}
+	};
 
 	/**
 	 * Create a new FileReader that will retry failed connection attempts and
@@ -177,6 +191,21 @@ public class FileReader extends FileTransferJob implements IFileTransferListener
 				return input.available();
 			}
 
+			private void checkException() throws IOException {
+				if (exception == null)
+					return;
+
+				IOException e;
+				Throwable t = BuckminsterException.unwind(exception);
+				if (t instanceof IOException)
+					e = (IOException) t;
+				else {
+					e = new IOException(t.getMessage());
+					e.initCause(t);
+				}
+				throw e;
+			}
+
 			@Override
 			public void close() throws IOException {
 				cancellationMonitor.setCanceled(true);
@@ -222,21 +251,6 @@ public class FileReader extends FileTransferJob implements IFileTransferListener
 			public long skip(long n) throws IOException {
 				checkException();
 				return input.skip(n);
-			}
-
-			private void checkException() throws IOException {
-				if (exception == null)
-					return;
-
-				IOException e;
-				Throwable t = BuckminsterException.unwind(exception);
-				if (t instanceof IOException)
-					e = (IOException) t;
-				else {
-					e = new IOException(t.getMessage());
-					e.initCause(t);
-				}
-				throw e;
 			}
 		};
 	}
@@ -288,7 +302,11 @@ public class FileReader extends FileTransferJob implements IFileTransferListener
 
 			try {
 				IFileID fileID = FileIDFactory.getDefault().createFileID(adapter.getRetrieveNamespace(), url);
-				adapter.sendRetrieveRequest(fileID, this, null);
+				// Use an ridiculously large range to prevent that an Accept
+				// gzip is
+				// added to the request. Otherwise, we
+				// get a gzipped file back with unknown size.
+				adapter.sendRetrieveRequest(fileID, ALL_RANGE, this, null);
 			} catch (IncomingFileTransferException e) {
 				exception = e;
 			}
