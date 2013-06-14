@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
@@ -63,15 +64,15 @@ public class VersionFinder extends AbstractSCCSVersionFinder {
 				try {
 					ArrayList<RevisionEntry> branchesOrTags = new ArrayList<RevisionEntry>();
 					String component = repoAccess.getComponent();
-					for (Ref ref : repo.getAllRefs().values()) {
-
-						String name = ref.getName();
-						int lastSlash = name.lastIndexOf('/');
-						if (lastSlash < 0)
-							continue;
-
-						RevObject obj = revWalk.parseAny(ref.getObjectId());
-						if (branches) {
+					if (branches) {
+						for (Ref ref : repo.getAllRefs().values()) {
+							
+							String name = ref.getName();
+							int lastSlash = name.lastIndexOf('/');
+							if (lastSlash < 0)
+								continue;
+							
+							RevObject obj = revWalk.parseAny(ref.getObjectId());
 							if (!(obj instanceof RevCommit))
 								continue;
 
@@ -90,23 +91,31 @@ public class VersionFinder extends AbstractSCCSVersionFinder {
 							// object id
 							// instead of long revision
 							branchesOrTags.add(new RevisionEntry(branch, c.getAuthorIdent().getWhen(), 0L));
-						} else {
-							if (!(obj instanceof RevTag))
-								continue;
-
-							RevTag tag = (RevTag) obj;
-							if (component != null) {
-								// Check that the component exists in the
-								// associated
-								// Commit
-								do {
-									obj = ((RevTag) obj).getObject();
-								} while (obj instanceof RevTag);
-
+						}
+					} else {
+						final Map<String, Ref> tags = repo.getTags();
+						
+						for (Entry<String, Ref> entry : tags.entrySet()) {
+							RevObject obj = revWalk.parseAny(entry.getValue().getObjectId());
+							if (obj instanceof RevTag) {
+								RevTag tag = (RevTag) obj;
+								if (component != null) {
+									// Check that the component exists in the
+									// associated
+									// Commit
+									do {
+										obj = ((RevTag) obj).getObject();
+									} while (obj instanceof RevTag);
+									
 								if (!(obj instanceof RevCommit && TreeWalk.forPath(repo, component, ((RevCommit) obj).getTree()) != null))
-									continue;
+										continue;
+								}
+								branchesOrTags.add(new RevisionEntry(tag.getTagName(), tag.getTaggerIdent().getWhen(), 0L));
+							} else if (obj instanceof RevCommit) {
+								RevCommit c = (RevCommit) obj;
+								String tag = entry.getKey();
+								branchesOrTags.add(new RevisionEntry(tag, c.getAuthorIdent().getWhen(), 0L));
 							}
-							branchesOrTags.add(new RevisionEntry(tag.getTagName(), tag.getTaggerIdent().getWhen(), 0L));
 						}
 					}
 					return branchesOrTags;
