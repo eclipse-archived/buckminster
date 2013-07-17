@@ -320,7 +320,16 @@ public class VersionHelper {
 	}
 
 	public static Version parseVersion(String versionStr) {
-		Version version = Version.parseVersion(versionStr);
+		Version version;
+		try {
+			version = Version.parseVersion(versionStr);
+		} catch (IllegalArgumentException e) {
+			try {
+				version = createVersion(VersionType.TRIPLET, versionStr);
+			} catch (MissingVersionTypeException e1) {
+				throw new IllegalArgumentException(e);
+			}
+		}
 		if (version.equals(Version.emptyVersion))
 			version = null;
 		return version;
