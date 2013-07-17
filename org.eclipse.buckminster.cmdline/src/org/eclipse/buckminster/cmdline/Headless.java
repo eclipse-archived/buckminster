@@ -138,37 +138,6 @@ public class Headless implements IApplication, OptionValueType {
 		props.put(key, value);
 	}
 
-	public Object run(Object objArgs) throws Exception {
-		Buckminster.setHeadless();
-		int exitValue = EXIT_FAIL;
-		try {
-			exitValue = run((String[]) objArgs);
-		} catch (OperationCanceledException e) {
-			System.err.println(Messages.Headless_Command_canceled);
-		} catch (InterruptedException e) {
-			System.err.println(Messages.Headless_Command_was_interrupted);
-		} catch (SimpleErrorExitException e) {
-			System.err.println(e.getMessage());
-			exitValue = e.getExitValue();
-		} catch (UsageException e) {
-			System.err.println(e.getMessage());
-			if (e.isEmitHelp())
-				help(System.out);
-		} catch (Throwable e) {
-			BuckminsterException.deeplyPrint(e, System.err, displayStackTrace);
-		}
-		return new Integer(exitValue);
-	}
-
-	@Override
-	public Object start(IApplicationContext context) throws Exception {
-		return run(context.getArguments().get(IApplicationContext.APPLICATION_ARGS));
-	}
-
-	@Override
-	public void stop() {
-	}
-
 	protected void help(PrintStream ps) throws Exception {
 		PrintStream out = System.out;
 		InputStream is = getClass().getResourceAsStream("Headless.help"); //$NON-NLS-1$
@@ -183,7 +152,7 @@ public class Headless implements IApplication, OptionValueType {
 				IOUtils.close(is);
 			}
 		}
-	};
+	}
 
 	protected void parse(String[] args) throws Exception {
 		ArrayList<OptionDescriptor> optionArr = new ArrayList<OptionDescriptor>();
@@ -235,6 +204,8 @@ public class Headless implements IApplication, OptionValueType {
 					switch (logType) {
 						case console:
 							logLevel = level;
+							if (level == Logger.DEBUG)
+								displayStackTrace = true;
 							break;
 						case ant:
 							antLogLevel = level;
@@ -306,6 +277,28 @@ public class Headless implements IApplication, OptionValueType {
 		}
 	}
 
+	public Object run(Object objArgs) throws Exception {
+		Buckminster.setHeadless();
+		int exitValue = EXIT_FAIL;
+		try {
+			exitValue = run((String[]) objArgs);
+		} catch (OperationCanceledException e) {
+			System.err.println(Messages.Headless_Command_canceled);
+		} catch (InterruptedException e) {
+			System.err.println(Messages.Headless_Command_was_interrupted);
+		} catch (SimpleErrorExitException e) {
+			System.err.println(e.getMessage());
+			exitValue = e.getExitValue();
+		} catch (UsageException e) {
+			System.err.println(e.getMessage());
+			if (e.isEmitHelp())
+				help(System.out);
+		} catch (Throwable e) {
+			BuckminsterException.deeplyPrint(e, System.err, displayStackTrace);
+		}
+		return new Integer(exitValue);
+	}
+
 	protected int run(String[] args) throws Exception {
 		int currentAntLogLevel = BuckminsterPreferences.getLogLevelAntLogger();
 		Properties sysProps = System.getProperties();
@@ -358,6 +351,15 @@ public class Headless implements IApplication, OptionValueType {
 				BuckminsterPreferences.setLogLevelAntLogger(currentAntLogLevel);
 		}
 		return EXIT_OK;
+	};
+
+	@Override
+	public Object start(IApplicationContext context) throws Exception {
+		return run(context.getArguments().get(IApplicationContext.APPLICATION_ARGS));
+	}
+
+	@Override
+	public void stop() {
 	}
 
 }

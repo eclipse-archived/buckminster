@@ -19,6 +19,7 @@ import org.eclipse.buckminster.core.materializer.MaterializationJob;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
 import org.eclipse.buckminster.core.resolver.ResolutionContext;
+import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.core.runtime.CoreException;
@@ -78,6 +79,18 @@ public class QueryWizard extends Wizard implements INewWizard {
 		}
 	}
 
+	BillOfMaterials getBOM() {
+		if (bom == null)
+			throw new IllegalStateException(Messages.wizard_not_yet_initialized_with_bom);
+		return bom;
+	}
+
+	ResolutionContext getContext() {
+		if (context == null)
+			throw new IllegalStateException(Messages.wizard_not_yet_initialized_with_bom);
+		return context;
+	}
+
 	public MaterializationContext getMaterializationContext() {
 		if (materializationContext == null) {
 			materializationContext = new MaterializationContext(getBOM(), mspec.createMaterializationSpec(), getContext());
@@ -85,6 +98,14 @@ public class QueryWizard extends Wizard implements INewWizard {
 
 		}
 		return materializationContext;
+	}
+
+	MaterializationSpecBuilder getMaterializationSpec() {
+		return mspec;
+	}
+
+	boolean hasBOM() {
+		return bom != null;
 	}
 
 	@Override
@@ -109,6 +130,10 @@ public class QueryWizard extends Wizard implements INewWizard {
 		addPage(page);
 	}
 
+	void invalidateMaterializationContext() {
+		materializationContext = null;
+	}
+
 	@Override
 	public boolean performFinish() {
 		if (getBOM() == null)
@@ -122,7 +147,7 @@ public class QueryWizard extends Wizard implements INewWizard {
 			Throwable t = BuckminsterException.unwind(e);
 			ByteArrayOutputStream bld = new ByteArrayOutputStream();
 			PrintStream p = new PrintStream(bld);
-			BuckminsterException.deeplyPrint(t, p, false);
+			BuckminsterException.deeplyPrint(t, p, Buckminster.getLogger().isDebugEnabled());
 			p.flush();
 			String msg = new String(bld.toByteArray());
 			CorePlugin.getLogger().error(t, msg);
@@ -133,30 +158,6 @@ public class QueryWizard extends Wizard implements INewWizard {
 
 	public void resetBOM() {
 		bom = null;
-	}
-
-	BillOfMaterials getBOM() {
-		if (bom == null)
-			throw new IllegalStateException(Messages.wizard_not_yet_initialized_with_bom);
-		return bom;
-	}
-
-	ResolutionContext getContext() {
-		if (context == null)
-			throw new IllegalStateException(Messages.wizard_not_yet_initialized_with_bom);
-		return context;
-	}
-
-	MaterializationSpecBuilder getMaterializationSpec() {
-		return mspec;
-	}
-
-	boolean hasBOM() {
-		return bom != null;
-	}
-
-	void invalidateMaterializationContext() {
-		materializationContext = null;
 	}
 
 	void setBOM(BillOfMaterials bom) throws CoreException {
