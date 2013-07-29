@@ -75,6 +75,7 @@ import org.eclipse.equinox.p2.repository.artifact.IArtifactRepositoryManager;
 import org.eclipse.equinox.p2.repository.metadata.IMetadataRepository;
 import org.eclipse.equinox.p2.repository.metadata.IMetadataRepositoryManager;
 import org.eclipse.osgi.util.NLS;
+
 import org.osgi.framework.Constants;
 
 @SuppressWarnings("restriction")
@@ -84,6 +85,8 @@ public class P2Materializer extends AbstractMaterializer {
 	private static final String CLASSIFIER_ORG_ECLIPSE_UPDATE_FEATURE = "org.eclipse.update.feature"; //$NON-NLS-1$
 
 	private static final String PROP_ARTIFACT_FOLDER = "artifact.folder"; //$NON-NLS-1$
+
+	private static final String PROP_BUNDLE_POOL = "org.eclipse.buckminster.core.bundle.pool"; //$NON-NLS-1$
 
 	public static URI cleanURIFromImportType(URI repoLocation) {
 		Map<String, String> props = URLUtils.queryAsParameters(repoLocation.getQuery());
@@ -140,6 +143,24 @@ public class P2Materializer extends AbstractMaterializer {
 		return location.getAbsolutePath();
 	}
 
+	protected File getRuntimeRepository() {
+		// First consult user-supplied override property for a p2 bundle pool. Fail later if it doesn't exist.
+		String bundlePool = System.getProperty(PROP_BUNDLE_POOL);
+		if (bundlePool != null) 
+			return new File(bundlePool);
+		
+		// Then try the "osgi.syspath" property, which points to a "plugins" folder. Use the  parent folder if it exists.  
+		String sysPath = System.getProperty("osgi.syspath"); //$NON-NLS-1$
+		if (sysPath != null) {
+			File folder = new File(sysPath).getParentFile();
+			if (folder.isDirectory())
+				return folder;
+		}
+		
+		// Fall back to the former behaviour of using the platform's install location.
+		return FileUtils.getFile(Platform.getInstallLocation().getURL());
+	}
+
 	@Override
 	public List<Materialization> materialize(List<Resolution> resolutions, MaterializationContext context, IProgressMonitor monitor)
 			throws CoreException {
@@ -188,7 +209,7 @@ public class P2Materializer extends AbstractMaterializer {
 		Map<URI, IArtifactRepository> knownARs = new HashMap<URI, IArtifactRepository>();
 
 		try {
-			File file = FileUtils.getFile(Platform.getInstallLocation().getURL());
+			File file = getRuntimeRepository();
 			URI runtimeAR = file.toURI();
 			knownARs.put(runtimeAR, arManager.loadRepository(runtimeAR, subMon.newChild(100)));
 		} catch (Exception e) {
