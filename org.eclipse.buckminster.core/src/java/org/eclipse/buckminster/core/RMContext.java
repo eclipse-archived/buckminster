@@ -11,6 +11,7 @@ package org.eclipse.buckminster.core;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -39,6 +40,7 @@ import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.version.BuildTimestampQualifierGenerator;
+import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -68,6 +70,14 @@ public class RMContext extends ExpandingProperties<Object> {
 			this.infoString = infoString;
 		}
 
+		private void addTagId(StringBuilder bld) {
+			String tagIdStr = Integer.toString(tagId);
+			int len = tagIdStr.length();
+			bld.append("0000"); //$NON-NLS-1$
+			bld.setLength(bld.length() - len);
+			bld.append(tagIdStr);
+		}
+
 		public String getTagId() {
 			StringBuilder bld = new StringBuilder();
 			addTagId(bld);
@@ -91,25 +101,26 @@ public class RMContext extends ExpandingProperties<Object> {
 			bld.append(infoString);
 			return bld.toString();
 		}
-
-		private void addTagId(StringBuilder bld) {
-			String tagIdStr = Integer.toString(tagId);
-			int len = tagIdStr.length();
-			bld.append("0000"); //$NON-NLS-1$
-			bld.setLength(bld.length() - len);
-			bld.append(tagIdStr);
-		}
 	}
 
-	public static String formatStatus(IStatus status) {
-		StringWriter bld = new StringWriter();
-		BufferedWriter wrt = new BufferedWriter(bld);
+	private static final Map<String, String> staticAdditions;
+
+	static {
+		Map<String, String> additions = new HashMap<String, String>();
+		File homeFile = TargetPlatform.getPlatformInstallLocation();
+		if (homeFile != null) {
+			CorePlugin.getLogger().debug("Platform install location: %s", homeFile); //$NON-NLS-1$
+			additions.put("eclipse.home", homeFile.toString()); //$NON-NLS-1$
+		} else
+			CorePlugin.getLogger().debug("Platform install location is NULL!"); //$NON-NLS-1$
+
+		additions.put("workspace.root", ResourcesPlugin.getWorkspace().getRoot().getLocation().toPortableString()); //$NON-NLS-1$
 		try {
-			formatStatus(wrt, 0, status);
-			wrt.flush();
-		} catch (IOException e) {
+			additions.put("localhost", InetAddress.getLocalHost().getHostName()); //$NON-NLS-1$
+		} catch (UnknownHostException e1) {
+			// We'll just have to do without it.
 		}
-		return bld.toString();
+		staticAdditions = additions;
 	}
 
 	private static IStatus addTagId(String tagId, IStatus status) {
@@ -133,7 +144,18 @@ public class RMContext extends ExpandingProperties<Object> {
 		return msg;
 	}
 
-	private static void formatStatus(BufferedWriter wrt, int indent, IStatus status) throws IOException {
+	public static String formatStatus(IStatus status) {
+		StringWriter bld = new StringWriter();
+		PrintWriter wrt = new PrintWriter(bld);
+		try {
+			formatStatus(wrt, 0, status);
+			wrt.flush();
+		} catch (IOException e) {
+		}
+		return bld.toString();
+	}
+
+	private static void formatStatus(PrintWriter wrt, int indent, IStatus status) throws IOException {
 		for (int idx = 0; idx < indent; ++idx)
 			wrt.append(' ');
 		switch (status.getSeverity()) {
@@ -149,43 +171,18 @@ public class RMContext extends ExpandingProperties<Object> {
 		}
 		wrt.append(status.getMessage());
 		for (IStatus child : status.getChildren()) {
-			wrt.newLine();
+			wrt.println();
 			formatStatus(wrt, indent + 2, child);
 		}
 		Throwable t = status.getException();
-		if (t instanceof CoreException) {
-			wrt.newLine();
-			formatStatus(wrt, indent + 2, ((CoreException) t).getStatus());
+		if (t != null) {
+			if (t instanceof CoreException) {
+				wrt.println();
+				formatStatus(wrt, indent + 2, ((CoreException) t).getStatus());
+			}
+			if (Buckminster.getLogger().isDebugEnabled())
+				t.printStackTrace(wrt);
 		}
-	}
-
-	private int tagInfoSquenceNumber = 0;
-
-	private final Map<QualifiedDependency, NodeQuery> nodeQueries = new HashMap<QualifiedDependency, NodeQuery>();
-
-	private final Map<String, String[]> filterAttributeUsageMap = new HashMap<String, String[]>();
-
-	// Map that ensures that only one TagInfo is generated for each info string
-	private final Map<String, TagInfo> knownTagInfos = new HashMap<String, TagInfo>();
-
-	private static final Map<String, String> staticAdditions;
-
-	static {
-		Map<String, String> additions = new HashMap<String, String>();
-		File homeFile = TargetPlatform.getPlatformInstallLocation();
-		if (homeFile != null) {
-			CorePlugin.getLogger().debug("Platform install location: %s", homeFile); //$NON-NLS-1$
-			additions.put("eclipse.home", homeFile.toString()); //$NON-NLS-1$
-		} else
-			CorePlugin.getLogger().debug("Platform install location is NULL!"); //$NON-NLS-1$
-
-		additions.put("workspace.root", ResourcesPlugin.getWorkspace().getRoot().getLocation().toPortableString()); //$NON-NLS-1$
-		try {
-			additions.put("localhost", InetAddress.getLocalHost().getHostName()); //$NON-NLS-1$
-		} catch (UnknownHostException e1) {
-			// We'll just have to do without it.
-		}
-		staticAdditions = additions;
 	}
 
 	public static Map<String, ? extends Object> getGlobalPropertyAdditions() {
@@ -225,6 +222,15 @@ public class RMContext extends ExpandingProperties<Object> {
 		}
 		return additions;
 	}
+
+	private int tagInfoSquenceNumber = 0;
+
+	private final Map<QualifiedDependency, NodeQuery> nodeQueries = new HashMap<QualifiedDependency, NodeQuery>();
+
+	private final Map<String, String[]> filterAttributeUsageMap = new HashMap<String, String[]>();
+
+	// Map that ensures that only one TagInfo is generated for each info string
+	private final Map<String, TagInfo> knownTagInfos = new HashMap<String, TagInfo>();
 
 	private boolean continueOnError;
 
@@ -307,6 +313,36 @@ public class RMContext extends ExpandingProperties<Object> {
 	}
 
 	public void clearStatus() {
+	}
+
+	private void emitTagInfos() {
+		Logger logger = CorePlugin.getLogger();
+		if (!logger.isInfoEnabled())
+			return;
+
+		Map<String, TagInfo> sorted = new TreeMap<String, TagInfo>();
+		// do NOT call initializeAllTagInfos() here. it won't produce any used
+		// tags.
+		for (TagInfo tagInfo : tagInfos.values())
+			if (tagInfo.isUsed())
+				sorted.put(tagInfo.getTagId(), tagInfo);
+
+		if (sorted.size() == 0)
+			return;
+
+		tagInfos.clear();
+		StringWriter bld = new StringWriter();
+		BufferedWriter wrt = new BufferedWriter(bld);
+		try {
+			for (TagInfo tagInfo : sorted.values()) {
+				wrt.write(tagInfo.toString());
+				wrt.newLine();
+			}
+			wrt.flush();
+		} catch (IOException e) {
+			// On a StringWriter? Don't think so.
+		}
+		logger.info(bld.toString());
 	}
 
 	/**
@@ -399,6 +435,18 @@ public class RMContext extends ExpandingProperties<Object> {
 		return st;
 	}
 
+	private synchronized String getTagId(IComponentRequest request) {
+		TagInfo tagInfo = tagInfos.get(request);
+		if (tagInfo == null)
+			initializeTagInfo(request);
+		tagInfo = tagInfos.get(request);
+		if (tagInfo != null) {
+			tagInfo.setUsed();
+			return tagInfo.getTagId();
+		}
+		return "0000"; //$NON-NLS-1$
+	}
+
 	public synchronized Map<ComponentRequest, TagInfo> getTagInfos() {
 		initializeAllTagInfos();
 		return tagInfos;
@@ -413,6 +461,26 @@ public class RMContext extends ExpandingProperties<Object> {
 	 */
 	public Map<UUID, Object> getUserCache() {
 		return userCache;
+	}
+
+	protected synchronized boolean hasTagInfo(IComponentRequest request) {
+		// This method is called during TagInfo initialization. Do not
+		// initialize here.
+		return tagInfos.containsKey(request);
+	}
+
+	/**
+	 * Override in subclasses to perform lazy initialization of tag infos.
+	 */
+	protected void initializeAllTagInfos() {
+		// nothing to to here. must be overriden by subclasses
+	}
+
+	/**
+	 * Override in subclasses to perform lazy initialization of tag info.
+	 */
+	protected void initializeTagInfo(IComponentRequest request) {
+		// nothing to to here. must be overriden by subclasses
 	}
 
 	public boolean isContinueOnError() {
@@ -442,67 +510,5 @@ public class RMContext extends ExpandingProperties<Object> {
 
 	public void setSilentStatus(boolean flag) {
 		silentStatus = flag;
-	}
-
-	protected synchronized boolean hasTagInfo(IComponentRequest request) {
-		// This method is called during TagInfo initialization. Do not
-		// initialize here.
-		return tagInfos.containsKey(request);
-	}
-
-	/**
-	 * Override in subclasses to perform lazy initialization of tag infos.
-	 */
-	protected void initializeAllTagInfos() {
-		// nothing to to here. must be overriden by subclasses
-	}
-
-	/**
-	 * Override in subclasses to perform lazy initialization of tag info.
-	 */
-	protected void initializeTagInfo(IComponentRequest request) {
-		// nothing to to here. must be overriden by subclasses
-	}
-
-	private void emitTagInfos() {
-		Logger logger = CorePlugin.getLogger();
-		if (!logger.isInfoEnabled())
-			return;
-
-		Map<String, TagInfo> sorted = new TreeMap<String, TagInfo>();
-		// do NOT call initializeAllTagInfos() here. it won't produce any used
-		// tags.
-		for (TagInfo tagInfo : tagInfos.values())
-			if (tagInfo.isUsed())
-				sorted.put(tagInfo.getTagId(), tagInfo);
-
-		if (sorted.size() == 0)
-			return;
-
-		tagInfos.clear();
-		StringWriter bld = new StringWriter();
-		BufferedWriter wrt = new BufferedWriter(bld);
-		try {
-			for (TagInfo tagInfo : sorted.values()) {
-				wrt.write(tagInfo.toString());
-				wrt.newLine();
-			}
-			wrt.flush();
-		} catch (IOException e) {
-			// On a StringWriter? Don't think so.
-		}
-		logger.info(bld.toString());
-	}
-
-	private synchronized String getTagId(IComponentRequest request) {
-		TagInfo tagInfo = tagInfos.get(request);
-		if (tagInfo == null)
-			initializeTagInfo(request);
-		tagInfo = tagInfos.get(request);
-		if (tagInfo != null) {
-			tagInfo.setUsed();
-			return tagInfo.getTagId();
-		}
-		return "0000"; //$NON-NLS-1$
 	}
 }
