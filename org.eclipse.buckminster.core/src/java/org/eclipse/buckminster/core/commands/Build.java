@@ -9,6 +9,8 @@
  *******************************************************************************/
 package org.eclipse.buckminster.core.commands;
 
+import java.io.File;
+import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -36,7 +38,13 @@ public class Build extends WorkspaceCommand {
 
 	static private final OptionDescriptor thoroughDescriptor = new OptionDescriptor('t', "thorough", OptionValueType.NONE); //$NON-NLS-1$
 
+	static private final OptionDescriptor logfileDescriptor = new OptionDescriptor('l', "logfile", OptionValueType.REQUIRED); //$NON-NLS-1$
+
 	private static final int MAX_INCREMENTAL_RETRY_COUNT = 3;
+
+	private static final int SUCCEEDED = 0;
+	
+	private static final int FAILED = 1;
 
 	public static IMarker[] build(IProgressMonitor monitor, boolean clean) throws Exception {
 		return build(monitor, clean, false);
@@ -149,10 +157,13 @@ public class Build extends WorkspaceCommand {
 
 	private boolean thorough = false;
 
+	private File logFile = null;
+
 	@Override
 	protected void getOptionDescriptors(List<OptionDescriptor> appendHere) throws Exception {
 		appendHere.add(cleanDescriptor);
 		appendHere.add(thoroughDescriptor);
+		appendHere.add(logfileDescriptor);
 		super.getOptionDescriptors(appendHere);
 	}
 
@@ -162,6 +173,8 @@ public class Build extends WorkspaceCommand {
 			clean = true;
 		else if (option.is(thoroughDescriptor))
 			thorough = true;
+		else if (option.is(logfileDescriptor))
+			logFile = new File(option.getValue());
 		else
 			super.handleOption(option);
 	}
@@ -174,21 +187,57 @@ public class Build extends WorkspaceCommand {
 
 	@Override
 	protected int internalRun(IProgressMonitor monitor) throws Exception {
-		int exitValue = 0;
-		for (IMarker problem : build(monitor, clean, thorough)) {
-			switch (problem.getAttribute(IMarker.SEVERITY, IMarker.SEVERITY_INFO)) {
-				case IMarker.SEVERITY_ERROR:
-					exitValue = 1;
-					System.err.println(formatMarkerMessage("Error", problem)); //$NON-NLS-1$
-					break;
-				case IMarker.SEVERITY_WARNING:
-					System.err.println(formatMarkerMessage("Warning", problem)); //$NON-NLS-1$
-					break;
-				case IMarker.SEVERITY_INFO:
-					System.out.println(formatMarkerMessage("Info", problem)); //$NON-NLS-1$
+		long start = System.currentTimeMillis();
+		IMarker[] problems = build(monitor, clean, thorough);
+		long seconds = (System.currentTimeMillis() - start) / 1000;
+		
+		PrintStream log = null;
+		if (logFile != null)
+			log = new PrintStream(logFile);
+		
+		try {
+			int errors = 0;
+			int warnings = 0;
+			int infos = 0;
+			for (IMarker problem : problems) {
+				PrintStream console = null;
+				String message = null;
+				switch (problem.getAttribute(IMarker.SEVERITY, IMarker.SEVERITY_INFO)) {
+					case IMarker.SEVERITY_ERROR:
+						++errors;
+						console = System.err;
+						message = formatMarkerMessage("Error", problem); //$NON-NLS-1$
+						break;
+					case IMarker.SEVERITY_WARNING:
+						++warnings;
+						console = System.err;
+						message = formatMarkerMessage("Warning", problem); //$NON-NLS-1$
+						break;
+					case IMarker.SEVERITY_INFO:
+						++infos;
+						console = System.out;
+						message = formatMarkerMessage("Info", problem); //$NON-NLS-1$
+				}
+				
+				if (message != null) {
+					if (console != null)
+						console.println(message);
+					if (log != null)
+						log.println(message);
+				}
 			}
+			
+			System.out.println("Errors: " + errors); //$NON-NLS-1$
+			System.out.println("Warnings: " + warnings); //$NON-NLS-1$
+			System.out.println("Infos: " + infos); //$NON-NLS-1$
+			
+			int exitValue = errors == 0 ? SUCCEEDED : FAILED;
+			System.out.println("Build " + (exitValue == FAILED ? "failed" : "succeeded") + " after " + seconds + " seconds."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+			return exitValue;
+		} finally {
+			if (log != null)
+				log.close();
 		}
-		return exitValue;
 	}
 
 }
