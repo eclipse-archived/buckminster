@@ -4,9 +4,10 @@ Optionally, the build can begin with running the clean targets.
 
 usage: build
        [{ -? | --help }]
-       [{-c | --clean}]
-       [{-t | --thorough}]
-       [{-l | --logfile} <filename>]
+       [{ -c | --clean}]
+       [{ -t | --thorough}]
+       [{ -C | --continueonerror}]
+       [{ -l | --logfile} <filename>]
        
  -?
 --help
@@ -20,7 +21,11 @@ usage: build
 --thorough
   Performs a second full build instead of just adding incremental builds when the initial
   build is not successful.
- 
+
+ -C
+--continueonerror
+  Continue even if the build failed.
+
  -l <filename>
 --logfile <filename>
   Output all found problems to the specified log file.

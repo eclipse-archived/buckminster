@@ -40,10 +40,12 @@ public class Build extends WorkspaceCommand {
 
 	static private final OptionDescriptor logfileDescriptor = new OptionDescriptor('l', "logfile", OptionValueType.REQUIRED); //$NON-NLS-1$
 
+	static private final OptionDescriptor continueOnErrorDescriptor = new OptionDescriptor('C', "continueonerror", OptionValueType.NONE); //$NON-NLS-1$
+
 	private static final int MAX_INCREMENTAL_RETRY_COUNT = 3;
 
 	private static final int SUCCEEDED = 0;
-	
+
 	private static final int FAILED = 1;
 
 	public static IMarker[] build(IProgressMonitor monitor, boolean clean) throws Exception {
@@ -159,10 +161,13 @@ public class Build extends WorkspaceCommand {
 
 	private File logFile = null;
 
+	private boolean continueOnError = false;
+
 	@Override
 	protected void getOptionDescriptors(List<OptionDescriptor> appendHere) throws Exception {
 		appendHere.add(cleanDescriptor);
 		appendHere.add(thoroughDescriptor);
+		appendHere.add(continueOnErrorDescriptor);
 		appendHere.add(logfileDescriptor);
 		super.getOptionDescriptors(appendHere);
 	}
@@ -173,6 +178,8 @@ public class Build extends WorkspaceCommand {
 			clean = true;
 		else if (option.is(thoroughDescriptor))
 			thorough = true;
+		else if (option.is(continueOnErrorDescriptor))
+			continueOnError = true;
 		else if (option.is(logfileDescriptor))
 			logFile = new File(option.getValue());
 		else
@@ -190,11 +197,11 @@ public class Build extends WorkspaceCommand {
 		long start = System.currentTimeMillis();
 		IMarker[] problems = build(monitor, clean, thorough);
 		long seconds = (System.currentTimeMillis() - start) / 1000;
-		
+
 		PrintStream log = null;
 		if (logFile != null)
 			log = new PrintStream(logFile);
-		
+
 		try {
 			int errors = 0;
 			int warnings = 0;
@@ -218,7 +225,7 @@ public class Build extends WorkspaceCommand {
 						console = System.out;
 						message = formatMarkerMessage("Info", problem); //$NON-NLS-1$
 				}
-				
+
 				if (message != null) {
 					if (console != null)
 						console.println(message);
@@ -226,14 +233,16 @@ public class Build extends WorkspaceCommand {
 						log.println(message);
 				}
 			}
-			
+
 			System.out.println("Errors: " + errors); //$NON-NLS-1$
 			System.out.println("Warnings: " + warnings); //$NON-NLS-1$
 			System.out.println("Infos: " + infos); //$NON-NLS-1$
-			
+
 			int exitValue = errors == 0 ? SUCCEEDED : FAILED;
 			System.out.println("Build " + (exitValue == FAILED ? "failed" : "succeeded") + " after " + seconds + " seconds."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
-			return exitValue;
+			if (exitValue == FAILED && continueOnError)
+				System.out.println("Build continues anyway..."); //$NON-NLS-1$ 
+			return continueOnError ? SUCCEEDED : exitValue;
 		} finally {
 			if (log != null)
 				log.close();
