@@ -25,7 +25,6 @@ import org.eclipse.core.resources.IWorkspaceDescription;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.jobs.IJobManager;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osgi.util.NLS;
@@ -53,14 +52,6 @@ public abstract class WorkspaceCommand extends AbstractCommand {
 
 	private boolean inWorkspace = false;
 
-	public boolean isInWorkspace() {
-		return inWorkspace;
-	}
-
-	public void setInWorkspace(boolean inWorkspace) {
-		this.inWorkspace = inWorkspace;
-	}
-
 	protected void initWorkspace(IProgressMonitor monitor) throws Exception {
 		IWorkspace ws = ResourcesPlugin.getWorkspace();
 		IWorkspaceDescription wsDesc = ws.getDescription();
@@ -71,6 +62,10 @@ public abstract class WorkspaceCommand extends AbstractCommand {
 	}
 
 	protected abstract int internalRun(IProgressMonitor monitor) throws Exception;
+
+	public boolean isInWorkspace() {
+		return inWorkspace;
+	}
 
 	@Override
 	protected final int run(IProgressMonitor monitor) throws Exception {
@@ -108,10 +103,13 @@ public abstract class WorkspaceCommand extends AbstractCommand {
 
 				// Cancel jobs that are known to run indefinitely
 				//
+				logger.debug("Cancel jobs that are known to run indefinitely..."); //$NON-NLS-1$
 				WorkspaceBindingInstallJob.stop();
 				for (Job job : jobManager.find(null)) {
-					if (job instanceof StringPoolJob || job instanceof DelayedSnapshotJob)
+					if (job instanceof StringPoolJob || job instanceof DelayedSnapshotJob) {
 						job.cancel();
+						logger.debug("CANCELED JOB: (%s) %s", job.getClass().getName(), job.toString()); //$NON-NLS-1$
+					}
 				}
 
 				// We wait for current jobs to end but we use a timeout
@@ -122,7 +120,13 @@ public abstract class WorkspaceCommand extends AbstractCommand {
 					@Override
 					public void run() {
 						try {
-							jobManager.join(null, new NullProgressMonitor());
+							// jobManager.join(null, new NullProgressMonitor());
+							for (Job job : jobManager.find(null)) {
+								if (job.getState() == Job.RUNNING && !job.toString().startsWith("ThreadJob")) { //$NON-NLS-1$
+									logger.debug("  Joining JOB: (%s) %s", job.getClass().getName(), job.toString()); //$NON-NLS-1$
+									job.join();
+								}
+							}
 						} catch (InterruptedException e) {
 							// Cancel remaining jobs
 							//
@@ -155,5 +159,9 @@ public abstract class WorkspaceCommand extends AbstractCommand {
 				monitor.done();
 			}
 		}
+	}
+
+	public void setInWorkspace(boolean inWorkspace) {
+		this.inWorkspace = inWorkspace;
 	}
 }
