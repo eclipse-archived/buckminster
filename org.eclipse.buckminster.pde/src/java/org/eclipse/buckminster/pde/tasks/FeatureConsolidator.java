@@ -65,7 +65,7 @@ public class FeatureConsolidator extends GroupConsolidator implements IModelChan
 			}
 			Version version = findBestVersion(featureVers, id, "feature", refId, vstr); //$NON-NLS-1$
 			if (version != null) {
-				ComponentIdentifier cid = new ComponentIdentifier(id, IComponentType.ECLIPSE_FEATURE, version);
+				ComponentIdentifier cid = new ComponentIdentifier(refId, IComponentType.ECLIPSE_FEATURE, version);
 				deps.add(cid);
 				String nvstr = cid.getVersion().toString();
 				if (!nvstr.equals(vstr))
@@ -76,9 +76,10 @@ public class FeatureConsolidator extends GroupConsolidator implements IModelChan
 		Map<String, Version[]> pluginVers = getPluginVersions();
 		for (IFeaturePlugin ref : feature.getPlugins()) {
 			String vstr = ref.getVersion();
-			Version version = findBestVersion(pluginVers, id, "plugin", ref.getId(), vstr); //$NON-NLS-1$
+			String refId = ref.getId();
+			Version version = findBestVersion(pluginVers, id, "plugin", refId, vstr); //$NON-NLS-1$
 			if (version != null) {
-				ComponentIdentifier cid = new ComponentIdentifier(id, IComponentType.OSGI_BUNDLE, version);
+				ComponentIdentifier cid = new ComponentIdentifier(refId, IComponentType.OSGI_BUNDLE, version);
 				deps.add(cid);
 				String nvstr = cid.getVersion().toString();
 				if (!nvstr.equals(vstr))
