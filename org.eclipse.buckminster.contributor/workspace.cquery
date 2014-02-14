@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <cq:componentQuery xmlns:cq="http://www.eclipse.org/buckminster/CQuery-1.0" resourceMap="../org.eclipse.buckminster.releng/build.rmap">
-    <cq:rootRequest name="org.eclipse.buckminster.releng" componentType="buckminster"/>
+    <cq:rootRequest name="org.eclipse.buckminster.contributor" componentType="buckminster"/>
     <cq:property key="target.arch" value="*"/>
     <cq:property key="target.os" value="*"/>
     <cq:property key="target.ws" value="*"/>
