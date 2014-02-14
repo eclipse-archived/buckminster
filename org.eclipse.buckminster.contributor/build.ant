@@ -14,10 +14,11 @@
 <project name="Buckminster Headless" default="build">
 	<property name="WORKSPACE" location="${ant.file}/../../" />
 	<property name="build.root" location="${WORKSPACE}/buildroot" />
-	<property name="buckminster.home" location="${user.home}/buckminster" />
+	<property name="buckminster.home" location="${user.home}/buckminster.headless" />
 	<property name="projects.location" location="${WORKSPACE}" />
 	<property name="git.clone.dir" location="${user.home}/git"/>
 	<property name="releng.project" location="${projects.location}/org.eclipse.buckminster.releng" />
+	<property name="contributor.project" location="${projects.location}/org.eclipse.buckminster.contributor" />
 	<property name="commands.file" location="${releng.project}/promote.bmscript" />
 	<property name="target.platform.dir" value="tp" />
 	<property name="target.platform" location="${build.root}/${target.platform.dir}" />
@@ -29,9 +30,9 @@
 	<property name="eclipse.p2.mirrors" value="true" />
 	<property name="java.net.preferIPv4Stack" value="true" />
 
-	<property name="build.props" location="${releng.project}/build-contributor.properties" />
+	<property name="build.props" location="${contributor.project}/build-contributor.properties" />
 
-	<target name="build" depends="cleanup,install.buckminster.headless" description="description">
+	<target name="build" depends="cleanup,install.buckminster.headless" description="Runs the headless build locally">
 		<buckminster command="--script">
 	      <args>
 			<arg value="${releng.project}/promote.bmscript"/>
@@ -139,6 +140,7 @@
 						          deleteonexit="true" />
 		<get src="${director.url}" dest="${director.zip}" />
 		<unzip src="${director.zip}" dest="${director.install.dest}" />
+		<chmod file="${director.install.dest}/director/director" perm="+x" />
 		<delete file="${director.zip}" />
 	</target>
 
