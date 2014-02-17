@@ -61,6 +61,8 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.equinox.p2.metadata.Version;
 
+import static org.eclipse.buckminster.core.helpers.MapUtils.*;
+
 /**
  * <!-- begin-user-doc --> An implementation of the model object '
  * <em><b>PDE Map Provider</b></em>'. <!-- end-user-doc -->
@@ -91,7 +93,7 @@ public class PDEMapProviderImpl extends ProviderImpl implements PDEMapProvider {
 		}
 	}
 
-	private static Format convertFetchFactoryLocator(String readerType, Map<String, String> fetchFactoryLocator, ComponentIdentifier componentName)
+	private static Format convertFetchFactoryLocator(String readerType, Map<String, Object> fetchFactoryLocator, ComponentIdentifier componentName)
 			throws CoreException {
 		Format uri;
 		if ("cvs".equals(readerType))
@@ -108,15 +110,15 @@ public class PDEMapProviderImpl extends ProviderImpl implements PDEMapProvider {
 		return uri;
 	}
 
-	private static Format convertFetchFactoryLocator_cvs(Map<String, String> fetchFactoryLocator, ComponentIdentifier componentName)
+	private static Format convertFetchFactoryLocator_cvs(Map<String, Object> fetchFactoryLocator, ComponentIdentifier componentName)
 			throws CoreException {
-		String cvsRoot = fetchFactoryLocator.get("cvsRoot"); //$NON-NLS-1$
+		String cvsRoot = getString(fetchFactoryLocator, "cvsRoot"); //$NON-NLS-1$
 		if (cvsRoot == null)
 			return null;
 
 		PropertyRef cnameRef = null;
 		StringBuilder locator = new StringBuilder(cvsRoot);
-		String pathStr = fetchFactoryLocator.get("path"); //$NON-NLS-1$
+		String pathStr = getString(fetchFactoryLocator, "path"); //$NON-NLS-1$
 		locator.append(',');
 		if (pathStr != null) {
 			IPath path = Path.fromPortableString(pathStr);
@@ -146,9 +148,9 @@ public class PDEMapProviderImpl extends ProviderImpl implements PDEMapProvider {
 		return fmt;
 	}
 
-	private static Format convertFetchFactoryLocator_p2(Map<String, String> fetchFactoryLocator, ComponentIdentifier componentName)
+	private static Format convertFetchFactoryLocator_p2(Map<String, Object> fetchFactoryLocator, ComponentIdentifier componentName)
 			throws CoreException {
-		String repoURI = fetchFactoryLocator.get("repository"); //$NON-NLS-1$
+		String repoURI = getString(fetchFactoryLocator, "repository"); //$NON-NLS-1$
 		if (repoURI == null)
 			return null;
 
@@ -157,9 +159,9 @@ public class PDEMapProviderImpl extends ProviderImpl implements PDEMapProvider {
 		return fmt;
 	}
 
-	private static Format convertFetchFactoryLocator_url(Map<String, String> fetchFactoryLocator, ComponentIdentifier componentName)
+	private static Format convertFetchFactoryLocator_url(Map<String, Object> fetchFactoryLocator, ComponentIdentifier componentName)
 			throws CoreException {
-		String repoURI = fetchFactoryLocator.get("src"); //$NON-NLS-1$
+		String repoURI = getString(fetchFactoryLocator, "src"); //$NON-NLS-1$
 		if (repoURI == null)
 			return null;
 
@@ -316,21 +318,21 @@ public class PDEMapProviderImpl extends ProviderImpl implements PDEMapProvider {
 		Map<String, List<ComponentIdentifier>> idsPerSearchPath = new HashMap<String, List<ComponentIdentifier>>();
 		for (MapFileEntry entry : map.values()) {
 			ComponentIdentifier ci = entry.getComponentIdentifier();
-			Map<String, String> properties = entry.getProperties();
+			Map<String, Object> properties = entry.getProperties();
 			boolean source = true;
 			Version v = null;
 			String vs = null;
 			String rt = entry.getReaderType();
 			boolean isP2 = "p2".equals(rt);
 			if (isP2) {
-				String vstr = properties.get("version"); //$NON-NLS-1$
+				String vstr = getString(properties, "version"); //$NON-NLS-1$
 				if (vstr != null) {
 					v = Version.parseVersion(vstr);
 					addQueryHint(queryHints, ci, "version", v.toString());
 				}
 				source = false;
 			} else {
-				String tag = properties.get("tag"); //$NON-NLS-1$
+				String tag = getString(properties, "tag"); //$NON-NLS-1$
 				if (tag != null)
 					vs = tag;
 				VersionConverter vc = getVersionConverter();

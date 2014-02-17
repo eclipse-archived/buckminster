@@ -4,6 +4,9 @@
  * licensed under the Eclipse Public License - v 1.0 by the copyright holder
  * listed above, as the Initial Contributor under such license. The text of
  * such license is available at www.eclipse.org.
+ * 
+ * Contributors:
+ *  Lorenzo Bettini - https://bugs.eclipse.org/bugs/show_bug.cgi?id=428301
  ******************************************************************************/
 
 package org.eclipse.buckminster.core.reader;
@@ -24,7 +27,7 @@ import org.eclipse.core.runtime.Path;
  */
 public abstract class CatalogReaderType extends AbstractReaderType {
 	@Override
-	public Map<String, String> getFetchFactoryProviderProps(Map<String, String> properties, Provider delegee) {
+	public Map<String, String> getFetchFactoryProviderProps(Map<String, Object> properties, Provider delegee) {
 		Map<String, String> props = new HashMap<String, String>();
 		props.put(KeyConstants.IS_SOURCE, Boolean.TRUE.toString());
 		props.put(KeyConstants.IS_MUTABLE, Boolean.TRUE.toString());

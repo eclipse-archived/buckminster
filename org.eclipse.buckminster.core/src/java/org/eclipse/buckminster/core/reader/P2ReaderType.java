@@ -6,6 +6,9 @@
  * licensed under the Eclipse Public License - v 1.0 by the individual
  * copyright holders listed above, as Initial Contributors under such license.
  * The text of such license is available at www.eclipse.org.
+ * 
+ * Contributors:
+ *  Lorenzo Bettini - https://bugs.eclipse.org/bugs/show_bug.cgi?id=428301
  *******************************************************************************/
 package org.eclipse.buckminster.core.reader;
 
@@ -21,6 +24,7 @@ import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.ctype.IComponentType;
+import org.eclipse.buckminster.core.helpers.MapUtils;
 import org.eclipse.buckminster.core.materializer.IMaterializer;
 import org.eclipse.buckminster.core.materializer.P2Materializer;
 import org.eclipse.buckminster.core.metadata.MissingComponentException;
@@ -142,9 +146,9 @@ public class P2ReaderType extends CatalogReaderType {
 	}
 
 	@Override
-	public String convertFetchFactoryLocator(Map<String, String> fetchFactoryLocator, String componentName) throws CoreException {
+	public String convertFetchFactoryLocator(Map<String, Object> fetchFactoryLocator, String componentName) throws CoreException {
 		// This property is guaranteed to be set
-		return fetchFactoryLocator.get("repository"); //$NON-NLS-1$
+		return MapUtils.getString(fetchFactoryLocator, "repository"); //$NON-NLS-1$
 	}
 
 	@Override
@@ -153,7 +157,7 @@ public class P2ReaderType extends CatalogReaderType {
 	}
 
 	@Override
-	public Map<String, String> getFetchFactoryProviderProps(Map<String, String> properties, Provider delegee) {
+	public Map<String, String> getFetchFactoryProviderProps(Map<String, Object> properties, Provider delegee) {
 		Map<String, String> props = new HashMap<String, String>();
 		props.put(KeyConstants.IS_SOURCE, Boolean.FALSE.toString());
 		props.put(KeyConstants.IS_MUTABLE, Boolean.FALSE.toString());

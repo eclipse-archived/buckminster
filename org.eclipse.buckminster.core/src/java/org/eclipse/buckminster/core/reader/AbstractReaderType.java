@@ -6,6 +6,9 @@
  * licensed under the Eclipse Public License - v 1.0 by the individual
  * copyright holders listed above, as Initial Contributors under such license.
  * The text of such license is available at www.eclipse.org.
+ * 
+ * Contributors:
+ *  Lorenzo Bettini - https://bugs.eclipse.org/bugs/show_bug.cgi?id=428301
  *******************************************************************************/
 
 package org.eclipse.buckminster.core.reader;
@@ -93,7 +96,7 @@ public abstract class AbstractReaderType extends AbstractExtension implements IR
 	}
 
 	@Override
-	public String convertFetchFactoryLocator(Map<String, String> fetchFactoryLocator, String componentName) throws CoreException {
+	public String convertFetchFactoryLocator(Map<String, Object> fetchFactoryLocator, String componentName) throws CoreException {
 		throw new UnsupportedOperationException(NLS.bind(Messages.ReaderType_0_cannot_handle_fetchFactory_data, getId()));
 	}
 

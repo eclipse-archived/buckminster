@@ -6,6 +6,9 @@
  * licensed under the Eclipse Public License - v 1.0 by the individual
  * copyright holders listed above, as Initial Contributors under such license.
  * The text of such license is available at www.eclipse.org.
+ * 
+ * Contributors:
+ *  Lorenzo Bettini - https://bugs.eclipse.org/bugs/show_bug.cgi?id=428301
  *******************************************************************************/
 
 package org.eclipse.buckminster.core.reader;
@@ -81,7 +84,7 @@ public interface IReaderType extends IBuckminsterExtension {
 	 * @return The locator in team repository format.
 	 * @throws CoreException
 	 */
-	String convertFetchFactoryLocator(Map<String, String> fetchFactoryLocator, String componentName) throws CoreException;
+	String convertFetchFactoryLocator(Map<String, Object> fetchFactoryLocator, String componentName) throws CoreException;
 
 	/**
 	 * Convert a team project set style locator into a URL.
@@ -132,7 +135,7 @@ public interface IReaderType extends IBuckminsterExtension {
 	 * @param delegee
 	 *            The provider that performs the delegation
 	 */
-	Map<String, String> getFetchFactoryProviderProps(Map<String, String> properties, Provider delegee);
+	Map<String, String> getFetchFactoryProviderProps(Map<String, Object> properties, Provider delegee);
 
 	/**
 	 * Some components, such as the ones present in the target platform, are not

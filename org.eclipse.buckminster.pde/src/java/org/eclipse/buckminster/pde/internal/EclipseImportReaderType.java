@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.buckminster.pde.internal;
 
+import static org.eclipse.buckminster.core.helpers.MapUtils.getString;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -225,7 +227,7 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 
 				if (VersionHelper.equalsUnqualified(cid.getVersion(), entryCid.getVersion()))
 					try {
-						return new URL(entry.getProperties().get("src")); //$NON-NLS-1$
+						return new URL(getString(entry.getProperties(), "src")); //$NON-NLS-1$
 					} catch (MalformedURLException e) {
 						// Just skip
 					}
@@ -250,8 +252,8 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 				if (!IReaderType.URL.equals(entry.getReaderType().getId()))
 					continue;
 
-				Map<String, String> props = entry.getProperties();
-				String src = props.get("src"); //$NON-NLS-1$
+				Map<String, Object> props = entry.getProperties();
+				String src = getString(props, "src"); //$NON-NLS-1$
 				if (src == null || !(src.endsWith(".jar") || src.endsWith(".zip"))) //$NON-NLS-1$ //$NON-NLS-2$
 					continue;
 
