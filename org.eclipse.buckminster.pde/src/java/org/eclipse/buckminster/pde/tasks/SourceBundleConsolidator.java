@@ -91,7 +91,7 @@ public class SourceBundleConsolidator extends BundleConsolidator {
 			src = "."; //$NON-NLS-1$
 
 		String versionStr = version.toString();
-		attributes.putValue(Constants.BUNDLE_SYMBOLICNAME, symbolicName + ".source;singleton:=true"); //$NON-NLS-1$
+		attributes.putValue(Constants.BUNDLE_SYMBOLICNAME, symbolicName + ".source"); //$NON-NLS-1$
 		attributes.putValue(IPDEConstants.MANIFEST_HEADER_SOURCE_BUNDLE, symbolicName + ";version=\"" + versionStr + "\";roots=\"" + src + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		attributes.putValue(Constants.BUNDLE_VERSION, versionStr);
 
