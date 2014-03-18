@@ -31,8 +31,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.team.svn.core.SVNTeamProjectMapper;
 import org.eclipse.team.svn.core.connector.ISVNConnector;
-import org.eclipse.team.svn.core.connector.ISVNConnector.Depth;
 import org.eclipse.team.svn.core.connector.SVNChangeStatus;
+import org.eclipse.team.svn.core.connector.SVNDepth;
 import org.eclipse.team.svn.core.connector.SVNEntry;
 import org.eclipse.team.svn.core.connector.SVNEntryInfo;
 import org.eclipse.team.svn.core.connector.SVNRevision;
@@ -46,6 +46,8 @@ import org.eclipse.team.svn.core.utility.SVNUtility;
 /**
  * @author Thomas Hallgren
  * @author Guillaume Chatelet
+ * @author Lorenzo Bettini -
+ *         https://bugs.eclipse.org/bugs/show_bug.cgi?id=428301
  */
 public class SubversiveReaderType extends GenericReaderType<IRepositoryLocation, SVNEntry, SVNRevision> {
 	private static SVNChangeStatus getLocalInfo(File workingCopy, IProgressMonitor monitor) {
@@ -54,9 +56,9 @@ public class SubversiveReaderType extends GenericReaderType<IRepositoryLocation,
 		if (!checkedPath.append(SVNUtility.getSVNFolderName()).toFile().exists())
 			return null;
 
-		ISVNConnector proxy = CoreExtensionsManager.instance().getSVNConnectorFactory().newInstance();
+		ISVNConnector proxy = CoreExtensionsManager.instance().getSVNConnectorFactory().createConnector();
 		try {
-			SVNChangeStatus[] st = SVNUtility.status(proxy, location.toString(), Depth.IMMEDIATES, ISVNConnector.Options.INCLUDE_UNCHANGED,
+			SVNChangeStatus[] st = SVNUtility.status(proxy, location.toString(), SVNDepth.IMMEDIATES, ISVNConnector.Options.INCLUDE_UNCHANGED,
 					new SVNNullProgressMonitor());
 			if (st == null || st.length == 0)
 				return null;
@@ -69,6 +71,13 @@ public class SubversiveReaderType extends GenericReaderType<IRepositoryLocation,
 			proxy.dispose();
 			MonitorUtils.complete(monitor);
 		}
+	}
+
+	@Override
+	protected IRepositoryLocation[] getKnownRepositories(IProgressMonitor monitor) {
+		IRepositoryLocation[] repos = SVNRemoteStorage.instance().getRepositoryLocations();
+		MonitorUtils.complete(monitor);
+		return repos;
 	}
 
 	@Override
@@ -96,23 +105,16 @@ public class SubversiveReaderType extends GenericReaderType<IRepositoryLocation,
 	}
 
 	@Override
+	protected ISubversionSession<SVNEntry, SVNRevision> getSession(String repositoryURI, VersionSelector branchOrTag, long revision, Date timestamp,
+			RMContext context) throws CoreException {
+		return new SubversiveSession(repositoryURI, branchOrTag, revision, timestamp, context);
+	}
+
+	@Override
 	public IVersionFinder getVersionFinder(Provider provider, IComponentType ctype, NodeQuery nodeQuery, IProgressMonitor monitor)
 			throws CoreException {
 		MonitorUtils.complete(monitor);
 		return new SubversiveVersionFinder(provider, ctype, nodeQuery);
-	}
-
-	@Override
-	protected IRepositoryLocation[] getKnownRepositories(IProgressMonitor monitor) {
-		IRepositoryLocation[] repos = SVNRemoteStorage.instance().getRepositoryLocations();
-		MonitorUtils.complete(monitor);
-		return repos;
-	}
-
-	@Override
-	protected ISubversionSession<SVNEntry, SVNRevision> getSession(String repositoryURI, VersionSelector branchOrTag, long revision, Date timestamp,
-			RMContext context) throws CoreException {
-		return new SubversiveSession(repositoryURI, branchOrTag, revision, timestamp, context);
 	}
 
 	@Override

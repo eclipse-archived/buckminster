@@ -29,6 +29,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.team.svn.core.connector.ISVNConnector;
 import org.eclipse.team.svn.core.connector.ISVNProgressMonitor;
 import org.eclipse.team.svn.core.connector.SVNConnectorException;
+import org.eclipse.team.svn.core.connector.SVNDepth;
 import org.eclipse.team.svn.core.connector.SVNEntry;
 import org.eclipse.team.svn.core.connector.SVNEntryRevisionReference;
 import org.eclipse.team.svn.core.connector.SVNRevision;
@@ -61,6 +62,8 @@ import org.eclipse.team.svn.core.operation.file.GetFileContentOperation;
  * 
  * @author Thomas Hallgren
  * @author Guillaume Chatelet
+ * @author Lorenzo Bettini -
+ *         https://bugs.eclipse.org/bugs/show_bug.cgi?id=428301
  */
 public class SubversiveRemoteFileReader extends GenericRemoteReader<SVNEntry, SVNRevision> {
 
@@ -75,6 +78,29 @@ public class SubversiveRemoteFileReader extends GenericRemoteReader<SVNEntry, SV
 	}
 
 	@Override
+	protected void fetchRemoteFile(URI url, SVNRevision revision, OutputStream output, IProgressMonitor subMonitor) throws Exception {
+		final ISVNProgressMonitor svnMon = SimpleMonitorWrapper.beginTask(subMonitor, 100);
+		final ISVNConnector proxy = getSession().getSVNProxy();
+		final SVNEntryRevisionReference entry = new SVNEntryRevisionReference(url.toString(), revision, revision);
+		proxy.streamFileContent(entry, GetFileContentOperation.DEFAULT_BUFFER_SIZE, output, svnMon);
+	}
+
+	private SubversiveSession getSession() {
+		return (SubversiveSession) session;
+	}
+
+	@Override
+	protected ISubversionSession<SVNEntry, SVNRevision> getSession(String repositoryURI, VersionSelector branchOrTag, long revision, Date timestamp,
+			RMContext context) throws CoreException {
+		return new SubversiveSession(repositoryURI, branchOrTag, revision, timestamp, context);
+	}
+
+	@Override
+	protected SVNEntry[] getTopEntries(IProgressMonitor monitor) throws CoreException {
+		return session.listFolder(session.getSVNUrl(), monitor);
+	}
+
+	@Override
 	public void innerMaterialize(IPath destination, IProgressMonitor monitor) throws CoreException {
 		boolean success = false;
 		File destDir = destination.toFile();
@@ -83,7 +109,7 @@ public class SubversiveRemoteFileReader extends GenericRemoteReader<SVNEntry, SV
 		try {
 			getSession().getSVNProxy().checkout(
 					new SVNEntryRevisionReference(session.getSVNUrl().toString(), session.getRevision(), session.getRevision()), destDir.toString(),
-					ISVNConnector.Depth.INFINITY, ISVNConnector.Options.FORCE, svnMon);
+					SVNDepth.INFINITY, ISVNConnector.Options.FORCE, svnMon);
 			success = true;
 		} catch (SVNConnectorException e) {
 			throw BuckminsterException.wrap(e);
@@ -100,25 +126,6 @@ public class SubversiveRemoteFileReader extends GenericRemoteReader<SVNEntry, SV
 	}
 
 	@Override
-	protected void fetchRemoteFile(URI url, SVNRevision revision, OutputStream output, IProgressMonitor subMonitor) throws Exception {
-		final ISVNProgressMonitor svnMon = SimpleMonitorWrapper.beginTask(subMonitor, 100);
-		final ISVNConnector proxy = getSession().getSVNProxy();
-		final SVNEntryRevisionReference entry = new SVNEntryRevisionReference(url.toString(), revision, revision);
-		proxy.streamFileContent(entry, GetFileContentOperation.DEFAULT_BUFFER_SIZE, output, svnMon);
-	}
-
-	@Override
-	protected ISubversionSession<SVNEntry, SVNRevision> getSession(String repositoryURI, VersionSelector branchOrTag, long revision, Date timestamp,
-			RMContext context) throws CoreException {
-		return new SubversiveSession(repositoryURI, branchOrTag, revision, timestamp, context);
-	}
-
-	@Override
-	protected SVNEntry[] getTopEntries(IProgressMonitor monitor) throws CoreException {
-		return session.listFolder(session.getSVNUrl(), monitor);
-	}
-
-	@Override
 	protected boolean remoteFileExists(URI url, SVNRevision revision, IProgressMonitor monitor) throws CoreException {
 		return getSession().getDirEntry(url, revision, monitor) != null;
 	}
@@ -128,9 +135,5 @@ public class SubversiveRemoteFileReader extends GenericRemoteReader<SVNEntry, SV
 		final URI url = session.getSVNUrl(fileName);
 		final SVNRevision revision = session.getRevision();
 		return GenericCache.cacheKey(url, revision);
-	}
-
-	private SubversiveSession getSession() {
-		return (SubversiveSession) session;
 	}
 }
