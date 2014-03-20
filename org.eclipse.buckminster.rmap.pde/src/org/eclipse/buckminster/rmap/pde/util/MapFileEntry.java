@@ -4,6 +4,9 @@
  * licensed under the Eclipse Public License - v 1.0 by the copyright holder
  * listed above, as the Initial Contributor under such license. The text of
  * such license is available at www.eclipse.org.
+ * 
+ * Contributors:
+ *  Lorenzo Bettini - https://bugs.eclipse.org/bugs/show_bug.cgi?id=428301
  ******************************************************************************/
 
 package org.eclipse.buckminster.rmap.pde.util;
@@ -20,9 +23,9 @@ public class MapFileEntry {
 
 	private final String readerType;
 
-	private final Map<String, String> properties;
+	private final Map<String, Object> properties;
 
-	protected MapFileEntry(ComponentIdentifier componentIdentifier, String readerType, Map<String, String> properties) {
+	protected MapFileEntry(ComponentIdentifier componentIdentifier, String readerType, Map<String, Object> properties) {
 		this.componentIdentifier = componentIdentifier;
 		this.readerType = readerType;
 		this.properties = properties;
@@ -32,7 +35,7 @@ public class MapFileEntry {
 		return componentIdentifier;
 	}
 
-	public Map<String, String> getProperties() {
+	public Map<String, Object> getProperties() {
 		return properties;
 	}
 

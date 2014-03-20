@@ -19,7 +19,7 @@
   <rm:locator pattern="^net\.java\.dev\.jna(\..+)?" searchPathRef="subclipse"/>
   <rm:locator pattern="^org\.polarion(\..+)?" searchPathRef="polarion"/>
   <rm:locator searchPathRef="platform" failOnError="false"/>
-  <rm:locator searchPathRef="kepler" failOnError="false"/>
+  <rm:locator searchPathRef="luna" failOnError="false"/>
   <rm:locator searchPathRef="orbit"/>
   <rm:searchPath name="buckminster">
     <rm:provider componentTypes="osgi.bundle,eclipse.feature,buckminster" readerType="git">
@@ -35,16 +35,16 @@
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false">
       <rm:property key="buckminster.source" value="false"/>
       <rm:property key="buckminster.mutable" value="false"/>
-      <rm:uri format="{0}/eclipse/updates/4.3">
+      <rm:uri format="{0}/eclipse/updates/4.4milestones/S-4.4M6-201403061200">
         <bc:propertyRef key="eclipse.download.prefix"/>
       </rm:uri>
     </rm:provider>
   </rm:searchPath>
-  <rm:searchPath name="kepler">
+  <rm:searchPath name="luna">
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false">
       <rm:property key="buckminster.source" value="false"/>
       <rm:property key="buckminster.mutable" value="false"/>
-      <rm:uri format="{0}/releases/kepler">
+      <rm:uri format="{0}/releases/luna">
         <bc:propertyRef key="eclipse.download.prefix"/>
       </rm:uri>
     </rm:provider>
@@ -69,7 +69,7 @@
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false">
       <rm:property key="buckminster.source" value="false"/>
       <rm:property key="buckminster.mutable" value="false"/>
-      <rm:uri format="http://community.polarion.com/projects/subversive/download/eclipse/3.0/kepler-site/"/>
+      <rm:uri format="http://community.polarion.com/projects/subversive/download/eclipse/4.0/update-site/"/>
     </rm:provider>
   </rm:searchPath>
 <!-- <rm:searchPath name="git">

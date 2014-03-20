@@ -23,6 +23,11 @@ import org.eclipse.equinox.p2.query.IQueryResult;
 import org.eclipse.equinox.p2.query.IQueryable;
 import org.eclipse.equinox.p2.query.QueryUtil;
 
+/**
+ * @author Thomas Hallgren
+ * @author Lorenzo Bettini -
+ *         https://bugs.eclipse.org/bugs/show_bug.cgi?id=428301
+ */
 @SuppressWarnings("restriction")
 public class ProductVersionPatcher implements IProductDescriptor {
 	private final IProductDescriptor product;
@@ -83,6 +88,11 @@ public class ProductVersionPatcher implements IProductDescriptor {
 	@Override
 	public Map<String, String> getConfigurationProperties() {
 		Map<String, String> cprops = product.getConfigurationProperties();
+		cprops = addBuildIdProperties(cprops);
+		return cprops;
+	}
+
+	private Map<String, String> addBuildIdProperties(Map<String, String> cprops) {
 		String buildId = cprops.get(BUILD_ID_KEY);
 		if (buildId != null && buildId.contains(BUILD_ID_TAG)) {
 			String realBuildId = (String) context.getProperties().get("build.id"); //$NON-NLS-1$
@@ -261,5 +271,22 @@ public class ProductVersionPatcher implements IProductDescriptor {
 			pvns.add(new VersionedId(id, adjustVersion(id, vn.getVersion(), features)));
 		}
 		return pvns;
+	}
+
+	@Override
+	public String getVMArguments(String os, String arch) {
+		return product.getVMArguments(os, arch);
+	}
+
+	@Override
+	public String getProgramArguments(String os, String arch) {
+		return product.getProgramArguments(os, arch);
+	}
+
+	@Override
+	public Map<String, String> getConfigurationProperties(String os, String arch) {
+		Map<String, String> cprops = product.getConfigurationProperties(os, arch);
+		cprops = addBuildIdProperties(cprops);
+		return cprops;
 	}
 }

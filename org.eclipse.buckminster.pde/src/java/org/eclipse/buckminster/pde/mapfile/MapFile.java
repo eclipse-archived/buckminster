@@ -4,9 +4,14 @@
  * licensed under the Eclipse Public License - v 1.0 by the copyright holder
  * listed above, as the Initial Contributor under such license. The text of
  * such license is available at www.eclipse.org.
+ *  
+ * Contributors:
+ *  Lorenzo Bettini - https://bugs.eclipse.org/bugs/show_bug.cgi?id=428301
  ******************************************************************************/
 
 package org.eclipse.buckminster.pde.mapfile;
+
+import static org.eclipse.buckminster.core.helpers.MapUtils.getString;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -139,7 +144,7 @@ public class MapFile {
 
 			String identifier = m.group(2);
 
-			Map<String, String> props = new HashMap<String, String>();
+			Map<String, Object> props = new HashMap<String, Object>();
 			try {
 				ff.parseMapFileEntry(fetchTypeSpecific, null, props);
 			} catch (Exception e) {
@@ -155,7 +160,7 @@ public class MapFile {
 
 				// Extract a more exact version from the file name if possible
 				//
-				String src = props.get("src"); //$NON-NLS-1$
+				String src = getString(props, "src"); //$NON-NLS-1$
 				if (src.endsWith(".jar") || src.endsWith(".zip")) //$NON-NLS-1$ //$NON-NLS-2$
 				{
 					int lastSlash = src.lastIndexOf('/');

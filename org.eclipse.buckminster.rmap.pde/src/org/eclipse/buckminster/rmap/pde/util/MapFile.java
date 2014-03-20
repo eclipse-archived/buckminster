@@ -4,6 +4,9 @@
  * licensed under the Eclipse Public License - v 1.0 by the copyright holder
  * listed above, as the Initial Contributor under such license. The text of
  * such license is available at www.eclipse.org.
+ *  
+ * Contributors:
+ *  Lorenzo Bettini - https://bugs.eclipse.org/bugs/show_bug.cgi?id=428301
  ******************************************************************************/
 
 package org.eclipse.buckminster.rmap.pde.util;
@@ -28,6 +31,8 @@ import org.eclipse.equinox.p2.metadata.Version;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.pde.build.IFetchFactory;
 import org.eclipse.pde.internal.build.FetchTaskFactoriesRegistry;
+
+import static org.eclipse.buckminster.core.helpers.MapUtils.*;
 
 /**
  * @author Thomas Hallgren
@@ -125,10 +130,10 @@ public class MapFile {
 
 			String identifier = m.group(2);
 
-			Map<String, String> props = new HashMap<String, String>();
+			Map<String, Object> props = new HashMap<String, Object>();
 			try {
 				ff.parseMapFileEntry(fetchTypeSpecific, null, props);
-				String tag = props.get(IFetchFactory.KEY_ELEMENT_TAG);
+				String tag = getString(props, IFetchFactory.KEY_ELEMENT_TAG);
 				if (tag != null && tag.length() > 2 && tag.charAt(0) == '@' && tag.charAt(tag.length() - 1) == '@') {
 					String tagKey = tag.substring(1, tag.length() - 1);
 					tag = properties.get(tagKey);
@@ -150,7 +155,7 @@ public class MapFile {
 
 				// Extract a more exact version from the file name if possible
 				//
-				String src = props.get("src"); //$NON-NLS-1$
+				String src = getString(props, "src"); //$NON-NLS-1$
 				if (src.endsWith(".jar") || src.endsWith(".zip")) //$NON-NLS-1$ //$NON-NLS-2$
 				{
 					int lastSlash = src.lastIndexOf('/');

@@ -1,4 +1,17 @@
+/*******************************************************************
+ * Copyright (c) 2006-2013, Cloudsmith Inc.
+ * The code, documentation and other materials contained herein
+ * are the sole and exclusive property of Cloudsmith Inc. and may
+ * not be disclosed, used, modified, copied or distributed without
+ * prior written consent or license from Cloudsmith Inc.
+ *  
+ * Contributors:
+ *  Lorenzo Bettini - https://bugs.eclipse.org/bugs/show_bug.cgi?id=428301
+ */
+
 package org.eclipse.buckminster.git.internal;
+
+import static org.eclipse.buckminster.core.helpers.MapUtils.getString;
 
 import java.io.File;
 import java.io.IOException;
@@ -55,8 +68,8 @@ import org.eclipse.team.core.RepositoryProvider;
 
 public class GitReaderType extends CatalogReaderType implements ITeamReaderType {
 	@Override
-	public String convertFetchFactoryLocator(Map<String, String> fetchFactoryLocator, String componentName) throws CoreException {
-		String repo = fetchFactoryLocator.get("repo"); //$NON-NLS-1$
+	public String convertFetchFactoryLocator(Map<String, Object> fetchFactoryLocator, String componentName) throws CoreException {
+		String repo = getString(fetchFactoryLocator, "repo"); //$NON-NLS-1$
 		if (repo == null)
 			throw new IllegalArgumentException(NLS.bind(Messages.git_reader_type_is_missing_required_property_0, "repo")); //$NON-NLS-1$
 		String localClone = "${workspace.root}"; //$NON-NLS-1$
@@ -67,7 +80,7 @@ public class GitReaderType extends CatalogReaderType implements ITeamReaderType 
 		} catch (URISyntaxException e) {
 			throw BuckminsterException.wrap(e);
 		}
-		String path = fetchFactoryLocator.get("path"); //$NON-NLS-1$
+		String path = getString(fetchFactoryLocator, "path"); //$NON-NLS-1$
 		if (path != null)
 			localClone += ',' + path;
 		return localClone;
@@ -79,12 +92,12 @@ public class GitReaderType extends CatalogReaderType implements ITeamReaderType 
 	}
 
 	@Override
-	public Map<String, String> getFetchFactoryProviderProps(Map<String, String> fetchFactoryLocator, Provider delegee) {
+	public Map<String, String> getFetchFactoryProviderProps(Map<String, Object> fetchFactoryLocator, Provider delegee) {
 		Map<String, String> props = new HashMap<String, String>();
 		props.put(KeyConstants.IS_SOURCE, Boolean.TRUE.toString());
 		props.put(KeyConstants.IS_MUTABLE, Boolean.TRUE.toString());
 
-		String repo = fetchFactoryLocator.get("repo"); //$NON-NLS-1$
+		String repo = getString(fetchFactoryLocator, "repo"); //$NON-NLS-1$
 		if (repo == null)
 			throw new IllegalArgumentException(NLS.bind(Messages.git_reader_type_is_missing_required_property_0, "repo")); //$NON-NLS-1$
 		props.put(IPropertyKeys.PROP_REMOTE_URI, repo);

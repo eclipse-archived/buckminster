@@ -11,12 +11,15 @@ package org.eclipse.buckminster.subversive.internal;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.team.svn.core.connector.ISVNProgressMonitor;
+import org.eclipse.team.svn.core.connector.SVNCommitStatus;
 import org.eclipse.team.svn.core.operation.SVNNullProgressMonitor;
 import org.eclipse.team.svn.core.utility.ProgressMonitorUtility;
 import org.eclipse.team.svn.core.utility.SubProgressMonitorWithInfo;
 
 /**
  * @author Thomas Hallgren
+ * @author Lorenzo Bettini -
+ *         https://bugs.eclipse.org/bugs/show_bug.cgi?id=428301
  */
 public class SimpleMonitorWrapper implements ISVNProgressMonitor {
 	public static ISVNProgressMonitor beginTask(IProgressMonitor monitor, int ticks) {
@@ -31,6 +34,11 @@ public class SimpleMonitorWrapper implements ISVNProgressMonitor {
 
 	private SimpleMonitorWrapper(IProgressMonitor monitor, int ticks) {
 		this.monitor = new SubProgressMonitorWithInfo(monitor, ticks);
+	}
+
+	@Override
+	public void commitStatus(SVNCommitStatus status) {
+		// this was introduced recently
 	}
 
 	@Override

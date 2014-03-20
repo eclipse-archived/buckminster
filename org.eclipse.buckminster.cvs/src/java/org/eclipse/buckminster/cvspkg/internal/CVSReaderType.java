@@ -6,6 +6,9 @@
  * licensed under the Eclipse Public License - v 1.0 by the individual
  * copyright holders listed above, as Initial Contributors under such license.
  * The text of such license is available at www.eclipse.org.
+ * 
+ * Contributors:
+ *  Lorenzo Bettini - https://bugs.eclipse.org/bugs/show_bug.cgi?id=428301
  *******************************************************************************/
 
 package org.eclipse.buckminster.cvspkg.internal;
@@ -23,6 +26,7 @@ import java.util.StringTokenizer;
 
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.ctype.IComponentType;
+import org.eclipse.buckminster.core.helpers.MapUtils;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.reader.CatalogReaderType;
 import org.eclipse.buckminster.core.reader.IComponentReader;
@@ -78,6 +82,26 @@ public class CVSReaderType extends CatalogReaderType implements ITeamReaderType 
 
 	public static final Command.LocalOption STDOUT = new MyLocalOption("-p"); //$NON-NLS-1$
 
+	static CVSTag getCVSTag(VersionMatch match) throws CoreException {
+		CVSTag tag;
+		VersionSelector selector = match.getBranchOrTag();
+		Date timestamp;
+		if (selector == null && (timestamp = match.getTimestamp()) != null)
+			tag = new CVSTag(timestamp);
+		else
+			tag = getCVSTag(selector);
+		return tag;
+	}
+
+	static CVSTag getCVSTag(VersionSelector selector) throws CoreException {
+		CVSTag tag;
+		if (selector == null)
+			tag = CVSTag.DEFAULT;
+		else
+			tag = new CVSTag(selector.getName(), selector.getType() == VersionSelector.TAG ? CVSTag.VERSION : CVSTag.BRANCH);
+		return tag;
+	}
+
 	public static ICVSRepositoryLocation getDemotedLocation(ICVSRepositoryLocation known) throws CVSException {
 		String knownMethod = known.getMethod().getName();
 		for (ICVSRepositoryLocation wanted : CVSProviderPlugin.getPlugin().getKnownRepositories()) {
@@ -114,34 +138,107 @@ public class CVSReaderType extends CatalogReaderType implements ITeamReaderType 
 		return wanted;
 	}
 
-	static CVSTag getCVSTag(VersionMatch match) throws CoreException {
-		CVSTag tag;
-		VersionSelector selector = match.getBranchOrTag();
-		Date timestamp;
-		if (selector == null && (timestamp = match.getTimestamp()) != null)
-			tag = new CVSTag(timestamp);
-		else
-			tag = getCVSTag(selector);
-		return tag;
+	/**
+	 * Creates an SCMURL reference to the associated source.
+	 * 
+	 * @param repoLocation
+	 * @param module
+	 * @param projectName
+	 * @return project reference string or <code>null</code> if none
+	 */
+	private String asReference(String repoLocation, String module, String projectName, String tagName) {
+		// parse protocol, host, repository root from repoLocation
+		String protocol = null;
+		String host = null;
+		String root = null;
+
+		int at = repoLocation.indexOf('@');
+		if (at < 0) {
+			// should be a local protocol
+			if (repoLocation.startsWith(":local:")) { //$NON-NLS-1$
+				protocol = "local"; //$NON-NLS-1$
+				root = repoLocation.substring(7);
+			}
+		} else if (at < (repoLocation.length() - 2)) {
+			String serverRoot = repoLocation.substring(at + 1);
+			String protocolUserPass = repoLocation.substring(0, at);
+			int colon = serverRoot.indexOf(':');
+			if (colon > 0) {
+				host = serverRoot.substring(0, colon);
+				if (colon < (serverRoot.length() - 2)) {
+					root = serverRoot.substring(colon + 1);
+				}
+				if (protocolUserPass.startsWith(":")) { //$NON-NLS-1$
+					colon = protocolUserPass.indexOf(':', 1);
+					if (colon > 0) {
+						protocol = protocolUserPass.substring(1, colon);
+					}
+				} else {
+					// missing protocol, assume p-server
+					protocol = "pserver"; //$NON-NLS-1$
+				}
+			}
+		}
+
+		if (protocol == null || root == null) {
+			return null; // invalid syntax
+		}
+
+		// use '|' as separator if the root location uses a colon for a Windows
+		// path
+		String sep = ":"; //$NON-NLS-1$
+		if (root.indexOf(':') >= 0) {
+			sep = "|"; //$NON-NLS-1$
+		}
+		StringBuffer buffer = new StringBuffer();
+		buffer.append("scm:cvs"); //$NON-NLS-1$
+		buffer.append(sep);
+		buffer.append(protocol);
+		buffer.append(sep);
+		if (host != null) {
+			buffer.append(host);
+			buffer.append(sep);
+		}
+		buffer.append(root);
+		buffer.append(sep);
+		buffer.append(module);
+
+		Path modulePath = new Path(module);
+		if (!modulePath.lastSegment().equals(projectName)) {
+			buffer.append(";project=\""); //$NON-NLS-1$
+			buffer.append(projectName);
+			buffer.append('"');
+		}
+
+		if (tagName != null && !tagName.equals("HEAD")) { //$NON-NLS-1$
+			buffer.append(";tag="); //$NON-NLS-1$
+			buffer.append(tagName);
+		}
+		return buffer.toString();
 	}
 
-	static CVSTag getCVSTag(VersionSelector selector) throws CoreException {
-		CVSTag tag;
-		if (selector == null)
-			tag = CVSTag.DEFAULT;
-		else
-			tag = new CVSTag(selector.getName(), selector.getType() == VersionSelector.TAG ? CVSTag.VERSION : CVSTag.BRANCH);
-		return tag;
+	/**
+	 * Return the arguments to be passed to the tag command
+	 */
+	protected String[] buildResourceArguments(IResource[] resources) throws CVSException {
+		String[] arguments = new String[resources.length];
+
+		for (int i = 0; i < resources.length; ++i) {
+			IPath cvsPath = resources[i].getFullPath().removeFirstSegments(1);
+			arguments[i] = (cvsPath.segmentCount() == 0) ? Session.CURRENT_LOCAL_FOLDER : cvsPath.toString();
+		}
+
+		return arguments;
 	}
 
 	@Override
-	public String convertFetchFactoryLocator(Map<String, String> fetchFactoryLocator, String componentName) throws CoreException {
-		String cvsRoot = fetchFactoryLocator.get("cvsRoot"); //$NON-NLS-1$
+	public String convertFetchFactoryLocator(Map<String, Object> fetchFactoryLocator, String componentName) throws CoreException {
+		String cvsRoot = MapUtils.getString(fetchFactoryLocator, "cvsRoot"); //$NON-NLS-1$
 		if (cvsRoot == null)
 			throw BuckminsterException.fromMessage(Messages.illegal_fetch_factory_locator);
 
 		StringBuilder locator = new StringBuilder(cvsRoot);
-		String path = fetchFactoryLocator.get("path"); //$NON-NLS-1$
+		String path = MapUtils.getString(fetchFactoryLocator, "path"); //$NON-NLS-1$
 		locator.append(',');
 		if (path != null)
 			locator.append(path);
@@ -367,98 +464,5 @@ public class CVSReaderType extends CatalogReaderType implements ITeamReaderType 
 		} finally {
 			progress.done();
 		}
-	}
-
-	/**
-	 * Return the arguments to be passed to the tag command
-	 */
-	protected String[] buildResourceArguments(IResource[] resources) throws CVSException {
-		String[] arguments = new String[resources.length];
-
-		for (int i = 0; i < resources.length; ++i) {
-			IPath cvsPath = resources[i].getFullPath().removeFirstSegments(1);
-			arguments[i] = (cvsPath.segmentCount() == 0) ? Session.CURRENT_LOCAL_FOLDER : cvsPath.toString();
-		}
-
-		return arguments;
-	}
-
-	/**
-	 * Creates an SCMURL reference to the associated source.
-	 * 
-	 * @param repoLocation
-	 * @param module
-	 * @param projectName
-	 * @return project reference string or <code>null</code> if none
-	 */
-	private String asReference(String repoLocation, String module, String projectName, String tagName) {
-		// parse protocol, host, repository root from repoLocation
-		String protocol = null;
-		String host = null;
-		String root = null;
-
-		int at = repoLocation.indexOf('@');
-		if (at < 0) {
-			// should be a local protocol
-			if (repoLocation.startsWith(":local:")) { //$NON-NLS-1$
-				protocol = "local"; //$NON-NLS-1$
-				root = repoLocation.substring(7);
-			}
-		} else if (at < (repoLocation.length() - 2)) {
-			String serverRoot = repoLocation.substring(at + 1);
-			String protocolUserPass = repoLocation.substring(0, at);
-			int colon = serverRoot.indexOf(':');
-			if (colon > 0) {
-				host = serverRoot.substring(0, colon);
-				if (colon < (serverRoot.length() - 2)) {
-					root = serverRoot.substring(colon + 1);
-				}
-				if (protocolUserPass.startsWith(":")) { //$NON-NLS-1$
-					colon = protocolUserPass.indexOf(':', 1);
-					if (colon > 0) {
-						protocol = protocolUserPass.substring(1, colon);
-					}
-				} else {
-					// missing protocol, assume p-server
-					protocol = "pserver"; //$NON-NLS-1$
-				}
-			}
-		}
-
-		if (protocol == null || root == null) {
-			return null; // invalid syntax
-		}
-
-		// use '|' as separator if the root location uses a colon for a Windows
-		// path
-		String sep = ":"; //$NON-NLS-1$
-		if (root.indexOf(':') >= 0) {
-			sep = "|"; //$NON-NLS-1$
-		}
-		StringBuffer buffer = new StringBuffer();
-		buffer.append("scm:cvs"); //$NON-NLS-1$
-		buffer.append(sep);
-		buffer.append(protocol);
-		buffer.append(sep);
-		if (host != null) {
-			buffer.append(host);
-			buffer.append(sep);
-		}
-		buffer.append(root);
-		buffer.append(sep);
-		buffer.append(module);
-
-		Path modulePath = new Path(module);
-		if (!modulePath.lastSegment().equals(projectName)) {
-			buffer.append(";project=\""); //$NON-NLS-1$
-			buffer.append(projectName);
-			buffer.append('"');
-		}
-
-		if (tagName != null && !tagName.equals("HEAD")) { //$NON-NLS-1$
-			buffer.append(";tag="); //$NON-NLS-1$
-			buffer.append(tagName);
-		}
-		return buffer.toString();
 	}
 }

@@ -30,6 +30,7 @@ import org.eclipse.team.svn.core.SVNTeamPlugin;
 import org.eclipse.team.svn.core.connector.ISVNConnector;
 import org.eclipse.team.svn.core.connector.ISVNCredentialsPrompt;
 import org.eclipse.team.svn.core.connector.ISVNProgressMonitor;
+import org.eclipse.team.svn.core.connector.SVNDepth;
 import org.eclipse.team.svn.core.connector.SVNEntry;
 import org.eclipse.team.svn.core.connector.SVNEntryRevisionReference;
 import org.eclipse.team.svn.core.connector.SVNRevision;
@@ -75,6 +76,8 @@ import org.eclipse.team.svn.core.utility.SVNUtility;
  * 
  * @author Thomas Hallgren
  * @author Guillaume Chatelet
+ * @author Lorenzo Bettini -
+ *         https://bugs.eclipse.org/bugs/show_bug.cgi?id=428301
  */
 public class SubversiveSession extends GenericSession<IRepositoryLocation, SVNEntry, SVNRevision> {
 	private class UnattendedPromptUserPassword implements ISVNCredentialsPrompt {
@@ -269,6 +272,31 @@ public class SubversiveSession extends GenericSession<IRepositoryLocation, SVNEn
 		proxy.dispose();
 	}
 
+	@Override
+	protected void createRoots(Collection<RepositoryAccess> sourceRoots) throws CoreException {
+		final SVNRemoteStorage storage = SVNRemoteStorage.instance();
+		for (RepositoryAccess root : sourceRoots) {
+			IRepositoryLocation location = storage.newRepositoryLocation();
+			location.setUrl(root.getSvnURL().toString());
+			location.setPassword(root.getPassword());
+			location.setUsername(root.getUser());
+			storage.addRepositoryLocation(location);
+		}
+		try {
+			storage.saveConfiguration();
+		} catch (Exception e) {
+			throw BuckminsterException.wrap(e);
+		}
+	}
+
+	@Override
+	protected ISubversionCache<SVNEntry> getCache(Map<UUID, Object> userCache) {
+		assert (cache == null);
+		final SubversiveCache svnCache = new SubversiveCache();
+		svnCache.initialize(userCache);
+		return svnCache;
+	}
+
 	public SVNEntry getDirEntry(URI uri, SVNRevision revision, IProgressMonitor monitor) throws CoreException {
 		final URI parent = getURIParent(uri);
 		if (parent == null)
@@ -281,6 +309,16 @@ public class SubversiveSession extends GenericSession<IRepositoryLocation, SVNEn
 			if (entryPath.equals(entry.path))
 				return entry;
 		return null;
+	}
+
+	@Override
+	protected SVNEntry[] getEmptyEntryList() {
+		return emptyFolder;
+	}
+
+	@Override
+	protected IRepositoryLocation[] getKnownRepositories() {
+		return SVNRemoteStorage.instance().getRepositoryLocations();
 	}
 
 	@Override
@@ -315,8 +353,19 @@ public class SubversiveSession extends GenericSession<IRepositoryLocation, SVNEn
 	}
 
 	@Override
+	protected String getRootUrl(IRepositoryLocation location) {
+		return location.getRoot().getUrl();
+	}
+
+	@Override
 	public ISvnEntryHelper<SVNEntry> getSvnEntryHelper() {
 		return HELPER;
+	}
+
+	ISVNConnector getSVNProxy() {
+		if (proxy == null)
+			proxy = CoreExtensionsManager.instance().getSVNConnectorFactory().createConnector();
+		return proxy;
 	}
 
 	@Override
@@ -330,55 +379,6 @@ public class SubversiveSession extends GenericSession<IRepositoryLocation, SVNEn
 		if (timestamp != null)
 			throw new IllegalArgumentException(org.eclipse.buckminster.subversion.Messages.svn_session_cannot_use_both_timestamp_and_revision_number);
 		return SVNRevision.fromNumber(revision);
-	}
-
-	@Override
-	public String toString() {
-		try {
-			return getSVNUrl(null).toString();
-		} catch (CoreException e) {
-			return super.toString();
-		}
-	}
-
-	@Override
-	protected void createRoots(Collection<RepositoryAccess> sourceRoots) throws CoreException {
-		final SVNRemoteStorage storage = SVNRemoteStorage.instance();
-		for (RepositoryAccess root : sourceRoots) {
-			IRepositoryLocation location = storage.newRepositoryLocation();
-			location.setUrl(root.getSvnURL().toString());
-			location.setPassword(root.getPassword());
-			location.setUsername(root.getUser());
-			storage.addRepositoryLocation(location);
-		}
-		try {
-			storage.saveConfiguration();
-		} catch (Exception e) {
-			throw BuckminsterException.wrap(e);
-		}
-	}
-
-	@Override
-	protected ISubversionCache<SVNEntry> getCache(Map<UUID, Object> userCache) {
-		assert (cache == null);
-		final SubversiveCache svnCache = new SubversiveCache();
-		svnCache.initialize(userCache);
-		return svnCache;
-	}
-
-	@Override
-	protected SVNEntry[] getEmptyEntryList() {
-		return emptyFolder;
-	}
-
-	@Override
-	protected IRepositoryLocation[] getKnownRepositories() {
-		return SVNRemoteStorage.instance().getRepositoryLocations();
-	}
-
-	@Override
-	protected String getRootUrl(IRepositoryLocation location) {
-		return location.getRoot().getUrl();
 	}
 
 	@Override
@@ -414,14 +414,17 @@ public class SubversiveSession extends GenericSession<IRepositoryLocation, SVNEn
 	@Override
 	protected SVNEntry[] innerListFolder(URI url, IProgressMonitor monitor) throws Exception {
 		ISVNProgressMonitor svnMon = SimpleMonitorWrapper.beginTask(monitor, 100);
-		return SVNUtility.list(proxy, new SVNEntryRevisionReference(url.toString(), getRevision(), getRevision()), ISVNConnector.Depth.IMMEDIATES,
+		return SVNUtility.list(proxy, new SVNEntryRevisionReference(url.toString(), getRevision(), getRevision()), SVNDepth.IMMEDIATES,
 				SVNEntry.Fields.ALL, ISVNConnector.Options.NONE, svnMon);
 
 	}
 
-	ISVNConnector getSVNProxy() {
-		if (proxy == null)
-			proxy = CoreExtensionsManager.instance().getSVNConnectorFactory().newInstance();
-		return proxy;
+	@Override
+	public String toString() {
+		try {
+			return getSVNUrl(null).toString();
+		} catch (CoreException e) {
+			return super.toString();
+		}
 	}
 }
