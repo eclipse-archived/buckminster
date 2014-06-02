@@ -22,6 +22,7 @@ import org.eclipse.equinox.p2.query.IQuery;
 import org.eclipse.equinox.p2.query.IQueryResult;
 import org.eclipse.equinox.p2.query.IQueryable;
 import org.eclipse.equinox.p2.query.QueryUtil;
+import org.eclipse.equinox.p2.repository.IRepositoryReference;
 
 /**
  * @author Thomas Hallgren
@@ -288,5 +289,10 @@ public class ProductVersionPatcher implements IProductDescriptor {
 		Map<String, String> cprops = product.getConfigurationProperties(os, arch);
 		cprops = addBuildIdProperties(cprops);
 		return cprops;
+	}
+
+	@Override
+	public List<IRepositoryReference> getRepositoryEntries() {
+		return product.getRepositoryEntries();
 	}
 }
