@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.eclipse.buckminster.subversive.svnkit16.headless.feature"
+      id="org.eclipse.buckminster.subversive.svnkit18.headless.feature"
       label="%featureName"
       version="1.6.0.qualifier"
       provider-name="%providerName"
@@ -21,7 +21,7 @@
 
    <requires>
       <import plugin="org.eclipse.team.svn.core"/>
-      <import plugin="org.polarion.eclipse.team.svn.connector.svnkit16"/>
+      <import plugin="org.polarion.eclipse.team.svn.connector.svnkit18"/>
       <import plugin="org.polarion.eclipse.team.svn.connector"/>
    </requires>
 
