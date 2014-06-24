@@ -6,6 +6,7 @@
   <rm:property key="git.clone.dir" value="${user.home}/git"/>
   <rm:property key="buckminster.clone" value="buckminster"/>
   <rm:locator pattern="^org\.eclipse\.buckminster(\..+)?" searchPathRef="buckminster"/>
+  <rm:locator pattern="^org\.eclipse\.jdt(\..+)?$" searchPathRef="platform"/>
   <rm:locator pattern="^org\.slf4j\.extendable$" searchPathRef="buckminster"/>
   <rm:locator pattern="^org\.eclipse\.equinox\.p2\.director\.(product|feature)$" searchPathRef="buckminster"/>
   <rm:locator pattern="^org\.eclipse\.egit\.fetchfactory(\..+)?$" searchPathRef="git.pde"/>
