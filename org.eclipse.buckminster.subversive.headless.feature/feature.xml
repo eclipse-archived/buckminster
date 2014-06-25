@@ -21,7 +21,7 @@
 
    <requires>
       <import plugin="org.eclipse.team.svn.core"/>
-      <import plugin="org.polarion.eclipse.team.svn.connector.svnkit17"/>
+      <import plugin="org.polarion.eclipse.team.svn.connector.svnkit18"/>
       <import plugin="org.polarion.eclipse.team.svn.connector"/>
    </requires>
 
