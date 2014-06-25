@@ -26,7 +26,7 @@
          version="0.0.0"/>
 
    <includes
-         id="org.eclipse.buckminster.subversive.svnkit16.headless.feature"
+         id="org.eclipse.buckminster.subversive.svnkit18.headless.feature"
          version="0.0.0"/>
 
    <includes
@@ -90,14 +90,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.polarion.eclipse.team.svn.connector.svnkit16"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.polarion.eclipse.team.svn.connector.svnkit17"
+         id="org.polarion.eclipse.team.svn.connector.svnkit18"
          download-size="0"
          install-size="0"
          version="0.0.0"

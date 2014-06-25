@@ -18,8 +18,8 @@
    </license>
 
    <url>
-      <update label="Buckminster Kepler Milestones" url="http://www.eclipse.org/downloads/download.php?file=/tools/buckminster/updates-4.3/&amp;protocol=http&amp;format=xml"/>
-      <discovery label="Buckminster Kepler Milestones" url="http://download.eclipse.org/tools/buckminster/updates-4.3"/>
+      <update label="Buckminster Kepler Milestones" url="http://www.eclipse.org/downloads/download.php?file=/tools/buckminster/updates-4.4/&amp;protocol=http&amp;format=xml"/>
+      <discovery label="Buckminster Kepler Milestones" url="http://download.eclipse.org/tools/buckminster/updates-4.4"/>
    </url>
 
    <includes

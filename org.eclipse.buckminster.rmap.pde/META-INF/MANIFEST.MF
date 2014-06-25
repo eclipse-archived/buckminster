@@ -13,5 +13,6 @@ Export-Package: org.eclipse.buckminster.rmap.pde,
  org.eclipse.buckminster.rmap.pde.util
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.buckminster.rmap;visibility:=reexport,
- org.eclipse.pde.build
+ org.eclipse.pde.build,
+ org.eclipse.buckminster.core
 Bundle-ActivationPolicy: lazy

@@ -4,6 +4,9 @@
  * licensed under the Eclipse Public License - v 1.0 by the copyright holder
  * listed above, as the Initial Contributor under such license. The text of
  * such license is available at www.eclipse.org.
+ *  
+ * Contributors:
+ *  Lorenzo Bettini - https://bugs.eclipse.org/bugs/show_bug.cgi?id=428301
  ******************************************************************************/
 package org.eclipse.buckminster.pde.tasks;
 
@@ -71,7 +74,6 @@ public class FeaturesAction extends org.eclipse.equinox.p2.publisher.eclipse.Fea
 	private static final Project PROPERTY_REPLACER = new Project();
 
 	private static FeatureRootAdvice createRootAdvice(String featureId, Properties buildProperties, IPath baseDirectory, String[] configs) {
-		@SuppressWarnings("unchecked")
 		Map<String, Map<String, String>> configMap = Utils.processRootProperties(buildProperties, true);
 		if (configMap.size() == 1) {
 			Map<String, String> entry = configMap.get(Utils.ROOT_COMMON);

@@ -4,8 +4,13 @@
  * licensed under the Eclipse Public License - v 1.0 by the copyright holder
  * listed above, as the Initial Contributor under such license. The text of
  * such license is available at www.eclipse.org.
+ *  
+ * Contributors:
+ *  Lorenzo Bettini - https://bugs.eclipse.org/bugs/show_bug.cgi?id=428301
  *****************************************************************************/
 package org.eclipse.buckminster.pde.mapprovider;
+
+import static org.eclipse.buckminster.core.helpers.MapUtils.getString;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -107,18 +112,18 @@ public class PDEMapProvider extends Provider {
 				return null;
 			}
 
-			Map<String, String> properties = tv.getProperties();
+			Map<String, Object> properties = tv.getProperties();
 			Version v = null;
 			VersionSelector vs = null;
 			IReaderType rt = tv.getReaderType();
 			String id = null;
 			if ("p2".equals(rt.getId())) { //$NON-NLS-1$
-				String vstr = properties.get("version"); //$NON-NLS-1$
+				String vstr = getString(properties, "version"); //$NON-NLS-1$
 				if (vstr != null)
 					v = Version.create(vstr);
-				id = properties.get("id"); //$NON-NLS-1$
+				id = getString(properties, "id"); //$NON-NLS-1$
 			} else {
-				String tag = properties.get("tag"); //$NON-NLS-1$
+				String tag = getString(properties, "tag"); //$NON-NLS-1$
 				if (tag != null)
 					vs = VersionSelector.tag(tag);
 				IVersionConverter vc = getVersionConverter();

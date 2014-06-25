@@ -6,8 +6,13 @@
  * licensed under the Eclipse Public License - v 1.0 by the individual
  * copyright holders listed above, as Initial Contributors under such license.
  * The text of such license is available at www.eclipse.org.
+ * 
+ * Contributors:
+ * Lorenzo Bettini - https://bugs.eclipse.org/bugs/show_bug.cgi?id=428301
  *******************************************************************************/
 package org.eclipse.buckminster.pde.internal;
+
+import static org.eclipse.buckminster.core.helpers.MapUtils.getString;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -222,7 +227,7 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 
 				if (VersionHelper.equalsUnqualified(cid.getVersion(), entryCid.getVersion()))
 					try {
-						return new URL(entry.getProperties().get("src")); //$NON-NLS-1$
+						return new URL(getString(entry.getProperties(), "src")); //$NON-NLS-1$
 					} catch (MalformedURLException e) {
 						// Just skip
 					}
@@ -247,8 +252,8 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 				if (!IReaderType.URL.equals(entry.getReaderType().getId()))
 					continue;
 
-				Map<String, String> props = entry.getProperties();
-				String src = props.get("src"); //$NON-NLS-1$
+				Map<String, Object> props = entry.getProperties();
+				String src = getString(props, "src"); //$NON-NLS-1$
 				if (src == null || !(src.endsWith(".jar") || src.endsWith(".zip"))) //$NON-NLS-1$ //$NON-NLS-2$
 					continue;
 
@@ -608,7 +613,7 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 				pluginURLs[idx] = files[idx].toURI().toURL();
 
 			MonitorUtils.worked(monitor, 1);
-			PDEState state = new PDEState(pluginURLs, false, MonitorUtils.subMonitor(monitor, 1));
+			PDEState state = new PDEState(pluginURLs, false, false, MonitorUtils.subMonitor(monitor, 1));
 			return state.getTargetModels();
 		} catch (IOException e) {
 			throw BuckminsterException.wrap(e);

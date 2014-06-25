@@ -31,7 +31,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.equinox.internal.p2.core.helpers.CollectionUtils;
 import org.eclipse.equinox.internal.p2.metadata.IRequiredCapability;
 import org.eclipse.equinox.internal.p2.updatesite.SiteCategory;
 import org.eclipse.equinox.internal.p2.updatesite.SiteFeature;
@@ -491,7 +490,7 @@ public class CategoriesAction extends AbstractPublisherAction {
 		String expression = siteIU.getQueryExpression();
 		Object[] params = siteIU.getQueryParams();
 		if (id == null && (type == null || expression == null))
-			return CollectionUtils.emptyList();
+			return Collections.emptyList();
 		IQuery<IInstallableUnit> query = null;
 		if (id != null) {
 			VersionRange vRange = new VersionRange(range);
@@ -501,7 +500,7 @@ public class CategoriesAction extends AbstractPublisherAction {
 		} else if (type.equals("match")) //$NON-NLS-1$
 			query = QueryUtil.createMatchQuery(expression, params);
 		if (query == null)
-			return CollectionUtils.emptyList();
+			return Collections.emptyList();
 		IQueryResult<IInstallableUnit> queryResult = results.query(query, null);
 		if (queryResult.isEmpty())
 			queryResult = publisherInfo.getMetadataRepository().query(query, null);

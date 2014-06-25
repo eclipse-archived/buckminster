@@ -6,6 +6,9 @@
  * licensed under the Eclipse Public License - v 1.0 by the individual
  * copyright holders listed above, as Initial Contributors under such license.
  * The text of such license is available at www.eclipse.org.
+ * 
+ * Contributors:
+ *  Lorenzo Bettini - https://bugs.eclipse.org/bugs/show_bug.cgi?id=428301
  *******************************************************************************/
 
 package org.eclipse.buckminster.core.reader;
@@ -22,6 +25,7 @@ import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
+import org.eclipse.buckminster.core.helpers.MapUtils;
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
@@ -43,10 +47,6 @@ import org.eclipse.core.runtime.Path;
  * @author Thomas Hallgren
  */
 public class URLReaderType extends AbstractReaderType {
-	public static IComponentReader getReader(URL externalFile, IProgressMonitor monitor) throws CoreException {
-		return getDirectReader(externalFile, IReaderType.URL, monitor);
-	}
-
 	static IComponentReader getDirectReader(URL url, String readerType, IProgressMonitor monitor) throws CoreException {
 		String urlString = url.toString();
 		ComponentRequest rq = new ComponentRequest(urlString, null, null);
@@ -62,9 +62,13 @@ public class URLReaderType extends AbstractReaderType {
 		return pm.getReader(monitor);
 	}
 
+	public static IComponentReader getReader(URL externalFile, IProgressMonitor monitor) throws CoreException {
+		return getDirectReader(externalFile, IReaderType.URL, monitor);
+	}
+
 	@Override
-	public String convertFetchFactoryLocator(Map<String, String> fetchFactoryLocator, String componentName) throws CoreException {
-		return fetchFactoryLocator.get("src"); //$NON-NLS-1$
+	public String convertFetchFactoryLocator(Map<String, Object> fetchFactoryLocator, String componentName) throws CoreException {
+		return MapUtils.getString(fetchFactoryLocator, "src"); //$NON-NLS-1$
 	}
 
 	@Override
@@ -86,7 +90,7 @@ public class URLReaderType extends AbstractReaderType {
 	}
 
 	@Override
-	public Map<String, String> getFetchFactoryProviderProps(Map<String, String> properties, Provider delegee) {
+	public Map<String, String> getFetchFactoryProviderProps(Map<String, Object> properties, Provider delegee) {
 		Map<String, String> props = new HashMap<String, String>();
 		props.put(KeyConstants.IS_SOURCE, Boolean.FALSE.toString());
 		props.put(KeyConstants.IS_MUTABLE, Boolean.FALSE.toString());

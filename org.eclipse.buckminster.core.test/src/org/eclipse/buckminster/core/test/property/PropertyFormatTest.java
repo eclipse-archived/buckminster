@@ -133,7 +133,7 @@ public class PropertyFormatTest extends TestCase {
 		assertNotNull("No resource found for .project file", dotProjectResource);
 		dotProjectResource = FileLocator.toFileURL(dotProjectResource);
 		assertNotNull("Unable to resolve .project resource into a file", dotProjectResource);
-		File dotProjectFile = new File(dotProjectResource.toURI());
+		File dotProjectFile = new File(dotProjectResource.toURI().normalize());
 
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		IProject project = workspace.getRoot().getProject("buckminster.test.build_a");
