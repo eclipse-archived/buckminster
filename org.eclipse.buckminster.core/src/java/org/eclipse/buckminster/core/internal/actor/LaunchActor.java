@@ -9,6 +9,8 @@ package org.eclipse.buckminster.core.internal.actor;
 
 import static org.eclipse.buckminster.runtime.Trivial.trim;
 
+import java.io.PrintStream;
+
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.actor.AbstractActor;
@@ -16,24 +18,42 @@ import org.eclipse.buckminster.core.actor.IActionContext;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchManager;
+import org.eclipse.debug.core.IStreamListener;
 import org.eclipse.debug.core.model.IProcess;
+import org.eclipse.debug.core.model.IStreamMonitor;
+import org.eclipse.debug.core.model.IStreamsProxy;
 import org.eclipse.osgi.util.NLS;
 
 /**
  * An actor that triggers a launch configuration
  */
 public class LaunchActor extends AbstractActor {
+	static class StreamDispatcher implements IStreamListener {
+		private final PrintStream stream;
+
+		StreamDispatcher(PrintStream stream) {
+			this.stream = stream;
+		}
+
+		@Override
+		public void streamAppended(String text, IStreamMonitor monitor) {
+			stream.print(text);
+		}
+	}
+
 	public static final String ID = "launch"; //$NON-NLS-1$
 
 	private static final String LAUNCHER_PATH = "path"; //$NON-NLS-1$
@@ -79,6 +99,19 @@ public class LaunchActor extends AbstractActor {
 
 		ILaunch launch = DebugPlugin.getDefault().getLaunchManager().getLaunchConfiguration(launchFile).launch(getLaunchMode(), monitor);
 		IProcess[] processes = launch.getProcesses();
+		StreamDispatcher out = new StreamDispatcher(ctx.getOutputStream());
+		StreamDispatcher err = new StreamDispatcher(ctx.getErrorStream());
+		for (IProcess p : processes) {
+			IStreamsProxy streamsProxy = p.getStreamsProxy();
+			if (streamsProxy != null) {
+				IStreamMonitor outMon = streamsProxy.getOutputStreamMonitor();
+				if (outMon != null)
+					outMon.addListener(out);
+				IStreamMonitor errMon = streamsProxy.getErrorStreamMonitor();
+				if (errMon != null)
+					errMon.addListener(err);
+			}
+		}
 		try {
 			while (!launch.isTerminated()) {
 				if (monitor.isCanceled() && launch.canTerminate())
@@ -94,6 +127,7 @@ public class LaunchActor extends AbstractActor {
 			if (p.getExitValue() != 0)
 				result.add(new Status(IStatus.ERROR, CorePlugin.getID(), NLS.bind(Messages.Launch_Terminated_with_exit_status, p.getLabel(),
 						Integer.valueOf(p.getExitValue()))));
+		project.getWorkspace().getRoot().refreshLocal(IResource.DEPTH_INFINITE, new NullProgressMonitor());
 		return result;
 	}
 }
