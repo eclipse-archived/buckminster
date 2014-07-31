@@ -48,6 +48,16 @@ public abstract class WellknownActions {
 			public String toString() {
 				return "buckminster.bind.entrypoint"; //$NON-NLS-1$
 			}
+		},
+
+		/**
+		 * Call after the binding has completed
+		 */
+		POSTBIND {
+			@Override
+			public String toString() {
+				return "buckminster.postbind"; //$NON-NLS-1$
+			}
 		}
 	}
 

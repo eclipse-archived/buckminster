@@ -122,125 +122,6 @@ public class WorkspaceMaterializer extends FileSystemMaterializer {
 			storeBelow(resolution, child, sm, isBelow);
 	}
 
-	@Override
-	public IPath getDefaultInstallRoot(MaterializationContext context, Resolution resolution) throws CoreException {
-		IPath location = context.getWorkspaceLocation(resolution);
-		IPath leaf = context.getLeafArtifact(resolution);
-
-		// There are two conditions for putting this into the .buckminster
-		// project
-		//
-		// 1. There is a leaf artifact that indicates that what we have here
-		// is a file.
-		// 2. The leaf artifact is null but the materialization will perform an
-		// unpack. This normally means that an archive (zip or tar.gz) has a
-		// root folder that isn't known until the unpack is complete. Such
-		// a root cannot be used as a project at this point.
-		//
-		if (leaf == null) {
-			if (context.getMaterializationSpec().isUnpack(resolution))
-				location = location.append(CorePlugin.BUCKMINSTER_PROJECT);
-		} else if (!leaf.hasTrailingSeparator()) {
-			IReaderType readerType = getMaterializationReaderType(resolution);
-			if (!IReaderType.ECLIPSE_IMPORT.equals(readerType.getId()))
-				location = location.append(CorePlugin.BUCKMINSTER_PROJECT);
-		}
-		return location;
-	}
-
-	@Override
-	public IReaderType getMaterializationReaderType(Resolution resolution) throws CoreException {
-		// If this is a OSGi bundle in binary form, we must use the
-		// "eclipse.import"
-		// reader in order to materialize
-		//
-		IReaderType rt = super.getMaterializationReaderType(resolution);
-		if (rt instanceof P2ReaderType)
-			//
-			// At present, materializing from a p2 repository into a workspace
-			// can only mean one thing. Importing...
-			//
-			rt = CorePlugin.getDefault().getReaderType(IReaderType.ECLIPSE_IMPORT);
-
-		if (rt instanceof CatalogReaderType)
-			return rt;
-
-		String ctId = resolution.getComponentTypeId();
-		if (IComponentType.OSGI_BUNDLE.equals(ctId) || IComponentType.ECLIPSE_FEATURE.equals(ctId))
-			rt = CorePlugin.getDefault().getReaderType(IReaderType.ECLIPSE_IMPORT);
-
-		return rt;
-	}
-
-	public void installLocal(WorkspaceBinding wb, RMContext context, IProgressMonitor monitor) throws CoreException {
-		monitor.beginTask(null, 200);
-		try {
-			StorageManager sm = StorageManager.getDefault();
-			monitor.subTask(NLS.bind(Messages.Binding_0, wb.getWorkspaceRelativePath()));
-
-			Materialization mat = wb.getMaterialization();
-			mat.store(sm);
-			MonitorUtils.worked(monitor, 10);
-
-			wb = performPrebindAction(wb, context, MonitorUtils.subMonitor(monitor, 95));
-			IProgressMonitor subMonitor = MonitorUtils.subMonitor(monitor, 95);
-			IPath wsRelativePath = wb.getWorkspaceRelativePath();
-			if (wsRelativePath.segmentCount() == 1)
-				createProjectBinding(wsRelativePath.segment(0), wb, context, subMonitor);
-			else
-				createExternalBinding(wsRelativePath, wb, subMonitor);
-		} catch (IOException e) {
-			throw BuckminsterException.wrap(e);
-		} finally {
-			monitor.done();
-		}
-	}
-
-	@Override
-	public void performInstallAction(Resolution resolution, MaterializationContext context, IProgressMonitor monitor) throws CoreException {
-		try {
-			WorkspaceBinding wb = createBindSpec(resolution, context);
-			if (wb == null) {
-				MonitorUtils.complete(monitor);
-				return;
-			}
-
-			IPath wsRoot = wb.getWorkspaceRoot();
-			if (FileUtils.pathEquals(wsRoot, ResourcesPlugin.getWorkspace().getRoot().getLocation()))
-				installLocal(wb, context, monitor);
-			else {
-				// Don't install in this workspace. Instead store it for later
-				// installation
-				// in the appointed workspace
-				//
-				ExternalDataArea dataArea = new ExternalDataArea(wsRoot, context.getMaterializationSpec().getConflictResolution(resolution));
-				StorageManager sm = new StorageManager(dataArea.getStateLocation(CorePlugin.getID()).toFile());
-				wb.store(sm);
-				storeBelow(resolution, context.getBillOfMaterials(), sm, false);
-			}
-		} catch (CoreException e) {
-			if (!context.isContinueOnError())
-				throw e;
-			context.addRequestStatus(resolution.getRequest(), e.getStatus());
-		}
-	}
-
-	@Override
-	protected IPath getArtifactLocation(MaterializationContext context, Resolution resolution) throws CoreException {
-		IPath installLocation = context.getInstallLocation(resolution);
-		IPath leafArtifact = context.getLeafArtifact(resolution);
-		if (leafArtifact == null)
-			installLocation = installLocation.addTrailingSeparator();
-		else {
-			IReaderType readerType = getMaterializationReaderType(resolution);
-			if (IReaderType.ECLIPSE_IMPORT.equals(readerType.getId()))
-				installLocation = installLocation.append(resolution.getName()).addTrailingSeparator();
-			else
-				installLocation = installLocation.append(leafArtifact);
-		}
-		return installLocation;
-	}
-
 	private WorkspaceBinding createBindSpec(Resolution resolution, MaterializationContext context) throws CoreException {
 		Materialization mat = getMaterialization(resolution);
 		if (mat == null)
@@ -528,8 +409,142 @@ public class WorkspaceMaterializer extends FileSystemMaterializer {
 		}
 	}
 
+	@Override
+	protected IPath getArtifactLocation(MaterializationContext context, Resolution resolution) throws CoreException {
+		IPath installLocation = context.getInstallLocation(resolution);
+		IPath leafArtifact = context.getLeafArtifact(resolution);
+		if (leafArtifact == null)
+			installLocation = installLocation.addTrailingSeparator();
+		else {
+			IReaderType readerType = getMaterializationReaderType(resolution);
+			if (IReaderType.ECLIPSE_IMPORT.equals(readerType.getId()))
+				installLocation = installLocation.append(resolution.getName()).addTrailingSeparator();
+			else
+				installLocation = installLocation.append(leafArtifact);
+		}
+		return installLocation;
+	}
+
+	@Override
+	public IPath getDefaultInstallRoot(MaterializationContext context, Resolution resolution) throws CoreException {
+		IPath location = context.getWorkspaceLocation(resolution);
+		IPath leaf = context.getLeafArtifact(resolution);
+
+		// There are two conditions for putting this into the .buckminster
+		// project
+		//
+		// 1. There is a leaf artifact that indicates that what we have here
+		// is a file.
+		// 2. The leaf artifact is null but the materialization will perform an
+		// unpack. This normally means that an archive (zip or tar.gz) has a
+		// root folder that isn't known until the unpack is complete. Such
+		// a root cannot be used as a project at this point.
+		//
+		if (leaf == null) {
+			if (context.getMaterializationSpec().isUnpack(resolution))
+				location = location.append(CorePlugin.BUCKMINSTER_PROJECT);
+		} else if (!leaf.hasTrailingSeparator()) {
+			IReaderType readerType = getMaterializationReaderType(resolution);
+			if (!IReaderType.ECLIPSE_IMPORT.equals(readerType.getId()))
+				location = location.append(CorePlugin.BUCKMINSTER_PROJECT);
+		}
+		return location;
+	}
+
 	private String getDefaultProjectName(MaterializationSpec mspec, Resolution resolution) throws CoreException {
 		return mspec.getProjectName(resolution);
+	}
+
+	@Override
+	public IReaderType getMaterializationReaderType(Resolution resolution) throws CoreException {
+		// If this is a OSGi bundle in binary form, we must use the
+		// "eclipse.import"
+		// reader in order to materialize
+		//
+		IReaderType rt = super.getMaterializationReaderType(resolution);
+		if (rt instanceof P2ReaderType)
+			//
+			// At present, materializing from a p2 repository into a workspace
+			// can only mean one thing. Importing...
+			//
+			rt = CorePlugin.getDefault().getReaderType(IReaderType.ECLIPSE_IMPORT);
+
+		if (rt instanceof CatalogReaderType)
+			return rt;
+
+		String ctId = resolution.getComponentTypeId();
+		if (IComponentType.OSGI_BUNDLE.equals(ctId) || IComponentType.ECLIPSE_FEATURE.equals(ctId))
+			rt = CorePlugin.getDefault().getReaderType(IReaderType.ECLIPSE_IMPORT);
+
+		return rt;
+	}
+
+	public void installLocal(WorkspaceBinding wb, RMContext context, IProgressMonitor monitor) throws CoreException {
+		monitor.beginTask(null, 200);
+		try {
+			StorageManager sm = StorageManager.getDefault();
+			monitor.subTask(NLS.bind(Messages.Binding_0, wb.getWorkspaceRelativePath()));
+
+			Materialization mat = wb.getMaterialization();
+			mat.store(sm);
+			MonitorUtils.worked(monitor, 10);
+
+			wb = performPrebindAction(wb, context, MonitorUtils.subMonitor(monitor, 95));
+			IProgressMonitor subMonitor = MonitorUtils.subMonitor(monitor, 95);
+			IPath wsRelativePath = wb.getWorkspaceRelativePath();
+			if (wsRelativePath.segmentCount() == 1)
+				createProjectBinding(wsRelativePath.segment(0), wb, context, subMonitor);
+			else
+				createExternalBinding(wsRelativePath, wb, subMonitor);
+		} catch (IOException e) {
+			throw BuckminsterException.wrap(e);
+		} finally {
+			monitor.done();
+		}
+	}
+
+	@Override
+	public void performInstallAction(Resolution resolution, MaterializationContext context, IProgressMonitor monitor) throws CoreException {
+		try {
+			WorkspaceBinding wb = createBindSpec(resolution, context);
+			if (wb == null) {
+				MonitorUtils.complete(monitor);
+				return;
+			}
+
+			IPath wsRoot = wb.getWorkspaceRoot();
+			if (FileUtils.pathEquals(wsRoot, ResourcesPlugin.getWorkspace().getRoot().getLocation()))
+				installLocal(wb, context, monitor);
+			else {
+				// Don't install in this workspace. Instead store it for later
+				// installation
+				// in the appointed workspace
+				//
+				ExternalDataArea dataArea = new ExternalDataArea(wsRoot, context.getMaterializationSpec().getConflictResolution(resolution));
+				StorageManager sm = new StorageManager(dataArea.getStateLocation(CorePlugin.getID()).toFile());
+				wb.store(sm);
+				storeBelow(resolution, context.getBillOfMaterials(), sm, false);
+			}
+		} catch (CoreException e) {
+			if (!context.isContinueOnError())
+				throw e;
+			context.addRequestStatus(resolution.getRequest(), e.getStatus());
+		}
+	}
+
+	@Override
+	public void performPostInstallAction(Resolution resolution, MaterializationContext context, IProgressMonitor monitor) throws CoreException {
+		CSpec cspec = resolution.getCSpec();
+		Attribute postbindAttr = cspec.getPostbind();
+		if (postbindAttr != null) {
+			try {
+				CorePlugin.getPerformManager().perform(cspec, postbindAttr.getName(), context, false, false, monitor);
+			} catch (CoreException e) {
+				if (!context.isContinueOnError())
+					throw e;
+				context.addRequestStatus(resolution.getRequest(), e.getStatus());
+			}
+		}
 	}
 
 	private WorkspaceBinding performPrebindAction(WorkspaceBinding wb, RMContext context, IProgressMonitor monitor) throws CoreException {

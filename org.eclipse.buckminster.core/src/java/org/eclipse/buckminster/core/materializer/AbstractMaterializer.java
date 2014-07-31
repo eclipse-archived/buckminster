@@ -46,6 +46,11 @@ import org.eclipse.osgi.service.datalocation.Location;
  * @author Thomas Hallgren
  */
 public abstract class AbstractMaterializer extends AbstractExtension implements IMaterializer {
+	private static IConfigurationElement[] getElements() {
+		IExtensionRegistry exReg = Platform.getExtensionRegistry();
+		return exReg.getConfigurationElementsFor(MATERIALIZERS_POINT);
+	}
+
 	public static String[] getMaterializerIDs(boolean includeEmptyEntry) {
 		IConfigurationElement[] elems = getElements();
 		int idx = elems.length;
@@ -83,14 +88,11 @@ public abstract class AbstractMaterializer extends AbstractExtension implements 
 				IReaderType readerType = plugin.getReaderType(readerTypeId);
 				readerType.postMaterialization(context, new SubProgressMonitor(monitor, 1));
 			}
+			for (Resolution res : perused)
+				mspec.getMaterializer(resolution).performPostInstallAction(res, context, new SubProgressMonitor(monitor, 1));
 		} finally {
 			monitor.done();
 		}
-	}
-
-	private static IConfigurationElement[] getElements() {
-		IExtensionRegistry exReg = Platform.getExtensionRegistry();
-		return exReg.getConfigurationElementsFor(MATERIALIZERS_POINT);
 	}
 
 	@Override
@@ -98,6 +100,38 @@ public abstract class AbstractMaterializer extends AbstractExtension implements 
 		// Most materializers should be able to do this.
 		//
 		return true;
+	}
+
+	private void delegateAndInstallRecursive(BOMNode node, MaterializationContext context, Set<String> generated, Set<Resolution> perused,
+			IProgressMonitor monitor) throws CoreException {
+		Resolution res = node.getResolution();
+		if (res == null)
+			return;
+
+		IMaterializer materializer;
+		if (node instanceof GeneratorNode)
+			materializer = this;
+		else
+			materializer = getMaterializer(context, res);
+		((AbstractMaterializer) materializer).installRecursive(node, context, generated, perused, monitor);
+	}
+
+	private boolean generateResolution(GeneratorNode generatorNode, MaterializationContext context, IProgressMonitor monitor) throws CoreException {
+		CSpec cspec = generatorNode.getDeclaringCSpec();
+		try {
+			IPerformManager performManager = CorePlugin.getPerformManager();
+			Attribute generatorAttribute = cspec.getReferencedAttribute(generatorNode.getComponent(), null, null, generatorNode.getAttribute(),
+					new ModelCache());
+			if (generatorAttribute != null) {
+				performManager.perform(Collections.singletonList(generatorAttribute), context, false, false, monitor);
+				return true;
+			}
+		} catch (CoreException e) {
+			if (!context.isContinueOnError())
+				throw e;
+			context.addRequestStatus(generatorNode.getRequest(), e.getStatus());
+		}
+		return false;
 	}
 
 	@Override
@@ -132,6 +166,11 @@ public abstract class AbstractMaterializer extends AbstractExtension implements 
 	@Override
 	public IReaderType getMaterializationReaderType(Resolution resolution) throws CoreException {
 		return resolution.getProvider().getReaderType();
+	}
+
+	private IMaterializer getMaterializer(MaterializationContext context, Resolution res) throws CoreException {
+		String materializerId = context.getMaterializationSpec().getMaterializerID(res);
+		return materializerId.equals(getId()) ? this : CorePlugin.getDefault().getMaterializer(materializerId);
 	}
 
 	public abstract String getMaterializerRootDir() throws CoreException;
@@ -173,37 +212,7 @@ public abstract class AbstractMaterializer extends AbstractExtension implements 
 		MonitorUtils.complete(monitor);
 	}
 
-	private void delegateAndInstallRecursive(BOMNode node, MaterializationContext context, Set<String> generated, Set<Resolution> perused,
-			IProgressMonitor monitor) throws CoreException {
-		Resolution res = node.getResolution();
-		if (res == null)
-			return;
-
-		IMaterializer materializer;
-		if (node instanceof GeneratorNode)
-			materializer = this;
-		else {
-			String materializerId = context.getMaterializationSpec().getMaterializerID(res);
-			materializer = materializerId.equals(getId()) ? this : CorePlugin.getDefault().getMaterializer(materializerId);
-		}
-		((AbstractMaterializer) materializer).installRecursive(node, context, generated, perused, monitor);
-	}
-
-	private boolean generateResolution(GeneratorNode generatorNode, MaterializationContext context, IProgressMonitor monitor) throws CoreException {
-		CSpec cspec = generatorNode.getDeclaringCSpec();
-		try {
-			IPerformManager performManager = CorePlugin.getPerformManager();
-			Attribute generatorAttribute = cspec.getReferencedAttribute(generatorNode.getComponent(), null, null, generatorNode.getAttribute(),
-					new ModelCache());
-			if (generatorAttribute != null) {
-				performManager.perform(Collections.singletonList(generatorAttribute), context, false, false, monitor);
-				return true;
-			}
-		} catch (CoreException e) {
-			if (!context.isContinueOnError())
-				throw e;
-			context.addRequestStatus(generatorNode.getRequest(), e.getStatus());
-		}
-		return false;
+	@Override
+	public void performPostInstallAction(Resolution resolution, MaterializationContext context, IProgressMonitor monitor) throws CoreException {
 	}
 }

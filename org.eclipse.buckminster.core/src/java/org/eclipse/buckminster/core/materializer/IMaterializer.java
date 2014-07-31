@@ -23,7 +23,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * The IMaterializer deals with the task of materializing the components of a
  * {@link org.eclipse.buckminster.core.metadata.model.BillOfMaterials
  * BillOfMaterials}.
- * 
+ *
  * @see org.eclipse.buckminster.core.CorePlugin#getMaterializationService(String
  *      id)
  * @author Thomas Hallgren
@@ -42,14 +42,14 @@ public interface IMaterializer {
 	/**
 	 * Returns true if this materializer can work in parallel with other
 	 * materializers of the same type.
-	 * 
+	 *
 	 * @return true if materializers of this type can be parallelized.
 	 */
 	boolean canWorkInParallel();
 
 	/**
 	 * Returns the default root for the installation.
-	 * 
+	 *
 	 * @param context
 	 *            The context in which the materialization takes place
 	 * @param resolution
@@ -61,7 +61,7 @@ public interface IMaterializer {
 	/**
 	 * Returns the reader type to use for the materialization. This might differ
 	 * from the type used for the resolution.
-	 * 
+	 *
 	 * @return The reader type to use for materialization
 	 */
 	IReaderType getMaterializationReaderType(Resolution resolution) throws CoreException;
@@ -76,7 +76,7 @@ public interface IMaterializer {
 	 * While the called instance is guaranteed to be the one designated to
 	 * manage the <code>node</code>, children of the <code>node</code> might be
 	 * managed by other instances. This is controlled by the mspec.
-	 * 
+	 *
 	 * @param node
 	 *            The bill of material node. This is the root of the install.
 	 * @param context
@@ -96,7 +96,7 @@ public interface IMaterializer {
 
 	/**
 	 * Materialize all resolutions from the bill of materials <code>bom</code>.
-	 * 
+	 *
 	 * @param resolutions
 	 *            The list of things to materialize.
 	 * @param context
@@ -110,7 +110,7 @@ public interface IMaterializer {
 
 	/**
 	 * Install the given resolution.
-	 * 
+	 *
 	 * @param resolution
 	 *            The resolution to install
 	 * @param context
@@ -120,4 +120,16 @@ public interface IMaterializer {
 	 * @throws CoreException
 	 */
 	void performInstallAction(Resolution resolution, MaterializationContext context, IProgressMonitor monitor) throws CoreException;
+
+	/**
+	 * Perform post install actions.
+	 *
+	 * @param resolution
+	 *            The resolution to install
+	 * @param context
+	 *            The context for the materialization.
+	 * @param monitor
+	 *            provides feedback to the user.
+	 */
+	void performPostInstallAction(Resolution resolution, MaterializationContext context, IProgressMonitor monitor) throws CoreException;
 }
