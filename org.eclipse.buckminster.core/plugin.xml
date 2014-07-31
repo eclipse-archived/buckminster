@@ -144,6 +144,11 @@
 			ID="eclipse.build"
 			class="org.eclipse.buckminster.core.internal.actor.EclipseBuildActor"
 			name="Eclipse Build Integration Actor (auto/incremental/full)" />
+  <actor
+        ID="launch"
+        class="org.eclipse.buckminster.core.internal.actor.LaunchActor"
+        name="Eclipse Launch Configuration Actor">
+  </actor>
 	</extension>
 	<extension point="org.eclipse.buckminster.core.versionConverters">
 		<converter

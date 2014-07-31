@@ -15,6 +15,7 @@ import org.eclipse.buckminster.core.cspec.PathGroup;
 import org.eclipse.buckminster.core.cspec.model.Action;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.metadata.model.IModelCache;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -22,7 +23,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 public interface IActionContext extends IModelCache {
 	/**
 	 * Add all named prerequisite path groups
-	 * 
+	 *
 	 * @param pgas
 	 *            The map that will receive the groups
 	 * @throws CoreException
@@ -31,21 +32,21 @@ public interface IActionContext extends IModelCache {
 
 	/**
 	 * Returns the action.
-	 * 
+	 *
 	 * @return The action associated with this context
 	 */
 	Action getAction();
 
 	/**
 	 * Returns a progress monitor that can be used for cancellation purposes.
-	 * 
+	 *
 	 * @return A progress monitor
 	 */
 	IProgressMonitor getCancellationMonitor();
 
 	/**
 	 * Returns the component location as an file system absolute path
-	 * 
+	 *
 	 * @return The absolute path in the file system to the component.
 	 * @throws CoreException
 	 */
@@ -53,28 +54,28 @@ public interface IActionContext extends IModelCache {
 
 	/**
 	 * Returns the component specification
-	 * 
+	 *
 	 * @return The CSPEC
 	 */
 	CSpec getCSpec() throws CoreException;
 
 	/**
 	 * Returns the stream that should be used for error messages.
-	 * 
+	 *
 	 * @return A stream for error messages.
 	 */
 	PrintStream getErrorStream();
 
 	/**
 	 * Returns the global context for this execution
-	 * 
+	 *
 	 * @return The global context
 	 */
 	IGlobalContext getGlobalContext();
 
 	/**
 	 * Returns all named path group arrays for the invocation.
-	 * 
+	 *
 	 * @return An map of named path group arrays.
 	 * @throws CoreException
 	 */
@@ -83,16 +84,23 @@ public interface IActionContext extends IModelCache {
 	/**
 	 * Returns the stream that should be used for information and debug
 	 * messages.
-	 * 
+	 *
 	 * @return A stream for information and debug messages.
 	 */
 	PrintStream getOutputStream();
 
 	/**
+	 * Returns the project that this context maps to if applicable.
+	 *
+	 * @return The project or <code>null</code> if component is not a project.
+	 */
+	IProject getProject() throws CoreException;
+
+	/**
 	 * Returns <code>true</code> if the action is forced. An action that is
 	 * forced is executed regardless of if the product is newer then all
 	 * prerequisites.
-	 * 
+	 *
 	 * @return <code>true</code> if the build is forced.
 	 */
 	boolean isForced();
@@ -100,7 +108,7 @@ public interface IActionContext extends IModelCache {
 	/**
 	 * Returns <code>true</code> if the perform was issued with the quite flag
 	 * set to true.
-	 * 
+	 *
 	 * @return <code>true</code> if the build is quite.
 	 */
 	boolean isQuiet();
@@ -109,7 +117,7 @@ public interface IActionContext extends IModelCache {
 	 * Return the absolute path of <code>path</code>. If path is already
 	 * absolut, it is returend unaltered. If it is relative it will be made
 	 * absolute using the component root.
-	 * 
+	 *
 	 * @param path
 	 *            The path to make absolute. Cannot be <code>null</code>.
 	 * @return An absolute path.
@@ -121,7 +129,7 @@ public interface IActionContext extends IModelCache {
 	 * Return the absolute path of <code>path</code>. If path is already
 	 * absolut, it is returend unaltered. If it is relative it will be made
 	 * absolute using the component root.
-	 * 
+	 *
 	 * @param path
 	 *            The path to make absolute. Cannot be <code>null</code>.
 	 * @return An absolute path.

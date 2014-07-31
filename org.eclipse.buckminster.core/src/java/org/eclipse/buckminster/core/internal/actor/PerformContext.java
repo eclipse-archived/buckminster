@@ -31,6 +31,8 @@ import org.eclipse.buckminster.core.cspec.model.Group;
 import org.eclipse.buckminster.core.cspec.model.Prerequisite;
 import org.eclipse.buckminster.core.cspec.model.TopLevelAttribute;
 import org.eclipse.buckminster.runtime.BuckminsterException;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -38,13 +40,9 @@ import org.eclipse.core.runtime.SubProgressMonitor;
 
 /**
  * @author kolwing
- * 
+ *
  */
 public class PerformContext implements IActionContext {
-	final static String PRODUCT_PREFIX = TopLevelAttribute.PROPERTY_PREFIX + "product."; //$NON-NLS-1$
-
-	final static String REQUIREMENT_PREFIX = TopLevelAttribute.PROPERTY_PREFIX + "requirement."; //$NON-NLS-1$
-
 	private static PathGroup[] normalizePathGroups(PathGroup[] pathGroups) throws CoreException {
 		if (pathGroups.length == 0)
 			return pathGroups;
@@ -106,6 +104,10 @@ public class PerformContext implements IActionContext {
 		}
 		return existentBases.toArray(new PathGroup[existentBases.size()]);
 	}
+
+	final static String PRODUCT_PREFIX = TopLevelAttribute.PROPERTY_PREFIX + "product."; //$NON-NLS-1$
+
+	final static String REQUIREMENT_PREFIX = TopLevelAttribute.PROPERTY_PREFIX + "requirement."; //$NON-NLS-1$
 
 	private final IProgressMonitor cancellationMonitor;
 
@@ -291,6 +293,15 @@ public class PerformContext implements IActionContext {
 	@Override
 	public Map<String, PathGroup[]> getPathGroupsCache() {
 		return globalCtx.getPathGroupsCache();
+	}
+
+	@Override
+	public IProject getProject() throws CoreException {
+		IPath cloc = getComponentLocation();
+		for (IProject p : ResourcesPlugin.getWorkspace().getRoot().getProjects())
+			if (cloc.equals(p.getLocation()))
+				return p;
+		return null;
 	}
 
 	@Override
