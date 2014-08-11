@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.types.selectors.SelectorUtils;
@@ -297,6 +298,29 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		return bld.toString();
 	}
 
+	private static Pattern convertIncludeToPattern(String include) {
+		int len = include.length();
+		StringBuilder bld = new StringBuilder(len + 4);
+		for (int idx = 0; idx < len; ++idx) {
+			char c = include.charAt(idx);
+			switch (c) {
+				case '?':
+					bld.append('.');
+					break;
+				case '*':
+					bld.append('.');
+					bld.append('*');
+					break;
+				case '.':
+					bld.append('\\');
+					bld.append('.');
+				default:
+					bld.append(c);
+			}
+		}
+		return Pattern.compile(bld.toString());
+	}
+	
 	protected static ImportSpecification[] getImports(IPluginBase plugin) throws CoreException {
 		IPluginModelBase model = plugin.getPluginModel();
 		BundleDescription bundleDesc = model.getBundleDescription();
@@ -613,6 +637,27 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		return value;
 	}
 
+	protected List<String> expandIncludes(String[] tokens) throws CoreException {
+		if (tokens == null || tokens.length == 0)
+			return Collections.emptyList();
+
+		ArrayList<String> result = new ArrayList<String>(tokens.length);
+		for (String token : tokens) {
+			if (token.indexOf('*') >= 0) {
+				Pattern pattern = convertIncludeToPattern(token);
+				try {
+					for (FileHandle matchingFile : reader.getRootFiles(pattern, new NullProgressMonitor()))
+						result.add(matchingFile.getName());
+				} catch (IOException e) {
+					throw BuckminsterException.wrap(e);
+				}
+			} else
+				result.add(token);
+		}
+		return result;
+	}
+
+	
 	protected List<String> expandBinFiles(File baseDir, IBuild build) throws CoreException {
 		IBuildEntry includes = build.getEntry(PROPERTY_BIN_INCLUDES);
 		IBuildEntry excludes = build.getEntry(PROPERTY_BIN_EXCLUDES);

@@ -72,7 +72,7 @@ import org.osgi.framework.Constants;
 /**
  * A CSpec builder that creates a cspec using the META-INF/MANIFEST.MF,
  * plugin.xml and fragment.xml files.
- * 
+ *
  * @author Thomas Hallgren
  */
 @SuppressWarnings("restriction")
@@ -294,8 +294,19 @@ public class CSpecFromSource extends CSpecGenerator {
 			binIncludes = expandBinFiles(baseDir, build);
 			srcIncludes = expandSrcFiles(baseDir, build);
 		} else {
-			binIncludes = Collections.emptyList();
-			srcIncludes = Collections.emptyList();
+			IBuildEntry binIncludesEntry = build.getEntry(PROPERTY_BIN_INCLUDES);
+			if (binIncludesEntry != null) {
+				binIncludes = expandIncludes(binIncludesEntry.getTokens());
+			} else {
+				binIncludes = Collections.emptyList();
+			}
+
+			IBuildEntry srcIncludesEntry = build.getEntry(PROPERTY_SRC_INCLUDES);
+			if (srcIncludesEntry != null) {
+				srcIncludes = expandIncludes(srcIncludesEntry.getTokens());
+			} else {
+				srcIncludes = Collections.emptyList();
+			}
 		}
 
 		String bundleClassPath = null;
