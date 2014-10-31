@@ -4,5 +4,6 @@
     <cq:property key="target.os" value="*"/>
     <cq:property key="target.ws" value="*"/>
     <cq:advisorNode namePattern="^org\.eclipse\.buckminster\..*\.source$" skipComponent="true"/>
+    <cq:advisorNode namePattern="^org\.eclipse\.osgi$" componentType="osgi.bundle" versionOverride="[3.10.2.v20141020-1740,3.10.2.v20141020-1740]"/>
     <cq:advisorNode namePattern=".*" useTargetPlatform="false"/>
 </cq:componentQuery>
