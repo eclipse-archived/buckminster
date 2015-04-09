@@ -29,7 +29,6 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.ecf.core.security.IConnectContext;
 import org.eclipse.ecf.filetransfer.FileTransferJob;
-import org.eclipse.ecf.filetransfer.IFileRangeSpecification;
 import org.eclipse.ecf.filetransfer.IFileTransferListener;
 import org.eclipse.ecf.filetransfer.IIncomingFileTransfer;
 import org.eclipse.ecf.filetransfer.IRetrieveFileTransferContainerAdapter;
@@ -72,23 +71,10 @@ public class FileReader extends FileTransferJob implements IFileTransferListener
 
 	private final IConnectContext connectContext;
 
-	static final IFileRangeSpecification ALL_RANGE = new IFileRangeSpecification() {
-
-		@Override
-		public long getEndPosition() {
-			return Long.MAX_VALUE;
-		}
-
-		@Override
-		public long getStartPosition() {
-			return 0;
-		}
-	};
-
 	/**
 	 * Create a new FileReader that will retry failed connection attempts and
 	 * sleep some amount of time between each attempt.
-	 * 
+	 *
 	 * @param connectionRetryCount
 	 *            The number of times to retry the connection. Set to zero to
 	 *            fail on first attempt.
@@ -302,11 +288,7 @@ public class FileReader extends FileTransferJob implements IFileTransferListener
 
 			try {
 				IFileID fileID = FileIDFactory.getDefault().createFileID(adapter.getRetrieveNamespace(), url);
-				// Use an ridiculously large range to prevent that an Accept
-				// gzip is
-				// added to the request. Otherwise, we
-				// get a gzipped file back with unknown size.
-				adapter.sendRetrieveRequest(fileID, ALL_RANGE, this, null);
+				adapter.sendRetrieveRequest(fileID, null, this, null);
 			} catch (IncomingFileTransferException e) {
 				exception = e;
 			}
