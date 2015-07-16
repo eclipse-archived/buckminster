@@ -19,7 +19,7 @@ import org.eclipse.osgi.util.NLS;
 
 /**
  * @author Filip Hrbek
- * 
+ *
  *         The <CODE>SmartArrayList</CODE> class extends class ArrayList. It has
  *         the same counstructors. It has methods list transformations (reverse,
  *         rotate, shuffle) and easy-to-use formatted printing its values (using
@@ -38,11 +38,11 @@ public class SmartArrayList<E> extends ArrayList<E> {
 	 * value should contain spaces, commas or double quotes, it should be double
 	 * quoted. Any backslashes must be doubled unless they are used as escape
 	 * characters for double quotes inside a string.<BR>
-	 * 
+	 *
 	 * Examples:<BR>
 	 * fromCommaSeparatedStrings("abc, def, ghi");<BR>
 	 * fromCommaSeparatedStrings("\"ab c\", \"de\\\"f\", \"gh,i\"");<BR>
-	 * 
+	 *
 	 * @param values
 	 *            Initial comma separated values
 	 * @return List of values
@@ -58,13 +58,13 @@ public class SmartArrayList<E> extends ArrayList<E> {
 	 * value should contain spaces, delimiters itself or double quotes, it
 	 * should be double quoted. Any backslashes must be doubled unless they are
 	 * used as escape characters for double quotes inside a string.<BR>
-	 * 
+	 *
 	 * Examples:<BR>
 	 * fromSeparatedStrings("abc, def, ghi", ',');<BR>
 	 * fromSeparatedStrings("\"ab c\", \"de\\\"f\", \"gh,i\"", ',');<BR>
 	 * fromSeparatedStrings("\"ab c\"def, abc\"de\\\"f\", abcdef\"gh,i\"jkl",
 	 * ',');<BR>
-	 * 
+	 *
 	 * @param values
 	 *            Initial comma separated values
 	 * @param delimiter
@@ -131,7 +131,7 @@ public class SmartArrayList<E> extends ArrayList<E> {
 	 * the order they are returned by the collection's iterator. The
 	 * SmartArrayList instance has an initial capacity of 110% the size of the
 	 * specified collection.
-	 * 
+	 *
 	 * @param c
 	 *            the collection whose elements are to be placed into this list
 	 */
@@ -143,7 +143,7 @@ public class SmartArrayList<E> extends ArrayList<E> {
 	/**
 	 * Constructs a list containing the result of the specified mapping applied
 	 * on the elements of the specified list
-	 * 
+	 *
 	 * @param c
 	 *            The list whose data are to be mapped into this list
 	 * @param m
@@ -166,18 +166,18 @@ public class SmartArrayList<E> extends ArrayList<E> {
 	 * Constructs a list containing the elements of the specified list of
 	 * arguments, in the order they are specified. The SmartArrayList instance
 	 * has an initial capacity of 110% the size of the specified collection.
-	 * 
+	 *
 	 * @param args
 	 *            the list of elements which are to be placed into this list
 	 */
 
-	public SmartArrayList(E... args) {
+	public SmartArrayList(@SuppressWarnings("unchecked") E... args) {
 		super(Arrays.asList(args));
 	}
 
 	/**
 	 * Constructs an empty list with the specified initial capacity.
-	 * 
+	 *
 	 * @param initialCapacity
 	 *            the initial capacity of the list
 	 * @throws IllegalArgumentException
@@ -191,7 +191,7 @@ public class SmartArrayList<E> extends ArrayList<E> {
 	/**
 	 * The same as equals but the lists does not have to have the same element
 	 * order
-	 * 
+	 *
 	 * @param otherList
 	 * @return
 	 */
@@ -214,7 +214,7 @@ public class SmartArrayList<E> extends ArrayList<E> {
 
 	/**
 	 * Reverses the order of the SmartArrayList's elements.
-	 * 
+	 *
 	 * @return reversed SmartArrayList
 	 */
 	public SmartArrayList<E> reverse() {
@@ -226,7 +226,7 @@ public class SmartArrayList<E> extends ArrayList<E> {
 	/**
 	 * Rotates the elements of the SmartArrayList's elements by the specified
 	 * distance.
-	 * 
+	 *
 	 * @param distance
 	 *            the distance to rotate the list. There are no constraints on
 	 *            this value.
@@ -240,7 +240,7 @@ public class SmartArrayList<E> extends ArrayList<E> {
 
 	/**
 	 * Randomly permutes the list using a default source of randomness.
-	 * 
+	 *
 	 * @return changed SmartArrayList
 	 */
 	public SmartArrayList<E> shuffle() {
@@ -252,7 +252,7 @@ public class SmartArrayList<E> extends ArrayList<E> {
 	/**
 	 * Creates a string, which contains all values of an instance separated by
 	 * ', '.
-	 * 
+	 *
 	 * @return a string containing all values of an instance separated by ', '
 	 */
 	@Override
@@ -263,7 +263,7 @@ public class SmartArrayList<E> extends ArrayList<E> {
 	/**
 	 * Creates a string, which contains all values of an instance separated by
 	 * specified delimeter.
-	 * 
+	 *
 	 * @param delimiter
 	 *            delimiter to separate the values
 	 * @return a string containing all values of an instance separated by the

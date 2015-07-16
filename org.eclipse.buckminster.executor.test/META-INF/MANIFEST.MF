@@ -4,8 +4,7 @@ Bundle-Name: Buckminster Executor Actor Test Fragment
 Bundle-SymbolicName: org.eclipse.buckminster.executor.test;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Eclipse.org
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6,
- J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.eclipse.buckminster.executor,
  org.eclipse.buckminster.core,
  org.eclipse.core.runtime,

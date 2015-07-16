@@ -4,8 +4,7 @@ Bundle-Name: Test Fragment for OSGi Filter
 Bundle-SymbolicName: org.eclipse.buckminster.osgi.filter.test
 Bundle-Version: 1.0.0
 Bundle-Vendor: The Buckminster project
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6,
- J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.eclipse.buckminster.osgi.filter,
  org.eclipse.osgi,
  org.junit;bundle-version="4.8.2"

@@ -4,7 +4,6 @@ Bundle-Name: Buckminster SAX Parser utilities
 Bundle-SymbolicName: org.eclipse.buckminster.sax
 Bundle-Version: 1.0.0.qualifier
 Export-Package: org.eclipse.buckminster.sax
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6,
- J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: Eclipse Buckminster Project
 Require-Bundle: org.eclipse.core.runtime;visibility:=reexport

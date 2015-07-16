@@ -12,6 +12,5 @@ Require-Bundle: org.eclipse.buckminster.cmdline,
  org.eclipse.equinox.p2.core,
  org.eclipse.equinox.p2.console,
  org.eclipse.equinox.p2.repository
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6,
- J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: Eclipse Buckminster Project

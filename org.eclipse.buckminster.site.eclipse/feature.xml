@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.buckminster.site.eclipse"
       label="Buckminster"
-      version="1.6.0.qualifier"
+      version="1.7.0.qualifier"
       provider-name="Eclipse Buckminster Project">
 
    <description url="http://www.example.com/description">
@@ -18,8 +18,8 @@
    </license>
 
    <url>
-      <update label="Buckminster Kepler Milestones" url="http://www.eclipse.org/downloads/download.php?file=/tools/buckminster/updates-4.4/&amp;protocol=http&amp;format=xml"/>
-      <discovery label="Buckminster Kepler Milestones" url="http://download.eclipse.org/tools/buckminster/updates-4.4"/>
+      <update label="Buckminster Kepler Milestones" url="http://www.eclipse.org/downloads/download.php?file=/tools/buckminster/updates-4.5/&amp;protocol=http&amp;format=xml"/>
+      <discovery label="Buckminster Kepler Milestones" url="http://download.eclipse.org/tools/buckminster/updates-4.5"/>
    </url>
 
    <includes

@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.buckminster.site.eclipse.headless"
       label="Buckminster Headless"
-      version="1.6.0.qualifier"
+      version="1.7.0.qualifier"
       provider-name="Eclipse Buckminster Project">
 
    <description url="http://www.example.com/description">
@@ -18,9 +18,9 @@
    </license>
 
    <url>
-      <update url="http://www.eclipse.org/downloads/download.php?file=/tools/buckminster/headless-4.4/&amp;protocol=http&amp;format=xml"/>
-      <discovery label="Buckminster External Juno Headless" url="http://download.cloudsmith.com/buckminster/external-4.4"/>
-      <discovery label="Buckminster Juno Headless" url="http://download.eclipse.org/tools/buckminster/headless-4.4"/>
+      <update url="http://www.eclipse.org/downloads/download.php?file=/tools/buckminster/headless-4.5/&amp;protocol=http&amp;format=xml"/>
+      <discovery label="Buckminster External Juno Headless" url="http://download.cloudsmith.com/buckminster/external-4.5"/>
+      <discovery label="Buckminster Juno Headless" url="http://download.eclipse.org/tools/buckminster/headless-4.5"/>
    </url>
 
    <includes
@@ -573,13 +573,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.core.runtime.compatibility.auth"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.core.runtime.compatibility.registry"
          download-size="0"
          install-size="0"
@@ -859,6 +852,12 @@
 
    <plugin
          id="org.apache.httpcomponents.httpclient"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.slf4j.api"
          download-size="0"
          install-size="0"
          version="0.0.0"/>

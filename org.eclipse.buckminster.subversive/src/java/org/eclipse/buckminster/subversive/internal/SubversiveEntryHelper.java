@@ -7,7 +7,16 @@ public class SubversiveEntryHelper implements ISvnEntryHelper<SVNEntry> {
 
 	@Override
 	public int getEntryKind(SVNEntry entry) {
-		return entry.nodeKind;
+		switch (entry.nodeKind) {
+			case DIR:
+				return ISvnEntryHelper.DIR;
+			case FILE:
+				return ISvnEntryHelper.FILE;
+			case NONE:
+				return ISvnEntryHelper.NONE;
+			default:
+				return ISvnEntryHelper.UNKNOWN;
+		}
 	}
 
 	@Override

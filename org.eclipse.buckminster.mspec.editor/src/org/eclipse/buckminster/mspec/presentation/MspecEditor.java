@@ -817,15 +817,15 @@ public class MspecEditor extends MultiPageEditorPart implements IEditingDomainPr
 	 * 
 	 * @generated
 	 */
-	@SuppressWarnings("rawtypes")
+	@SuppressWarnings("unchecked")
 	@Override
-	public Object getAdapter(Class key) {
+	public <T> T getAdapter(Class<T> key) {
 		if (key.equals(IContentOutlinePage.class)) {
-			return showOutlineView() ? getContentOutlinePage() : null;
+			return showOutlineView() ? (T)getContentOutlinePage() : null;
 		} else if (key.equals(IPropertySheetPage.class)) {
-			return getPropertySheetPage();
+			return (T)getPropertySheetPage();
 		} else if (key.equals(IGotoMarker.class)) {
-			return this;
+			return (T)this;
 		} else {
 			return super.getAdapter(key);
 		}

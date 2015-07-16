@@ -24,7 +24,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 
 /**
  * @author Thomas Hallgren
- * 
+ *
  */
 public class ZipArchiveReader extends AbstractCatalogReader {
 	private final IFileReader zipFileReader;
@@ -36,11 +36,6 @@ public class ZipArchiveReader extends AbstractCatalogReader {
 
 	public IComponentReader getFileReader() {
 		return zipFileReader;
-	}
-
-	@Override
-	public void innerMaterialize(IPath destination, IProgressMonitor monitor) throws CoreException {
-		throw new UnsupportedOperationException(Messages.Cannot_materialize);
 	}
 
 	@Override
@@ -85,18 +80,23 @@ public class ZipArchiveReader extends AbstractCatalogReader {
 	}
 
 	@Override
-	protected <T> T innerReadFile(String fileName, IStreamConsumer<T> consumer, IProgressMonitor monitor) throws CoreException, IOException {
-		ZipInputStream zi = null;
-		try {
-			ZipEntry ze;
-			zi = new ZipInputStream(zipFileReader.open(monitor));
-			while ((ze = zi.getNextEntry()) != null)
-				if (ze.getName().equals(fileName))
-					return consumer.consumeStream(this, fileName, zi, new NullProgressMonitor());
+	public void innerMaterialize(IPath destination, IProgressMonitor monitor) throws CoreException {
+		throw new UnsupportedOperationException(Messages.Cannot_materialize);
+	}
 
-			throw new FileNotFoundException(fileName);
-		} finally {
-			IOUtils.close(zi);
+	@Override
+	protected <T> T innerReadFile(String fileName, IStreamConsumer<T> consumer, IProgressMonitor monitor) throws CoreException, IOException {
+		ZipEntry ze;
+		T result = null;
+		try (ZipInputStream zi = new ZipInputStream(zipFileReader.open(monitor))) {
+			while ((ze = zi.getNextEntry()) != null)
+				if (ze.getName().equals(fileName)) {
+					result = consumer.consumeStream(this, fileName, zi, new NullProgressMonitor());
+					break;
+				}
+			if (result == null)
+				throw new FileNotFoundException(fileName);
 		}
+		return result;
 	}
 }

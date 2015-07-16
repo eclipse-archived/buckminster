@@ -10,6 +10,5 @@ Require-Bundle: org.eclipse.buckminster.core,
  org.eclipse.core.runtime,
  org.eclipse.equinox.p2.metadata,
  org.junit;bundle-version="4.8.2"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6,
- J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: org.eclipse.buckminster.maven.test

@@ -49,7 +49,7 @@ import org.osgi.framework.Version;
 
 /**
  * The Eclipse external model is not editable but this subclass is.
- * 
+ *
  * @author Thomas Hallgren
  */
 @SuppressWarnings("restriction")
@@ -58,9 +58,10 @@ public class EditableFeatureModel extends ExternalFeatureModel implements IEdita
 
 	public static int getContextQualifierLength(InputStream input) {
 		int ctxQualLen = -1;
-		Scanner scanner = new Scanner(input);
-		if (scanner.findWithinHorizon(ctxQualLenPattern, 100) != null)
-			ctxQualLen = Integer.parseInt(scanner.match().group(1));
+		try (Scanner scanner = new Scanner(input)) {
+			if (scanner.findWithinHorizon(ctxQualLenPattern, 100) != null)
+				ctxQualLen = Integer.parseInt(scanner.match().group(1));
+		}
 		return ctxQualLen;
 	}
 

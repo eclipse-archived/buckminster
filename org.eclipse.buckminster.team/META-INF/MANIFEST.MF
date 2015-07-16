@@ -4,8 +4,7 @@ Bundle-Name: %pluginName
 Bundle-SymbolicName: org.eclipse.buckminster.team;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: %providerName
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6,
- J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.eclipse.core.resources,
  org.eclipse.buckminster.core,
  org.eclipse.buckminster.runtime,

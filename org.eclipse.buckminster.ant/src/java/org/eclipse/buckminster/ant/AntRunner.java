@@ -115,22 +115,24 @@ public class AntRunner {
 		}
 	}
 
-	/**
-	 * Returns whether an Ant build is already in progress
-	 * 
-	 * Only one Ant build can occur at any given time.
-	 * 
-	 * @since 2.1
-	 * @return boolean
-	 */
-	public static boolean isBuildRunning() {
-		return buildRunning;
+	private static ClassLoader getClassLoader() {
+		return AntCorePlugin.getPlugin().getNewClassLoader();
+	}
+
+	private static List<Property> getGlobalAntProperties() {
+		return AntCorePlugin.getPlugin().getPreferences().getProperties();
+	}
+
+	private static Class<?> getInternalAntRunnerClass() throws ClassNotFoundException {
+		ClassLoader loader = getClassLoader();
+		Thread.currentThread().setContextClassLoader(loader);
+		return loader.loadClass("org.eclipse.ant.internal.core.ant.InternalAntRunner"); //$NON-NLS-1$
 	}
 
 	/*
 	 * Handles exceptions that are loaded by the Ant Class Loader by asking the
 	 * Internal Ant Runner class for the correct error message.
-	 * 
+	 *
 	 * Handles OperationCanceledExceptions, nested NoClassDefFoundError and
 	 * nested ClassNotFoundException
 	 */
@@ -167,6 +169,18 @@ public class AntRunner {
 		return new CoreException(status);
 	}
 
+	/**
+	 * Returns whether an Ant build is already in progress
+	 *
+	 * Only one Ant build can occur at any given time.
+	 *
+	 * @since 2.1
+	 * @return boolean
+	 */
+	public static boolean isBuildRunning() {
+		return buildRunning;
+	}
+
 	static CoreException problemLoadingClass(Throwable e) {
 		String missingClassName = e.getMessage();
 		String message;
@@ -180,21 +194,6 @@ public class AntRunner {
 		IStatus status = new Status(IStatus.ERROR, AntCorePlugin.PI_ANTCORE, AntCorePlugin.ERROR_RUNNING_BUILD, message, e);
 		AntCorePlugin.getPlugin().getLog().log(status);
 		return new CoreException(status);
-	}
-
-	private static ClassLoader getClassLoader() {
-		return AntCorePlugin.getPlugin().getNewClassLoader();
-	}
-
-	@SuppressWarnings("unchecked")
-	private static List<Property> getGlobalAntProperties() {
-		return AntCorePlugin.getPlugin().getPreferences().getProperties();
-	}
-
-	private static Class<?> getInternalAntRunnerClass() throws ClassNotFoundException {
-		ClassLoader loader = getClassLoader();
-		Thread.currentThread().setContextClassLoader(loader);
-		return loader.loadClass("org.eclipse.ant.internal.core.ant.InternalAntRunner"); //$NON-NLS-1$
 	}
 
 	private String buildFileLocation = IAntCoreConstants.DEFAULT_BUILD_FILENAME;
@@ -213,7 +212,7 @@ public class AntRunner {
 
 	/**
 	 * Adds user-defined properties. Keys and values must be String objects.
-	 * 
+	 *
 	 * @param properties
 	 *            a Map of user-defined properties
 	 */
@@ -231,12 +230,12 @@ public class AntRunner {
 	 * running task could, for example, get the monitor during its execution and
 	 * check for cancellation. The key value to retrieve the progress monitor
 	 * instance is <code>AntCorePlugin.ECLIPSE_PROGRESS_MONITOR</code>.
-	 * 
+	 *
 	 * Only one build can occur at any given time.
-	 * 
+	 *
 	 * Sets the current threads context class loader to the AntClassLoader for
 	 * the duration of the build.
-	 * 
+	 *
 	 * @param monitor
 	 *            a progress monitor, or <code>null</code> if progress reporting
 	 *            and cancellation are not desired
@@ -333,7 +332,7 @@ public class AntRunner {
 
 	/**
 	 * Sets the Ant home to use for this build
-	 * 
+	 *
 	 * @param antHome
 	 *            String specifying the Ant home to use
 	 * @since 2.1
@@ -344,7 +343,7 @@ public class AntRunner {
 
 	/**
 	 * Sets the arguments to be passed to the build (e.g. -verbose).
-	 * 
+	 *
 	 * @param arguments
 	 *            the arguments to be passed to the build
 	 */
@@ -354,7 +353,7 @@ public class AntRunner {
 
 	/**
 	 * Sets the build file location on the file system.
-	 * 
+	 *
 	 * @param buildFileLocation
 	 *            the file system location of the build file
 	 */
@@ -371,10 +370,10 @@ public class AntRunner {
 	 * The class will be instantiated at runtime and the logger will be called
 	 * on build events (<code>org.apache.tools.ant.BuildEvent</code>). Only one
 	 * build logger is permitted for any build.
-	 * 
+	 *
 	 * <p>
 	 * Refer to {@link AntRunner Usage Note} for implementation details.
-	 * 
+	 *
 	 * @param className
 	 *            a build logger class name
 	 */
@@ -384,7 +383,7 @@ public class AntRunner {
 
 	/**
 	 * Sets the targets and execution order.
-	 * 
+	 *
 	 * @param executionTargets
 	 *            which targets should be run and in which order
 	 */
@@ -394,7 +393,7 @@ public class AntRunner {
 
 	/**
 	 * Sets the user specified property files.
-	 * 
+	 *
 	 * @param propertyFiles
 	 *            array of property file paths
 	 * @since 2.1

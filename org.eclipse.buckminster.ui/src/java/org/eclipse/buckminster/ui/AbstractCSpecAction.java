@@ -31,7 +31,7 @@ import org.eclipse.ui.IWorkbenchPartSite;
 
 /**
  * Operate on the selected object adapted to CSpec.class.
- * 
+ *
  * @author Thomas Hallgren
  * @author Henrik Lindberg
  */
@@ -46,7 +46,7 @@ public abstract class AbstractCSpecAction implements IObjectActionDelegate {
 	 * tries to obtain a CSpec from the current selection. This operation is
 	 * potentially long running if {@link WorkspaceInfo} has not been
 	 * initialized yet.
-	 * 
+	 *
 	 * @param progressMonitor
 	 * @return the cspec for the given component or <code>null</code> if not
 	 *         available
@@ -60,7 +60,7 @@ public abstract class AbstractCSpecAction implements IObjectActionDelegate {
 				// Query the cspec directly if the WorkspaceInfo is already
 				// initialized or fall back to
 				// blocking mode if the job manager is currently suspended.
-				selectedComponent = (CSpec) selection.getAdapter(CSpec.class);
+				selectedComponent = selection.getAdapter(CSpec.class);
 				progressMonitor.done();
 			} else {
 				// if WorkspaceInfo has not been initialized and the JobManager
@@ -68,13 +68,15 @@ public abstract class AbstractCSpecAction implements IObjectActionDelegate {
 				// given progress monitor to the CatchUpWorkspaceJob
 				IJobChangeListener listener = new JobListener(progressMonitor);
 				Job.getJobManager().addJobChangeListener(listener);
-				selectedComponent = (CSpec) selection.getAdapter(CSpec.class);
+				selectedComponent = selection.getAdapter(CSpec.class);
 				Job.getJobManager().removeJobChangeListener(listener);
 			}
 
 		}
 		return selectedComponent;
 	}
+
+	protected abstract void run(CSpec cspec, Shell shell);
 
 	@Override
 	public void run(IAction action) {
@@ -88,6 +90,11 @@ public abstract class AbstractCSpecAction implements IObjectActionDelegate {
 		} else {
 			run(selectedComponent, shell);
 		}
+
+	}
+
+	protected void run(Shell shell) {
+		MessageDialog.openInformation(shell, null, Messages.no_component_is_selected);
 
 	}
 
@@ -107,7 +114,7 @@ public abstract class AbstractCSpecAction implements IObjectActionDelegate {
 			// if the WorkspaceInfo is already initialized, it's safe to query
 			// directly for the adapter
 			if (WorkspaceInfo.isFullyInitialized()) {
-				selectedComponent = (CSpec) ((IAdaptable) first).getAdapter(CSpec.class);
+				selectedComponent = ((IAdaptable) first).getAdapter(CSpec.class);
 				action.setEnabled(selectedComponent != null);
 			} else {
 				action.setEnabled(true);
@@ -123,13 +130,6 @@ public abstract class AbstractCSpecAction implements IObjectActionDelegate {
 		activePart = targetPart;
 	}
 
-	protected abstract void run(CSpec cspec, Shell shell);
-
-	protected void run(Shell shell) {
-		MessageDialog.openInformation(shell, null, Messages.no_component_is_selected);
-
-	}
-
 	protected void setSelectedComponent(CSpec cspec) {
 		selectedComponent = cspec;
 	}
@@ -141,32 +141,22 @@ public abstract class AbstractCSpecAction implements IObjectActionDelegate {
  * {@link AttachableProgressMonitor}. The given {@link IProgressMonitor} will be
  * attached to the # {@link AttachableProgressMonitor} and the listener removes
  * itself from the {@link IJobManager}
- * 
- * 
+ *
+ *
  * @see AttachableProgressMonitor
  * @see IJobManager#removeJobChangeListener(IJobChangeListener)
  * @author Johannes Utzig
- * 
+ *
  */
 class JobListener extends JobChangeAdapter {
 
-	private IProgressMonitor monitorToAttach;
-
 	private static final QualifiedName QN_ATTACHABLE_PROGRESS_MONITOR = new QualifiedName(CorePlugin.getID(), "attachableProgressMonitor"); //$NON-NLS-1$
+
+	private IProgressMonitor monitorToAttach;
 
 	public JobListener(IProgressMonitor monitorToAttach) {
 		super();
 		this.monitorToAttach = monitorToAttach;
-	}
-
-	@Override
-	public void running(IJobChangeEvent event) {
-		handleEvent(event);
-	}
-
-	@Override
-	public void scheduled(IJobChangeEvent event) {
-		handleEvent(event);
 	}
 
 	private void handleEvent(IJobChangeEvent event) {
@@ -184,6 +174,16 @@ class JobListener extends JobChangeAdapter {
 
 			}
 		}
+	}
+
+	@Override
+	public void running(IJobChangeEvent event) {
+		handleEvent(event);
+	}
+
+	@Override
+	public void scheduled(IJobChangeEvent event) {
+		handleEvent(event);
 	}
 
 }

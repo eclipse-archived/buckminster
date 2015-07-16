@@ -29,10 +29,11 @@ import org.xml.sax.SAXException;
 
 public abstract class SaxableEditorInput implements IStorageEditorInput {
 	@Override
-	@SuppressWarnings("rawtypes")
-	public Object getAdapter(Class adapter) {
+	public <T> T getAdapter(Class<T> adapter) {
 		return null;
 	}
+
+	protected abstract ISaxable getContent() throws CoreException;
 
 	public IContentDescription getContentDescription() {
 		InputStream contents = null;
@@ -63,8 +64,7 @@ public abstract class SaxableEditorInput implements IStorageEditorInput {
 	public IStorage getStorage() throws CoreException {
 		return new IStorage() {
 			@Override
-			@SuppressWarnings("rawtypes")
-			public Object getAdapter(Class adapter) {
+			public <T> T getAdapter(Class<T> adapter) {
 				return null;
 			}
 
@@ -94,6 +94,4 @@ public abstract class SaxableEditorInput implements IStorageEditorInput {
 
 		};
 	}
-
-	protected abstract ISaxable getContent() throws CoreException;
 }

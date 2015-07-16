@@ -17,9 +17,9 @@ import org.eclipse.core.runtime.IAdapterFactory;
 /**
  * Adapter Factory that converts: CSpec and CSpecDataNode to each other, and to
  * Resolution and ResolutionDataNode IResource to CSpec, or CSpecDataNode.
- * 
+ *
  * @author Henrik Lindberg
- * 
+ *
  */
 public class CSpecAdapterFactory implements IAdapterFactory {
 	private static Class<?>[] adapterList = { CSpec.class, CSpecDataNode.class, Resolution.class, ResolutionDataNode.class };
@@ -48,13 +48,13 @@ public class CSpecAdapterFactory implements IAdapterFactory {
 	}
 
 	@Override
-	@SuppressWarnings("rawtypes")
-	public Object getAdapter(Object adaptableObject, Class adapterType) {
+	@SuppressWarnings("unchecked")
+	public <T> T getAdapter(Object adaptableObject, Class<T> adapterType) {
 		if (adaptableObject instanceof CSpec)
-			return adaptCSpec((CSpec) adaptableObject, adapterType);
+			return (T) adaptCSpec((CSpec) adaptableObject, adapterType);
 
 		if (adaptableObject instanceof CSpecDataNode)
-			return adaptCSpec((CSpec) ((CSpecDataNode) adaptableObject).getData(), adapterType);
+			return (T) adaptCSpec((CSpec) ((CSpecDataNode) adaptableObject).getData(), adapterType);
 
 		// give up
 		return null;

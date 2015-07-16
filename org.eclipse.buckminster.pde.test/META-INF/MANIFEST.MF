@@ -14,8 +14,7 @@ Require-Bundle: org.eclipse.buckminster.pde,
  org.eclipse.pde.core,
  org.junit;bundle-version="4.8.2",
  org.eclipse.equinox.p2.repository
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6,
- J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: org.eclipse.buckminster.pde.test
 Bundle-Activator: org.eclipse.buckminster.pde.test.Activator
 Bundle-ActivationPolicy: lazy

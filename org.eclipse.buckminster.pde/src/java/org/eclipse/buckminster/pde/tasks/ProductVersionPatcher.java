@@ -295,4 +295,19 @@ public class ProductVersionPatcher implements IProductDescriptor {
 	public List<IRepositoryReference> getRepositoryEntries() {
 		return product.getRepositoryEntries();
 	}
+
+	@Override
+	public boolean hasBundles(boolean includeFragments) {
+		return product.hasBundles(includeFragments);
+	}
+
+	@Override
+	public boolean hasFeatures() {
+		return product.hasFeatures();
+	}
+
+	@Override
+	public List<IVersionedId> getFeatures(int options) {
+		return product.getFeatures(options);
+	}
 }

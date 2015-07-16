@@ -37,6 +37,20 @@ public class GitReader extends AbstractCatalogReader {
 	}
 
 	@Override
+	protected boolean innerExists(String fileName, IProgressMonitor monitor) throws CoreException {
+		synchronized (repoAccess.getRepositoryPath()) {
+			TreeWalk walk = repoAccess.getTreeWalk(getProviderMatch().getVersionMatch(), fileName, monitor);
+			try {
+				return walk.next();
+			} catch (IOException e) {
+				throw BuckminsterException.wrap(e);
+			} finally {
+				walk.close();
+			}
+		}
+	}
+
+	@Override
 	public void innerMaterialize(IPath destination, IProgressMonitor monitor) throws CoreException {
 		File location = getLocation();
 		try {
@@ -53,25 +67,6 @@ public class GitReader extends AbstractCatalogReader {
 	}
 
 	@Override
-	public boolean isFileSystemReader() {
-		return true;
-	}
-
-	@Override
-	protected boolean innerExists(String fileName, IProgressMonitor monitor) throws CoreException {
-		synchronized (repoAccess.getRepositoryPath()) {
-			TreeWalk walk = repoAccess.getTreeWalk(getProviderMatch().getVersionMatch(), fileName, monitor);
-			try {
-				return walk.next();
-			} catch (IOException e) {
-				throw BuckminsterException.wrap(e);
-			} finally {
-				walk.release();
-			}
-		}
-	}
-
-	@Override
 	protected <T> T innerReadFile(String fileName, IStreamConsumer<T> consumer, IProgressMonitor monitor) throws CoreException, IOException {
 		synchronized (repoAccess.getRepositoryPath()) {
 			VersionMatch vm = getProviderMatch().getVersionMatch();
@@ -84,8 +79,13 @@ public class GitReader extends AbstractCatalogReader {
 				byte[] bytes = ol.getBytes();
 				return consumer.consumeStream(this, fileName, new ByteArrayInputStream(bytes), monitor);
 			} finally {
-				walk.release();
+				walk.close();
 			}
 		}
+	}
+
+	@Override
+	public boolean isFileSystemReader() {
+		return true;
 	}
 }

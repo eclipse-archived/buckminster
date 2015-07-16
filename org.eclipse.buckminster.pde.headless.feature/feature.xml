@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.buckminster.pde.headless.feature"
       label="%featureName"
-      version="1.6.1.qualifier"
+      version="1.7.0.qualifier"
       provider-name="%providerName"
       license-feature="org.eclipse.buckminster.license.feature"
       license-feature-version="1.0.0.qualifier">

@@ -74,6 +74,12 @@ public class ComponentBrowserView extends ViewPart {
 
 	private ViewInBrowserAction viewFeedInBrowser;
 
+	private void contributeToActionBars() {
+		IActionBars bars = getViewSite().getActionBars();
+		fillLocalPullDown(bars.getMenuManager());
+		fillLocalToolBar(bars.getToolBarManager());
+	}
+
 	/**
 	 * Call-back that creates and initializes the viewer.
 	 */
@@ -110,28 +116,6 @@ public class ComponentBrowserView extends ViewPart {
 		getViewSite().setSelectionProvider(viewer);
 	}
 
-	public boolean isAutoExpand() {
-		return false;
-	}
-
-	/**
-	 * Passing the focus request to the viewer's control.
-	 */
-	@Override
-	public void setFocus() {
-		viewer.getControl().setFocus();
-	}
-
-	protected ResolutionsTreeContentProvider getContentProvider() {
-		return new ResolutionsTreeContentProvider();
-	}
-
-	private void contributeToActionBars() {
-		IActionBars bars = getViewSite().getActionBars();
-		fillLocalPullDown(bars.getMenuManager());
-		fillLocalToolBar(bars.getToolBarManager());
-	}
-
 	private void fillContextMenu(IMenuManager manager) {
 		ISelection selection = viewer.getSelection();
 		Object obj = ((IStructuredSelection) selection).getFirstElement();
@@ -160,6 +144,10 @@ public class ComponentBrowserView extends ViewPart {
 		manager.add(refreshAction);
 	}
 
+	protected ResolutionsTreeContentProvider getContentProvider() {
+		return new ResolutionsTreeContentProvider();
+	}
+
 	private void hookContextMenu() {
 		MenuManager menuMgr = new MenuManager("#PopupMenu"); //$NON-NLS-1$
 		menuMgr.setRemoveAllWhenShown(true);
@@ -183,11 +171,9 @@ public class ComponentBrowserView extends ViewPart {
 		});
 	}
 
-	// private void showMessage(String message)
-	// {
-	// MessageDialog.openInformation(viewer.getControl().getShell(),
-	// "Component Browser View", message);
-	// }
+	public boolean isAutoExpand() {
+		return false;
+	}
 
 	private void makeActions() {
 		viewInBrowser = new ViewInBrowserAction(viewer, true, Messages.content, false);
@@ -213,7 +199,7 @@ public class ComponentBrowserView extends ViewPart {
 				Object obj = ((IStructuredSelection) selection).getFirstElement();
 				if (obj instanceof IAdaptable) {
 					// Invoke the ViewCSpec Action
-					ICSpecData cspec = (ICSpecData) ((IAdaptable) obj).getAdapter(CSpec.class);
+					ICSpecData cspec = ((IAdaptable) obj).getAdapter(CSpec.class);
 					if (cspec != null) {
 						ViewCSpecAction vca = new ViewCSpecAction();
 						vca.setActivePart(this, ComponentBrowserView.this.getSite().getPart());
@@ -238,7 +224,7 @@ public class ComponentBrowserView extends ViewPart {
 						return;
 					}
 
-					IBrowseableFeed feed = (IBrowseableFeed) ((IAdaptable) obj).getAdapter(IBrowseableFeed.class);
+					IBrowseableFeed feed = ((IAdaptable) obj).getAdapter(IBrowseableFeed.class);
 					if (feed != null) {
 						IObjectActionDelegate delegate = UiPlugin.getDefault().getOpenRssFeedAction();
 						if (delegate != null) {
@@ -248,7 +234,7 @@ public class ComponentBrowserView extends ViewPart {
 							return;
 						}
 					}
-					IBrowseable site = (IBrowseable) ((IAdaptable) obj).getAdapter(IBrowseable.class);
+					IBrowseable site = ((IAdaptable) obj).getAdapter(IBrowseable.class);
 					if (site != null) {
 						viewInBrowser.run();
 						return;
@@ -257,5 +243,19 @@ public class ComponentBrowserView extends ViewPart {
 				}
 			}
 		};
+	}
+
+	// private void showMessage(String message)
+	// {
+	// MessageDialog.openInformation(viewer.getControl().getShell(),
+	// "Component Browser View", message);
+	// }
+
+	/**
+	 * Passing the focus request to the viewer's control.
+	 */
+	@Override
+	public void setFocus() {
+		viewer.getControl().setFocus();
 	}
 }

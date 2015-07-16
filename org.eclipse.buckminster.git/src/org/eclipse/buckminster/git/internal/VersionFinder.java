@@ -22,8 +22,22 @@ import org.eclipse.jgit.revwalk.RevObject;
 import org.eclipse.jgit.revwalk.RevTag;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.treewalk.TreeWalk;
- 
+
 public class VersionFinder extends AbstractSCCSVersionFinder {
+	private static String getBranchName(String name) {
+		final boolean remote = name.startsWith(Constants.R_REMOTES);
+
+		if (remote) {
+			// cut off remote name
+			final int slash = name.indexOf('/', Constants.R_REMOTES.length());
+			if (slash > -1) {
+				return name.substring(slash + 1);
+			}
+		}
+
+		return Repository.shortenRefName(name);
+	}
+
 	private RepositoryAccess repoAccess;
 
 	public VersionFinder(Provider provider, IComponentType ctype, NodeQuery query) throws CoreException {
@@ -31,14 +45,6 @@ public class VersionFinder extends AbstractSCCSVersionFinder {
 		@SuppressWarnings("unchecked")
 		Map<String, String> props = (Map<String, String>) provider.getProperties(query.getProperties());
 		repoAccess = new RepositoryAccess(getProvider().getURI(props), props);
-	}
-
-	@Override
-	public synchronized void close() {
-		if (repoAccess != null) {
-			repoAccess.close();
-			repoAccess = null;
-		}
 	}
 
 	@Override
@@ -50,8 +56,16 @@ public class VersionFinder extends AbstractSCCSVersionFinder {
 			} catch (Exception e) {
 				throw BuckminsterException.wrap(e);
 			} finally {
-				walk.release();
+				walk.close();
 			}
+		}
+	}
+
+	@Override
+	public synchronized void close() {
+		if (repoAccess != null) {
+			repoAccess.close();
+			repoAccess = null;
 		}
 	}
 
@@ -121,26 +135,12 @@ public class VersionFinder extends AbstractSCCSVersionFinder {
 					}
 					return branchesOrTags;
 				} finally {
-					revWalk.release();
+					revWalk.close();
 				}
 			}
 		} catch (IOException e) {
 			throw BuckminsterException.wrap(e);
 		}
-	}
-
-	private static String getBranchName(String name) {
-		final boolean remote = name.startsWith(Constants.R_REMOTES);
-
-		if (remote) {
-			// cut off remote name
-			final int slash = name.indexOf('/', Constants.R_REMOTES.length());
-			if (slash > -1) {
-				return name.substring(slash + 1);
-			}
-		}
-
-		return Repository.shortenRefName(name);
 	}
 
 	@Override
@@ -163,7 +163,7 @@ public class VersionFinder extends AbstractSCCSVersionFinder {
 		} catch (Exception e) {
 			throw BuckminsterException.wrap(e);
 		} finally {
-			revWalk.release();
+			revWalk.close();
 		}
 	}
 }

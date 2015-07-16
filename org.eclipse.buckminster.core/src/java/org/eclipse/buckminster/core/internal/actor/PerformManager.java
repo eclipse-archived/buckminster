@@ -160,11 +160,6 @@ public class PerformManager implements IPerformManager {
 			return performContext;
 		}
 
-		@Override
-		void toString(StringBuilder bld) {
-			action.toString(bld);
-		}
-
 		private void makeWorkspaceAwareOfProducts(IProgressMonitor monitor) throws CoreException {
 			PathGroup[] pathGroups = action.getPathGroups(performContext, null);
 			int ticks = 100 * pathGroups.length;
@@ -185,6 +180,11 @@ public class PerformManager implements IPerformManager {
 			} finally {
 				MonitorUtils.done(monitor);
 			}
+		}
+
+		@Override
+		void toString(StringBuilder bld) {
+			action.toString(bld);
 		}
 	}
 
@@ -275,39 +275,6 @@ public class PerformManager implements IPerformManager {
 				container.refreshLocal(IResource.DEPTH_ZERO, MonitorUtils.subMonitor(monitor, 1));
 			}
 		} finally {
-			monitor.done();
-		}
-	}
-
-	@Override
-	public IGlobalContext perform(ICSpecData cspec, String attributeName, Map<String, ? extends Object> props, boolean forced, boolean quiet,
-			IProgressMonitor monitor) throws CoreException {
-		return perform(Collections.singletonList(((CSpec) cspec.getAdapter(CSpec.class)).getRequiredAttribute(attributeName)), props, forced, quiet,
-				monitor);
-	}
-
-	@Override
-	public IStatus perform(List<? extends IAttribute> attributes, IGlobalContext global, IProgressMonitor monitor) throws CoreException {
-		WorkspaceInfo.pushPerformContext(global);
-		try {
-			return internalPerform(attributes, global, monitor);
-		} finally {
-			WorkspaceInfo.popPerformContext();
-		}
-	}
-
-	@Override
-	public IGlobalContext perform(List<? extends IAttribute> attributes, Map<String, ? extends Object> userProps, boolean forced, boolean quiet,
-			IProgressMonitor monitor) throws CoreException {
-		GlobalContext globalCtx = new GlobalContext(userProps, forced, quiet);
-		monitor.beginTask(null, 1000);
-		try {
-			globalCtx.setStatus(perform(attributes, globalCtx, MonitorUtils.subMonitor(monitor, 900)));
-			return globalCtx;
-		} finally {
-			globalCtx.removeScheduled(MonitorUtils.subMonitor(monitor, 50));
-			if (globalCtx.isWorkspaceRefreshPending())
-				ResourcesPlugin.getWorkspace().getRoot().refreshLocal(IResource.DEPTH_INFINITE, MonitorUtils.subMonitor(monitor, 50));
 			monitor.done();
 		}
 	}
@@ -475,5 +442,37 @@ public class PerformManager implements IPerformManager {
 			throw new CoreException(status);
 
 		return status;
+	}
+
+	@Override
+	public IGlobalContext perform(ICSpecData cspec, String attributeName, Map<String, ? extends Object> props, boolean forced, boolean quiet,
+			IProgressMonitor monitor) throws CoreException {
+		return perform(Collections.singletonList(cspec.getAdapter(CSpec.class).getRequiredAttribute(attributeName)), props, forced, quiet, monitor);
+	}
+
+	@Override
+	public IStatus perform(List<? extends IAttribute> attributes, IGlobalContext global, IProgressMonitor monitor) throws CoreException {
+		WorkspaceInfo.pushPerformContext(global);
+		try {
+			return internalPerform(attributes, global, monitor);
+		} finally {
+			WorkspaceInfo.popPerformContext();
+		}
+	}
+
+	@Override
+	public IGlobalContext perform(List<? extends IAttribute> attributes, Map<String, ? extends Object> userProps, boolean forced, boolean quiet,
+			IProgressMonitor monitor) throws CoreException {
+		GlobalContext globalCtx = new GlobalContext(userProps, forced, quiet);
+		monitor.beginTask(null, 1000);
+		try {
+			globalCtx.setStatus(perform(attributes, globalCtx, MonitorUtils.subMonitor(monitor, 900)));
+			return globalCtx;
+		} finally {
+			globalCtx.removeScheduled(MonitorUtils.subMonitor(monitor, 50));
+			if (globalCtx.isWorkspaceRefreshPending())
+				ResourcesPlugin.getWorkspace().getRoot().refreshLocal(IResource.DEPTH_INFINITE, MonitorUtils.subMonitor(monitor, 50));
+			monitor.done();
+		}
 	}
 }

@@ -6,8 +6,7 @@ Bundle-Version: 1.0.350.qualifier
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.buckminster.runtime,
  org.eclipse.core.runtime
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6,
- J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: org.eclipse.buckminster.cmdline
 Bundle-Vendor: Eclipse Buckminster Project
 Bundle-ActivationPolicy: lazy

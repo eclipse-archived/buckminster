@@ -4,8 +4,7 @@ Bundle-Name: Buckminster Fetcher Plug-in
 Bundle-SymbolicName: org.eclipse.buckminster.fetcher;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Eclipse Buckminster Project
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6,
- J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.buckminster.core,
  org.eclipse.buckminster.download,

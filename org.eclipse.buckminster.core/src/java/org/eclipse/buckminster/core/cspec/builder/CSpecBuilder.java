@@ -445,14 +445,14 @@ public class CSpecBuilder implements ICSpecData {
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	@SuppressWarnings("rawtypes")
-	public Object getAdapter(Class adapterType) {
+	public <T> T getAdapter(Class<T> adapterType) {
 		if (CSpecBuilder.class.isAssignableFrom(adapterType))
-			return this;
+			return (T) this;
 
 		if (CSpec.class.isAssignableFrom(adapterType))
-			return createCSpec();
+			return (T) createCSpec();
 
 		return Platform.getAdapterManager().getAdapter(this, adapterType);
 	}

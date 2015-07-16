@@ -37,8 +37,7 @@ Require-Bundle: org.eclipse.buckminster.ant,
  org.eclipse.equinox.p2.updatesite,
  org.eclipse.team.core
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6,
- J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Eclipse-BundleShape: dir
 Export-Package: org.eclipse.buckminster.pde,
  org.eclipse.buckminster.pde.cspecgen,

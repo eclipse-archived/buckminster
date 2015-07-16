@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.buckminster.core.headless.feature"
       label="%featureName"
-      version="1.6.0.qualifier"
+      version="1.7.0.qualifier"
       provider-name="%providerName"
       license-feature="org.eclipse.buckminster.license.feature"
       license-feature-version="1.0.0.qualifier">
@@ -28,15 +28,8 @@
       <import plugin="org.eclipse.ant.core"/>
       <import plugin="org.eclipse.core.expressions"/>
       <import plugin="org.eclipse.core.filesystem"/>
-      <import plugin="org.eclipse.core.filesystem.linux.x86"/>
-      <import plugin="org.eclipse.core.filesystem.linux.x86_64"/>
-      <import plugin="org.eclipse.core.filesystem.macosx"/>
-      <import plugin="org.eclipse.core.filesystem.win32.x86"/>
       <import plugin="org.eclipse.core.resources"/>
-      <import plugin="org.eclipse.core.resources.win32.x86"/>
       <import plugin="org.eclipse.core.runtime.compatibility"/>
-      <import plugin="org.eclipse.core.runtime.compatibility.auth"/>
-      <import plugin="org.eclipse.core.runtime.compatibility.registry"/>
       <import plugin="org.eclipse.core.variables"/>
       <import plugin="org.eclipse.debug.core"/>
       <import plugin="org.eclipse.jsch.core"/>

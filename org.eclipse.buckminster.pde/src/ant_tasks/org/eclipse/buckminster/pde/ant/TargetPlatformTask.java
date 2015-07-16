@@ -11,18 +11,21 @@ package org.eclipse.buckminster.pde.ant;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
+import org.eclipse.buckminster.runtime.Buckminster;
+import org.eclipse.buckminster.runtime.Logger;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.pde.core.plugin.TargetPlatform;
-import org.eclipse.pde.internal.core.ICoreConstants;
-import org.eclipse.pde.internal.core.PDECore;
+import org.eclipse.pde.core.target.ITargetDefinition;
+import org.eclipse.pde.core.target.ITargetLocation;
+import org.eclipse.pde.core.target.ITargetPlatformService;
+import org.eclipse.pde.internal.core.target.DirectoryBundleContainer;
 
 /**
  * Ant task that assings the location of the target platform to a given
  * property.
- * 
+ *
  * @author Thomas Hallgren
  */
 @SuppressWarnings("restriction")
@@ -32,13 +35,25 @@ public abstract class TargetPlatformTask extends Task {
 	 */
 	public IPath getTargetLocation() {
 		IPath targetPath = null;
-		IPreferencesService prefService = Platform.getPreferencesService();
-		if (ICoreConstants.VALUE_USE_OTHER.equals(prefService.getString(PDECore.PLUGIN_ID, ICoreConstants.TARGET_MODE, null, null))) {
-			String targetPlatform = prefService.getString(PDECore.PLUGIN_ID, ICoreConstants.PLATFORM_PATH, null, null);
-			if (targetPlatform != null)
-				targetPath = new Path(targetPlatform);
+		try {
+			ITargetPlatformService tpService = Buckminster.getDefault().getService(ITargetPlatformService.class);
+			ITargetDefinition tpDef = tpService.getWorkspaceTargetDefinition();
+			if (tpDef != null) {
+				ITargetLocation[] containers = tpDef.getTargetLocations();
+				if (containers != null) {
+					for (ITargetLocation container : containers) {
+						// bug 285449: the directory bundle container is
+						// actually
+						// the only we one we can use
+						if (container instanceof DirectoryBundleContainer) {
+							targetPath = new Path(((DirectoryBundleContainer) container).getLocation(true));
+						}
+					}
+				}
+			}
+		} catch (CoreException e) {
+			Logger.getDefault().warning(e, "Problems when determining target platfrom location");
 		}
-
 		if (targetPath == null)
 			targetPath = new Path(TargetPlatform.getDefaultLocation());
 		return targetPath;

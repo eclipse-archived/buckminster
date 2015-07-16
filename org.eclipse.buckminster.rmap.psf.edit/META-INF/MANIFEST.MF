@@ -7,8 +7,7 @@ Bundle-ClassPath: .
 Bundle-Activator: org.eclipse.buckminster.rmap.psf.provider.PsfEditPlugin$Implementation
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6,
- J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: org.eclipse.buckminster.rmap.psf.provider
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.buckminster.rmap.psf;visibility:=reexport,

@@ -17,6 +17,5 @@ Require-Bundle: org.eclipse.buckminster.core,
  org.eclipse.ecf,
  org.eclipse.equinox.p2.metadata
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6,
- J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: org.eclipse.buckminster.cvspkg.internal;x-friends:="org.eclipse.buckminster.cvs.test"

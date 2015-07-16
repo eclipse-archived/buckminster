@@ -21,9 +21,9 @@ import org.eclipse.ui.IPersistableElement;
 /**
  * Used to wrap an in-memory model of a BillOfMaterials into an IEditorInput for
  * the {@link DependencyVisualizer}
- * 
+ *
  * @author Johannes Utzig
- * 
+ *
  */
 public class BOMEditorInput implements IEditorInput {
 
@@ -35,7 +35,7 @@ public class BOMEditorInput implements IEditorInput {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.ui.IEditorInput#exists()
 	 */
 	@Override
@@ -45,12 +45,11 @@ public class BOMEditorInput implements IEditorInput {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
 	 */
 	@Override
-	@SuppressWarnings("rawtypes")
-	public Object getAdapter(Class adapter) {
+	public <T> T getAdapter(Class<T> adapter) {
 		return Platform.getAdapterManager().getAdapter(this, adapter);
 	}
 
@@ -60,7 +59,7 @@ public class BOMEditorInput implements IEditorInput {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.ui.IEditorInput#getImageDescriptor()
 	 */
 	@Override
@@ -70,7 +69,7 @@ public class BOMEditorInput implements IEditorInput {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.ui.IEditorInput#getName()
 	 */
 	@Override
@@ -81,7 +80,7 @@ public class BOMEditorInput implements IEditorInput {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.ui.IEditorInput#getPersistable()
 	 */
 	@Override
@@ -91,7 +90,7 @@ public class BOMEditorInput implements IEditorInput {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.ui.IEditorInput#getToolTipText()
 	 */
 	@Override

@@ -14,5 +14,4 @@ Require-Bundle: org.eclipse.buckminster.core,
  org.eclipse.ecf,
  org.eclipse.buckminster.subversion
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6,
- J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7

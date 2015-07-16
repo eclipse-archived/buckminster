@@ -22,9 +22,9 @@ import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
 /**
  * Opens an internal or external browser for a selected object that is adaptable
  * to IBrowseable, or to IBrowseableFeed if the boolean flag feed is true.
- * 
+ *
  * @author Henrik Lindberg
- * 
+ *
  */
 public class ViewInBrowserAction extends AbstractAction {
 	private IWorkbenchBrowserSupport browserSupport;
@@ -45,7 +45,7 @@ public class ViewInBrowserAction extends AbstractAction {
 
 	/**
 	 * Create a ViewInBrowserAction configured for a particular type of content.
-	 * 
+	 *
 	 * @param viewer
 	 *            - the viewer where the action is performed
 	 * @param internal
@@ -83,9 +83,9 @@ public class ViewInBrowserAction extends AbstractAction {
 		IDescribedURL describedURL = null;
 		if (sel instanceof IAdaptable) {
 			if (feed)
-				describedURL = (IDescribedURL) ((IAdaptable) sel).getAdapter(IBrowseableFeed.class);
+				describedURL = ((IAdaptable) sel).getAdapter(IBrowseableFeed.class);
 			else
-				describedURL = (IDescribedURL) ((IAdaptable) sel).getAdapter(IBrowseable.class);
+				describedURL = ((IAdaptable) sel).getAdapter(IBrowseable.class);
 
 		}
 		if (describedURL == null) {

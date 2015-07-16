@@ -18,6 +18,12 @@ import org.xml.sax.helpers.AttributesImpl;
  * @author Thomas Hallgren
  */
 public abstract class AbstractSaxableElement implements ISaxableElement, IAdaptable {
+	protected void addAttributes(AttributesImpl attrs) throws SAXException {
+	}
+
+	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException {
+	}
+
 	/**
 	 * Default implementation of IAdaptable.getAdapter() - if the data object is
 	 * instance of the wanted class, it is returned immediately, else the task
@@ -25,11 +31,19 @@ public abstract class AbstractSaxableElement implements ISaxableElement, IAdapta
 	 * adapter factories.
 	 */
 	@Override
-	@SuppressWarnings("rawtypes")
-	public Object getAdapter(Class adapter) {
+	@SuppressWarnings("unchecked")
+	public <T> T getAdapter(Class<T> adapter) {
 		if (adapter.isInstance(this))
-			return this;
+			return (T) this;
 		return Platform.getAdapterManager().getAdapter(this, adapter);
+	}
+
+	protected String getElementNamespace(String namespace) throws SAXException {
+		return namespace;
+	}
+
+	protected String getElementPrefix(String prefix) throws SAXException {
+		return prefix;
 	}
 
 	@Override
@@ -40,19 +54,5 @@ public abstract class AbstractSaxableElement implements ISaxableElement, IAdapta
 		handler.startElement(namespace, localName, qName, attrs);
 		emitElements(handler, getElementNamespace(namespace), getElementPrefix(prefix));
 		handler.endElement(namespace, localName, qName);
-	}
-
-	protected void addAttributes(AttributesImpl attrs) throws SAXException {
-	}
-
-	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException {
-	}
-
-	protected String getElementNamespace(String namespace) throws SAXException {
-		return namespace;
-	}
-
-	protected String getElementPrefix(String prefix) throws SAXException {
-		return prefix;
 	}
 }

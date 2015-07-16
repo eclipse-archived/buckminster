@@ -28,37 +28,6 @@ public class RecursiveUnpacker extends RecursivePack200 {
 		super(tempDir, defaultArgs);
 	}
 
-	public void unpack(File packedFile, File destFolder, boolean retainPacked) throws CoreException {
-		boolean sharedFolder;
-		if (destFolder == null) {
-			sharedFolder = true;
-			destFolder = packedFile.getParentFile();
-		} else
-			sharedFolder = destFolder.equals(packedFile.getParentFile());
-
-		InputStream input = null;
-		OutputStream output = null;
-		String fileName = packedFile.getAbsolutePath();
-		String name = packedFile.getName();
-		try {
-			input = new GZIPInputStream(new FileInputStream(packedFile));
-			output = new FileOutputStream(new File(destFolder, name.substring(0, name.length() - PACK_GZ_SUFFIX.length())));
-			nestedUnpack(input, output);
-			if (sharedFolder) {
-				if (!retainPacked)
-					packedFile.delete();
-			} else {
-				if (retainPacked)
-					FileUtils.copyFile(packedFile, destFolder, name, null);
-			}
-		} catch (IOException e) {
-			throw BuckminsterException.fromMessage(e, "Unable to condition %s", fileName); //$NON-NLS-1$
-		} finally {
-			IOUtils.close(input);
-			IOUtils.close(output);
-		}
-	}
-
 	private void nestedUnpack(InputStream input, OutputStream unpacked) throws IOException {
 		// The Unpack200 will corrupt the manifest for packed files if -E0 is
 		// used. This is because it copies the jar entries one by one and
@@ -102,7 +71,7 @@ public class RecursiveUnpacker extends RecursivePack200 {
 			InputStream packedInput = null;
 			if (name.endsWith(PACK_GZ_SUFFIX)) {
 				jarName = name.substring(0, name.length() - PACK_GZ_SUFFIX.length());
-				packedInput = new GZIPInputStream(jarIn);
+				packedInput = new GZIPInputStream(new NonClosingInputStream(jarIn));
 			} else if (name.endsWith(PACK_SUFFIX)) {
 				jarName = name.substring(0, name.length() - PACK_SUFFIX.length());
 				packedInput = jarIn;
@@ -118,5 +87,30 @@ public class RecursiveUnpacker extends RecursivePack200 {
 			IOUtils.copy(jarIn, jarOut, null);
 		}
 		jarOut.finish();
+	}
+
+	public void unpack(File packedFile, File destFolder, boolean retainPacked) throws CoreException {
+		boolean sharedFolder;
+		if (destFolder == null) {
+			sharedFolder = true;
+			destFolder = packedFile.getParentFile();
+		} else
+			sharedFolder = destFolder.equals(packedFile.getParentFile());
+
+		String fileName = packedFile.getAbsolutePath();
+		String name = packedFile.getName();
+		try (InputStream input = new GZIPInputStream(new FileInputStream(packedFile));
+				OutputStream output = new FileOutputStream(new File(destFolder, name.substring(0, name.length() - PACK_GZ_SUFFIX.length())))) {
+			nestedUnpack(input, output);
+			if (sharedFolder) {
+				if (!retainPacked)
+					packedFile.delete();
+			} else {
+				if (retainPacked)
+					FileUtils.copyFile(packedFile, destFolder, name, null);
+			}
+		} catch (IOException e) {
+			throw BuckminsterException.fromMessage(e, "Unable to condition %s", fileName); //$NON-NLS-1$
+		}
 	}
 }

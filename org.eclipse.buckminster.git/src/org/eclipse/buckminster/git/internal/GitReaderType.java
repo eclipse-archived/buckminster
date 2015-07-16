@@ -4,7 +4,7 @@
  * are the sole and exclusive property of Cloudsmith Inc. and may
  * not be disclosed, used, modified, copied or distributed without
  * prior written consent or license from Cloudsmith Inc.
- *  
+ *
  * Contributors:
  *  Lorenzo Bettini - https://bugs.eclipse.org/bugs/show_bug.cgi?id=428301
  */
@@ -194,7 +194,7 @@ public class GitReaderType extends CatalogReaderType implements ITeamReaderType 
 		} catch (IOException ex) {
 			throw BuckminsterException.wrap(ex);
 		} finally {
-			walk.release();
+			walk.close();
 		}
 	}
 

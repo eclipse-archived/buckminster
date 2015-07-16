@@ -137,6 +137,26 @@ class RepositoryAccess {
 		}
 	}
 
+	private String getBranchName(VersionMatch versionMatch) {
+		if (versionMatch != null) {
+			VersionSelector vs = versionMatch.getBranchOrTag();
+			if (vs != null && vs.getType() == VersionSelector.BRANCH && !vs.isDefault()) {
+				String branchName = vs.getName();
+				if (branchName.startsWith("refs/")) //$NON-NLS-1$
+					branchName = branchName.substring(5);
+				if (branchName.startsWith("remotes/")) //$NON-NLS-1$
+					branchName = branchName.substring(8);
+				else if (branchName.startsWith("heads/")) //$NON-NLS-1$
+					branchName = branchName.substring(6);
+				int rlen = remoteName.length();
+				if (branchName.length() > rlen && branchName.startsWith(remoteName) && branchName.charAt(rlen) == '/')
+					branchName = branchName.substring(rlen + 1);
+				return branchName;
+			}
+		}
+		return null;
+	}
+
 	RevCommit getBranchOrTagId(Repository repo, VersionMatch versionMatch, IProgressMonitor monitor) throws CoreException {
 		try {
 			RevCommit objId = null;
@@ -154,29 +174,31 @@ class RepositoryAccess {
 				// hasn't been done already
 				// of course.
 				//
-				Git git = new Git(repo);
-				CheckoutCommand co = git.checkout();
+				try (Git git = new Git(repo)) {
+					CheckoutCommand co = git.checkout();
 
-				String tagBranch = "tag-branch_" + getTagName(versionMatch); //$NON-NLS-1$
-				objId = parseCommit(repo.getRef(tagBranch));
-				if (objId == null) {
-					logger.info("Checking out %s to new branch %s", revstr, tagBranch); //$NON-NLS-1$
-					co.setCreateBranch(true);
-					co.setName(tagBranch);
-					co.setStartPoint(revstr);
-					return parseCommit(co.call());
-				}
-				RevCommit currentId = parseCommit(repo.getRef(Constants.HEAD));
-				if (!currentId.equals(objId)) {
-					logger.info("Checking out existing branch %s to get tag %s", tagBranch, revstr); //$NON-NLS-1$
-					co.setCreateBranch(false);
-					co.setName(tagBranch);
-					RevCommit branchCommit = parseCommit(co.call());
-					if (!objId.equals(branchCommit)) {
-						// So what do we do now? If we reset this branch to the
-						// tag, we will
-						// loose commits.
-						logger.warning("Branch %s has moved since it was created from %s", tagBranch, revstr); //$NON-NLS-1$
+					String tagBranch = "tag-branch_" + getTagName(versionMatch); //$NON-NLS-1$
+					objId = parseCommit(repo.getRef(tagBranch));
+					if (objId == null) {
+						logger.info("Checking out %s to new branch %s", revstr, tagBranch); //$NON-NLS-1$
+						co.setCreateBranch(true);
+						co.setName(tagBranch);
+						co.setStartPoint(revstr);
+						return parseCommit(co.call());
+					}
+					RevCommit currentId = parseCommit(repo.getRef(Constants.HEAD));
+					if (!currentId.equals(objId)) {
+						logger.info("Checking out existing branch %s to get tag %s", tagBranch, revstr); //$NON-NLS-1$
+						co.setCreateBranch(false);
+						co.setName(tagBranch);
+						RevCommit branchCommit = parseCommit(co.call());
+						if (!objId.equals(branchCommit)) {
+							// So what do we do now? If we reset this branch to
+							// the
+							// tag, we will
+							// loose commits.
+							logger.warning("Branch %s has moved since it was created from %s", tagBranch, revstr); //$NON-NLS-1$
+						}
 					}
 				}
 				return objId;
@@ -204,19 +226,20 @@ class RepositoryAccess {
 				localBranch = Constants.MASTER;
 
 			logger.info("Creating branch %s to track remote branch %s", localBranch, remoteBranch); //$NON-NLS-1$
-			Git git = new Git(repo);
-			CheckoutCommand co = git.checkout();
-			co.setUpstreamMode(SetupUpstreamMode.TRACK);
-			co.setCreateBranch(true);
-			co.setName(localBranch);
-			co.setStartPoint(remoteBranch);
-			objId = parseCommit(co.call());
+			try (Git git = new Git(repo)) {
+				CheckoutCommand co = git.checkout();
+				co.setUpstreamMode(SetupUpstreamMode.TRACK);
+				co.setCreateBranch(true);
+				co.setName(localBranch);
+				co.setStartPoint(remoteBranch);
+				objId = parseCommit(co.call());
 
-			// Set up pull configuration
-			StoredConfig config = repo.getConfig();
-			config.setString("branch", localBranch, "remote", remoteName); //$NON-NLS-1$//$NON-NLS-2$
-			config.setString("branch", localBranch, "merge", Constants.R_HEADS + localBranch); //$NON-NLS-1$ //$NON-NLS-2$
-			config.save();
+				// Set up pull configuration
+				StoredConfig config = repo.getConfig();
+				config.setString("branch", localBranch, "remote", remoteName); //$NON-NLS-1$//$NON-NLS-2$
+				config.setString("branch", localBranch, "merge", Constants.R_HEADS + localBranch); //$NON-NLS-1$ //$NON-NLS-2$
+				config.save();
+			}
 			return objId;
 
 		} catch (Exception e) {
@@ -226,6 +249,19 @@ class RepositoryAccess {
 
 	String getComponent() {
 		return component;
+	}
+
+	private String getGitBranch(VersionMatch versionMatch) {
+		String branchName = getBranchName(versionMatch);
+		return branchName == null ? null : Constants.R_HEADS + branchName;
+	}
+
+	private String getGitRemoteBranch(VersionMatch versionMatch, String currentBranch) {
+		String branchName = getBranchName(versionMatch);
+		String remoteBase = remoteName + '/';
+		if (branchName == null)
+			branchName = currentBranch;
+		return remoteBase + branchName;
 	}
 
 	File getLocation(VersionMatch versionMatch) throws CoreException {
@@ -325,7 +361,7 @@ class RepositoryAccess {
 			try {
 				p.reset(curs, revWalk.parseTree(id));
 			} finally {
-				revWalk.release();
+				revWalk.close();
 			}
 
 			TreeWalk treeWalk = new TreeWalk(curs);
@@ -343,7 +379,7 @@ class RepositoryAccess {
 		} catch (Exception e) {
 			throw BuckminsterException.wrap(e);
 		} finally {
-			curs.release();
+			curs.close();
 		}
 	}
 
@@ -357,48 +393,6 @@ class RepositoryAccess {
 		return autoFetch;
 	}
 
-	boolean scanFiles(Set<String> files) {
-		if (files == null || files.isEmpty())
-			return false;
-		for (String file : files)
-			if (file.startsWith(component))
-				return true;
-		return false;
-	}
-
-	private String getBranchName(VersionMatch versionMatch) {
-		if (versionMatch != null) {
-			VersionSelector vs = versionMatch.getBranchOrTag();
-			if (vs != null && vs.getType() == VersionSelector.BRANCH && !vs.isDefault()) {
-				String branchName = vs.getName();
-				if (branchName.startsWith("refs/")) //$NON-NLS-1$
-					branchName = branchName.substring(5);
-				if (branchName.startsWith("remotes/")) //$NON-NLS-1$
-					branchName = branchName.substring(8);
-				else if (branchName.startsWith("heads/")) //$NON-NLS-1$
-					branchName = branchName.substring(6);
-				int rlen = remoteName.length();
-				if (branchName.length() > rlen && branchName.startsWith(remoteName) && branchName.charAt(rlen) == '/')
-					branchName = branchName.substring(rlen + 1);
-				return branchName;
-			}
-		}
-		return null;
-	}
-
-	private String getGitBranch(VersionMatch versionMatch) {
-		String branchName = getBranchName(versionMatch);
-		return branchName == null ? null : Constants.R_HEADS + branchName;
-	}
-
-	private String getGitRemoteBranch(VersionMatch versionMatch, String currentBranch) {
-		String branchName = getBranchName(versionMatch);
-		String remoteBase = remoteName + '/';
-		if (branchName == null)
-			branchName = currentBranch;
-		return remoteBase + branchName;
-	}
-
 	private RevCommit parseCommit(Ref branch) throws MissingObjectException, IncorrectObjectTypeException, IOException {
 		if (branch == null)
 			return null;
@@ -406,7 +400,16 @@ class RepositoryAccess {
 		try {
 			return rw.parseCommit(branch.getObjectId());
 		} finally {
-			rw.release();
+			rw.close();
 		}
+	}
+
+	boolean scanFiles(Set<String> files) {
+		if (files == null || files.isEmpty())
+			return false;
+		for (String file : files)
+			if (file.startsWith(component))
+				return true;
+		return false;
 	}
 }

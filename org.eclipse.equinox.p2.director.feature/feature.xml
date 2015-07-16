@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.equinox.p2.director.feature"
       label="%featureName"
-      version="1.6.0.qualifier"
+      version="1.7.0.qualifier"
       provider-name="%providerName"
       license-feature="org.eclipse.buckminster.license.feature"
       license-feature-version="1.0.0.qualifier">
@@ -27,19 +27,12 @@
       <import plugin="org.eclipse.core.contenttype"/>
       <import plugin="org.eclipse.core.jobs"/>
       <import plugin="org.eclipse.core.net"/>
-      <import plugin="org.eclipse.core.net.linux.x86"/>
-      <import plugin="org.eclipse.core.net.linux.x86_64"/>
-      <import plugin="org.eclipse.core.net.win32.x86"/>
-      <import plugin="org.eclipse.core.net.win32.x86_64"/>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.ecf"/>
       <import plugin="org.eclipse.ecf.filetransfer"/>
       <import plugin="org.eclipse.ecf.identity"/>
       <import plugin="org.eclipse.ecf.provider.filetransfer"/>
-      <import plugin="org.eclipse.ecf.provider.filetransfer.ssl"/>
       <import plugin="org.eclipse.ecf.provider.filetransfer.httpclient4"/>
-      <import plugin="org.eclipse.ecf.provider.filetransfer.httpclient4.ssl"/>
-      <import plugin="org.eclipse.ecf.ssl"/>
       <import plugin="org.eclipse.equinox.app"/>
       <import plugin="org.eclipse.equinox.common"/>
       <import plugin="org.eclipse.equinox.ds"/>
@@ -65,13 +58,10 @@
       <import plugin="org.eclipse.equinox.preferences"/>
       <import plugin="org.eclipse.equinox.registry"/>
       <import plugin="org.eclipse.equinox.security"/>
-      <import plugin="org.eclipse.equinox.security.macosx"/>
-      <import plugin="org.eclipse.equinox.security.win32.x86"/>
       <import plugin="org.eclipse.equinox.simpleconfigurator"/>
       <import plugin="org.eclipse.equinox.simpleconfigurator.manipulator"/>
       <import plugin="org.eclipse.equinox.util"/>
       <import plugin="org.eclipse.osgi"/>
-      <import plugin="org.eclipse.osgi.compatibility.state"/>
       <import plugin="org.eclipse.osgi.services"/>
       <import plugin="org.eclipse.update.configurator"/>
       <import plugin="org.sat4j.core"/>

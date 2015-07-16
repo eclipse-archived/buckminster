@@ -3,9 +3,9 @@
  * The code, documentation and other materials contained herein have been
  * licensed under the Eclipse Public License - v 1.0 by the individual
  * copyright holders listed below, as Initial Contributors under such license.
- * The text of such license is available at 
+ * The text of such license is available at
  * http://www.eclipse.org/legal/epl-v10.html.
- * 
+ *
  * Contributors:
  * 		Henrik Lindberg
  *******************************************************************************/
@@ -22,9 +22,9 @@ import org.eclipse.core.runtime.Platform;
  * represents. This abstract class handles property change listening - See
  * "propertyChange(PropertyChangeEvent)" method, and bubbling of node change
  * notification towards the root of the tree.
- * 
+ *
  * @author Henrik Lindberg
- * 
+ *
  */
 public abstract class AbstractTreeDataNode implements ITreeDataNode, IAdaptable {
 	private ITreeParentDataNode parent;
@@ -56,11 +56,11 @@ public abstract class AbstractTreeDataNode implements ITreeDataNode, IAdaptable 
 	 * instance of the wanted class, it is returned immediately.
 	 */
 	@Override
-	@SuppressWarnings("rawtypes")
-	public Object getAdapter(Class adapter) {
+	@SuppressWarnings("unchecked")
+	public <T> T getAdapter(Class<T> adapter) {
 		Object data = getData();
 		if (adapter.isInstance(data))
-			return data;
+			return (T) data;
 		return Platform.getAdapterManager().getAdapter(this, adapter);
 	}
 

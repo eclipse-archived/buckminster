@@ -20,7 +20,7 @@
   <rm:locator pattern="^net\.java\.dev\.jna(\..+)?" searchPathRef="subclipse"/>
   <rm:locator pattern="^org\.polarion(\..+)?" searchPathRef="polarion"/>
   <rm:locator searchPathRef="platform" failOnError="false"/>
-  <rm:locator searchPathRef="luna" failOnError="false"/>
+  <rm:locator searchPathRef="mars" failOnError="false"/>
   <rm:locator searchPathRef="orbit"/>
   <rm:searchPath name="buckminster">
     <rm:provider componentTypes="osgi.bundle,eclipse.feature,buckminster" readerType="git">
@@ -36,16 +36,16 @@
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false">
       <rm:property key="buckminster.source" value="false"/>
       <rm:property key="buckminster.mutable" value="false"/>
-      <rm:uri format="{0}/eclipse/updates/4.4/">
+      <rm:uri format="{0}/eclipse/updates/4.5/">
         <bc:propertyRef key="eclipse.download.prefix"/>
       </rm:uri>
     </rm:provider>
   </rm:searchPath>
-  <rm:searchPath name="luna">
+  <rm:searchPath name="mars">
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false">
       <rm:property key="buckminster.source" value="false"/>
       <rm:property key="buckminster.mutable" value="false"/>
-      <rm:uri format="{0}/releases/luna">
+      <rm:uri format="{0}/releases/mars">
         <bc:propertyRef key="eclipse.download.prefix"/>
       </rm:uri>
     </rm:provider>
@@ -54,7 +54,7 @@
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false">
       <rm:property key="buckminster.source" value="false"/>
       <rm:property key="buckminster.mutable" value="false"/>
-      <rm:uri format="{0}/tools/orbit/downloads/drops/R20140525021250/repository">
+      <rm:uri format="{0}/tools/orbit/downloads/drops/R20150519210750/repository">
         <bc:propertyRef key="eclipse.download.prefix"/>
       </rm:uri>
     </rm:provider>
@@ -63,14 +63,14 @@
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false">
       <rm:property key="buckminster.source" value="false"/>
       <rm:property key="buckminster.mutable" value="false"/>
-      <rm:uri format="http://subclipse.tigris.org/update_1.8.x"/>
+      <rm:uri format="http://subclipse.tigris.org/update_1.10.x"/>
     </rm:provider>
   </rm:searchPath>
   <rm:searchPath name="polarion">
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false">
       <rm:property key="buckminster.source" value="false"/>
       <rm:property key="buckminster.mutable" value="false"/>
-      <rm:uri format="http://community.polarion.com/projects/subversive/download/eclipse/4.0/update-site/"/>
+      <rm:uri format="http://community.polarion.com/projects/subversive/download/eclipse/5.0/mars-site/"/>
     </rm:provider>
   </rm:searchPath>
 <!-- <rm:searchPath name="git">

@@ -73,7 +73,7 @@ import org.eclipse.team.svn.core.utility.SVNUtility;
  * </p>
  * A fragment in the repository URL will be treated as a sub-module. It will be
  * appended at the end of the resolved URL.
- * 
+ *
  * @author Thomas Hallgren
  * @author Guillaume Chatelet
  * @author Lorenzo Bettini -
@@ -84,7 +84,7 @@ public class SubversiveSession extends GenericSession<IRepositoryLocation, SVNEn
 		private int promptLimit = 3;
 
 		@Override
-		public int askTrustSSLServer(Object location, String info, boolean allowPermanently) {
+		public Answer askTrustSSLServer(Object location, String info, boolean allowPermanently) {
 			return ISVNCredentialsPrompt.DEFAULT_PROMPT.askTrustSSLServer(location, info, allowPermanently);
 		}
 

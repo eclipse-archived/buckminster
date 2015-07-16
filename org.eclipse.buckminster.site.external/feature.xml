@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.buckminster.site.external"
       label="Buckminster External (non EPL)"
-      version="1.6.0.qualifier"
+      version="1.7.0.qualifier"
       provider-name="Cloudsmith Inc.">
 
    <description url="http://www.example.com/description">

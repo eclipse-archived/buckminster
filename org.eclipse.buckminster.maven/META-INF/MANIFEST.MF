@@ -14,7 +14,6 @@ Require-Bundle: org.eclipse.buckminster.core,
  org.eclipse.equinox.p2.metadata
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: Eclipse Buckminster Project
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6,
- J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Activator: org.eclipse.buckminster.maven.MavenPlugin
 Export-Package: org.eclipse.buckminster.maven

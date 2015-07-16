@@ -25,9 +25,9 @@ import org.eclipse.ui.part.EditorPart;
  * The ComponentOutlineView shows the outline of one component. The Outline
  * changes as the selected page changes. The Resolution for the currently
  * selected item is obtained, and an outline is produced for this resolution.
- * 
+ *
  * @author Henrik Lindberg
- * 
+ *
  */
 public class ComponentOutlineView extends ComponentBrowserView {
 	private ISelectionListener selectionListener;
@@ -49,11 +49,6 @@ public class ComponentOutlineView extends ComponentBrowserView {
 	}
 
 	@Override
-	public boolean isAutoExpand() {
-		return true;
-	}
-
-	@Override
 	protected ResolutionsTreeContentProvider getContentProvider() {
 		return new ResolutionsTreeContentProvider(ResolutionsTreeContentProvider.Mode.SINGLE);
 	}
@@ -68,6 +63,11 @@ public class ComponentOutlineView extends ComponentBrowserView {
 		getSite().getPage().addPostSelectionListener(selectionListener);
 	}
 
+	@Override
+	public boolean isAutoExpand() {
+		return true;
+	}
+
 	private void pageSelectionChanged(IWorkbenchPart part, ISelection selection) {
 		if (part == this)
 			return;
@@ -75,9 +75,9 @@ public class ComponentOutlineView extends ComponentBrowserView {
 		Resolution r = null;
 		if (part instanceof EditorPart) {
 			IEditorInput input = ((EditorPart) part).getEditorInput();
-			IResource resource = (IResource) input.getAdapter(IResource.class);
+			IResource resource = input.getAdapter(IResource.class);
 			if (resource != null)
-				r = (Resolution) resource.getAdapter(Resolution.class);
+				r = resource.getAdapter(Resolution.class);
 			else
 				return; // If editor is not for a resource, stay on the same
 						// component
@@ -89,26 +89,26 @@ public class ComponentOutlineView extends ComponentBrowserView {
 			if (!sel.isEmpty() && (sel.getFirstElement() instanceof IAdaptable)) {
 				IAdaptable element = (IAdaptable) sel.getFirstElement();
 				// If adaptable to Resolution directly
-				r = (Resolution) element.getAdapter(Resolution.class);
+				r = element.getAdapter(Resolution.class);
 
 				if (r == null) {
 					// Try to adapt it to Resource first
-					IResource resource = (IResource) element.getAdapter(IResource.class);
+					IResource resource = element.getAdapter(IResource.class);
 					if (resource != null) {
 						// get the project of the resource
 						resource = resource.getProject();
-						r = (Resolution) resource.getAdapter(Resolution.class);
+						r = resource.getAdapter(Resolution.class);
 					}
 				}
 				if (r == null) {
-					IWorkbenchAdapter wbAdapter = (IWorkbenchAdapter) element.getAdapter(IWorkbenchAdapter.class);
+					IWorkbenchAdapter wbAdapter = element.getAdapter(IWorkbenchAdapter.class);
 					while (wbAdapter != null) {
 						IResource resource = null;
 						Object parent = wbAdapter.getParent(element);
 						if (parent != null && parent instanceof IAdaptable)
-							resource = (IResource) ((IAdaptable) parent).getAdapter(IResource.class);
+							resource = ((IAdaptable) parent).getAdapter(IResource.class);
 						if (resource != null)
-							r = (Resolution) resource.getAdapter(Resolution.class);
+							r = resource.getAdapter(Resolution.class);
 						if (r != null)
 							break;
 

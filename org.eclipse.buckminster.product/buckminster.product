@@ -26,7 +26,7 @@
    </plugins>
 
    <features>
-      <feature id="org.eclipse.buckminster.product" version="1.6.0.qualifier"/>
+      <feature id="org.eclipse.buckminster.product" version="1.7.0.qualifier"/>
    </features>
 
    <configurations>

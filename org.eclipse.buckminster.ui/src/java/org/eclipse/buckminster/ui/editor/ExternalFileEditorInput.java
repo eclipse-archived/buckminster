@@ -36,7 +36,7 @@ import org.eclipse.ui.model.IWorkbenchAdapter;
  * An <code>IEditorInput</code> implementation for files external to the
  * workspace. Modelled after the Eclipse internal class
  * <code>JavaFileEditorInput</code>
- * 
+ *
  * @author Thomas Hallgren
  */
 public class ExternalFileEditorInput implements IPathEditorInput, ILocationProvider, IWorkbenchAdapter {
@@ -79,11 +79,20 @@ public class ExternalFileEditorInput implements IPathEditorInput, ILocationProvi
 	}
 
 	@Override
-	@SuppressWarnings("rawtypes")
-	public Object getAdapter(Class adapter) {
+	@SuppressWarnings("unchecked")
+	public <T> T getAdapter(Class<T> adapter) {
 		if (ILocationProvider.class.equals(adapter) || IWorkbenchAdapter.class.equals(adapter))
-			return this;
+			return (T) this;
 		return Platform.getAdapterManager().getAdapter(this, adapter);
+	}
+
+	protected IWorkbenchAdapter[] getChildren() {
+		File[] childrenFiles = file.listFiles();
+		int idx = childrenFiles.length;
+		IWorkbenchAdapter[] children = new ExternalFileEditorInput[idx];
+		while (--idx >= 0)
+			children[idx] = new ExternalFileEditorInput(childrenFiles[idx]);
+		return children;
 	}
 
 	@Override
@@ -109,6 +118,11 @@ public class ExternalFileEditorInput implements IPathEditorInput, ILocationProvi
 	@Override
 	public String getName() {
 		return label;
+	}
+
+	protected IWorkbenchAdapter getParent() {
+		File parentFile = file.getParentFile();
+		return parentFile == null ? null : new ExternalFileEditorInput(parentFile);
 	}
 
 	@Override
@@ -139,19 +153,5 @@ public class ExternalFileEditorInput implements IPathEditorInput, ILocationProvi
 	@Override
 	public int hashCode() {
 		return file.hashCode();
-	}
-
-	protected IWorkbenchAdapter[] getChildren() {
-		File[] childrenFiles = file.listFiles();
-		int idx = childrenFiles.length;
-		IWorkbenchAdapter[] children = new ExternalFileEditorInput[idx];
-		while (--idx >= 0)
-			children[idx] = new ExternalFileEditorInput(childrenFiles[idx]);
-		return children;
-	}
-
-	protected IWorkbenchAdapter getParent() {
-		File parentFile = file.getParentFile();
-		return parentFile == null ? null : new ExternalFileEditorInput(parentFile);
 	}
 }

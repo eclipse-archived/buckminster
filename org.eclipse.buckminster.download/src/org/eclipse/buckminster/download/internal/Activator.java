@@ -21,8 +21,6 @@ public class Activator implements BundleActivator {
 
 	private static Activator plugin;
 
-	private IContainer container;
-
 	public static final String EXPANDERS_POINT = PLUGIN_ID + ".expanders"; //$NON-NLS-1$
 
 	public static final String DECOMPRESSORS_POINT = PLUGIN_ID + ".decompressors"; //$NON-NLS-1$
@@ -31,8 +29,10 @@ public class Activator implements BundleActivator {
 		return plugin;
 	}
 
+	private IContainer container;
+
 	public synchronized IRetrieveFileTransferContainerAdapter createRetrieveFileTransfer() {
-		return (IRetrieveFileTransferContainerAdapter) container.getAdapter(IRetrieveFileTransferContainerAdapter.class);
+		return container.getAdapter(IRetrieveFileTransferContainerAdapter.class);
 	}
 
 	@Override
