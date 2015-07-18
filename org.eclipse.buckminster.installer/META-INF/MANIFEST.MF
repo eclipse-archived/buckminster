@@ -6,11 +6,15 @@ Bundle-Version: 1.2.0.qualifier
 Require-Bundle: org.eclipse.buckminster.cmdline,
  org.eclipse.buckminster.runtime,
  org.eclipse.core.runtime,
+ org.eclipse.equinox.frameworkadmin,
+ org.eclipse.equinox.frameworkadmin.equinox,
+ org.eclipse.equinox.simpleconfigurator.manipulator,
  org.eclipse.equinox.p2.director,
  org.eclipse.equinox.p2.metadata,
  org.eclipse.equinox.p2.engine,
  org.eclipse.equinox.p2.core,
  org.eclipse.equinox.p2.console,
+ org.eclipse.equinox.p2.operations,
  org.eclipse.equinox.p2.repository
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: Eclipse Buckminster Project

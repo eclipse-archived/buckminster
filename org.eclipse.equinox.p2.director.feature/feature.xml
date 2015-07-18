@@ -28,6 +28,7 @@
       <import plugin="org.eclipse.core.jobs"/>
       <import plugin="org.eclipse.core.net"/>
       <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.core.runtime.compatibility"/>
       <import plugin="org.eclipse.ecf"/>
       <import plugin="org.eclipse.ecf.filetransfer"/>
       <import plugin="org.eclipse.ecf.identity"/>
@@ -63,6 +64,7 @@
       <import plugin="org.eclipse.equinox.util"/>
       <import plugin="org.eclipse.osgi"/>
       <import plugin="org.eclipse.osgi.services"/>
+      <import plugin="org.eclipse.osgi.compatibility.state"/>
       <import plugin="org.eclipse.update.configurator"/>
       <import plugin="org.sat4j.core"/>
       <import plugin="org.sat4j.pb"/>
