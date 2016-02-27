@@ -59,6 +59,7 @@ import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.StoredConfig;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
+import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.eclipse.jgit.transport.URIish;
 import org.eclipse.jgit.treewalk.filter.AndTreeFilter;
 import org.eclipse.jgit.treewalk.filter.PathFilterGroup;
@@ -281,17 +282,15 @@ public class GitReaderType extends CatalogReaderType implements ITeamReaderType 
 				fmt = fmt.substring(0, comma);
 			repoDir = Path.fromPortableString(fmt).append(Constants.DOT_GIT).toFile();
 		} else {
-			IPath location = project.getLocation();
-			while (location.segmentCount() > 0) {
-				File dotGit = location.append(Constants.DOT_GIT).toFile();
-				if (dotGit.exists()) {
-					repoDir = dotGit;
-					break;
-				}
-				location = location.removeLastSegments(1);
-			}
-			if (repoDir == null)
+			FileRepositoryBuilder builder = new FileRepositoryBuilder();
+			builder.findGitDir(project.getLocation().toFile());
+			if (builder.getGitDir() != null) {
+				repoDir = builder.getGitDir();
+			} else {
+				Logger logger = Buckminster.getLogger();
+				logger.warning("No git repo found for Project: %s.", project.getName());
 				return;
+			}
 		}
 
 		// Add repository if it's not already added
