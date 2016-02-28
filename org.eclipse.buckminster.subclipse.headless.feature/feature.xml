@@ -25,7 +25,6 @@
       <import plugin="org.tigris.subversion.clientadapter.svnkit"/>
       <import plugin="org.tmatesoft.svnkit"/>
       <import plugin="org.tmatesoft.sqljet"/>
-      <import plugin="com.trilead.ssh2"/>
       <import plugin="net.java.dev.jna"/>
    </requires>
 
