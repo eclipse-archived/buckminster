@@ -21,6 +21,7 @@ import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.resolver.IResolver;
 import org.eclipse.buckminster.core.resolver.MainResolver;
 import org.eclipse.buckminster.core.resolver.ResolutionContext;
+import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -42,6 +43,7 @@ public class RMapTest extends PDETestCase {
 			AdvisorNodeBuilder nodeBld = queryBld.addAdvisorNode();
 			nodeBld.setNamePattern(Pattern.compile("org\\.eclipse")); //$NON-NLS-1$
 			nodeBld.setUseTargetPlatform(false);
+			nodeBld.setBranchTagPath(new VersionSelector[] { VersionSelector.tag("R4_3_M5a") });
 			ComponentQuery query = queryBld.createComponentQuery();
 
 			IResolver resolver = new MainResolver(new ResolutionContext(query));
