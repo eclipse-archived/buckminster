@@ -8,7 +8,7 @@
  * The text of such license is available at www.eclipse.org.
  *******************************************************************************/
 /**
- * 
+ *
  */
 package org.eclipse.buckminster.ant.support;
 
@@ -16,7 +16,6 @@ import java.io.PrintStream;
 
 import org.apache.tools.ant.BuildEvent;
 import org.apache.tools.ant.DefaultLogger;
-import org.eclipse.ant.internal.core.ant.InternalAntMessages;
 
 /**
  * @author ken1
@@ -43,14 +42,6 @@ public class AntBuildLogger extends DefaultLogger {
 
 	@Override
 	protected synchronized void printMessage(final String message, final PrintStream stream, final int priority) {
-		if(InternalAntMessages.InternalAntRunner_BUILD_SUCCESSFUL_1.equals(message))
-			//
-			// It's not enough to override the buildFinished method. The Eclipse
-			// InternalAntRunner will still insist on writing this message. Well,
-			// we don't want that printout after each and every task that we execute.
-			//
-			return;
-
 		msgBld.setLength(0);
 		msgBld.append("[ant] ");
 		int top = message.length();

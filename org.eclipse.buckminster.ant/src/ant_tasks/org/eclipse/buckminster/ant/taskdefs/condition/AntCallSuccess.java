@@ -21,6 +21,7 @@ import org.apache.tools.ant.taskdefs.condition.Condition;
 public class AntCallSuccess extends CallTarget implements Condition {
 	private String trapPattern;
 
+	@Override
 	public boolean eval() throws BuildException {
 		Project p = getProject();
 
