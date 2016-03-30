@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cs:cspec xmlns:cs="http://www.eclipse.org/buckminster/CSpec-1.0" name="org.eclipse.buckminster.contributor" componentType="buckminster" version="1.0.0">
+    <cs:dependencies>
+        <cs:dependency name="org.eclipse.buckminster.releng" componentType="buckminster"/>
+        <cs:dependency name="org.eclipse.sdk" componentType="eclipse.feature"/>
+        <cs:dependency name="org.eclipse.egit.core.source" componentType="osgi.bundle"/>
+        <cs:dependency name="org.eclipse.team.svn.sources" componentType="eclipse.feature"/>
+    </cs:dependencies>
+</cs:cspec>
